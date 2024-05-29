@@ -1,8 +1,14 @@
 package view;
 
-import java.util.Scanner;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class ExitMenu extends AppMenu{
-    public void run(Scanner scanner){};
+
+public class ExitMenu extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+    }
 
 }

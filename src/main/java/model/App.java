@@ -1,15 +1,36 @@
 package model;
 
-import enums.Menu;
+import javafx.stage.Stage;
+import javafx.scene.media.MediaPlayer;
+
+import java.util.Random;
+
 
 public class App {
-    private static Menu currentMenu = Menu.LOGIN_MENU;
+    private static Stage stage = new Stage();
 
-    public static Menu getCurrentMenu() {
-        return currentMenu;
+    private static MediaPlayer mediaplayer;
+
+    private static final Random random = new Random();
+
+    public static Stage getStage() {
+        return stage;
     }
 
-    public static void setCurrentMenu(Menu currentMenu) {
-        App.currentMenu = currentMenu;
+    public static void setStage(Stage stage) {
+        App.stage = stage;
     }
+
+    public static MediaPlayer getMediaplayer() {
+        return mediaplayer;
+    }
+
+    public static void setMediaplayer(MediaPlayer mediaplayer) {
+        App.mediaplayer = mediaplayer;
+    }
+
+    public static Random getRandom() {
+        return random;
+    }
+
 }
