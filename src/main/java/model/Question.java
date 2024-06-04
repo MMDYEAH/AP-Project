@@ -3,10 +3,13 @@ package model;
 import java.util.ArrayList;
 
 public class Question {
-    String question,answer;
+    String question, answer;
     protected static ArrayList<Question> questions = new ArrayList<>();
-    public static Question getQuestionByNumber(){
-        return null;//TODO: delete this code and write
+
+    private static Question nowQuestion;
+
+    public static Question getQuestionByNumber(int number) {
+        return questions.get(number);
     }
 
     public String getQuestion() {
@@ -29,4 +32,16 @@ public class Question {
         return questions;
     }
 
+    public static Question getNowQuestion() {
+        return nowQuestion;
+    }
+
+    public static void setNowQuestion(Question nowQuestion) {
+        Question.nowQuestion = nowQuestion;
+    }
+
+    public Question(String question, String answer) {
+        this.question = question;
+        this.answer = answer;
+    }
 }

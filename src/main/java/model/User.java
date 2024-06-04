@@ -3,27 +3,41 @@ package model;
 import java.util.ArrayList;
 
 public class User {
-    private static User loggenInUser;
+    private static User loggedInUser;
     private static ArrayList<User> users;
-    private String username,password,nickname,email;
+    private String username, password, nickname, email;
     private Question question;
     private boolean isUserRequestForgotPassword, isUserRegisterSuccesfully;
-    private int score,numOfWins,numOfLosts,numOfDraws;
+    private int score, numOfWins, numOfLosts, numOfDraws;
     private Faction faction;
     private FactionLeaderCard factionLeaderCard;
     private PlayBoard playBoard;
     private ArrayList<Game> gamesPlayed = new ArrayList<>();
-    public static User getUserByUsername(String username){
-        return null;//TODO: delete this code and write
-    }
-    public static void addToUsers(User user){}
 
-    public static User getLoggenInUser() {
-        return loggenInUser;
+    public User(String username, String password, String nickname, String email) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        //TODO: make play board and faction and etc and saving users
     }
 
-    public static void setLoggenInUser(User loggenInUser) {
-        User.loggenInUser = loggenInUser;
+    public static User getUserByUsername(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) return user;
+        }
+        return null;
+    }
+
+    public static void addToUsers(User user) {
+    }
+
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public static void setLoggedInUser(User loggedInUser) {
+        User.loggedInUser = loggedInUser;
     }
 
     public static ArrayList<User> getUsers() {
@@ -74,5 +88,6 @@ public class User {
         this.question = question;
     }
 
-    public static void removeFromUsers(User user){}
+    public static void removeFromUsers(User user) {
+    }
 }
