@@ -11,6 +11,8 @@ public class App {
 
     private static MediaPlayer mediaplayer;
 
+    private static String randomPassword;
+
     private static final Random random = new Random();
 
     public static Stage getStage() {
@@ -27,6 +29,14 @@ public class App {
 
     public static void setMediaplayer(MediaPlayer mediaplayer) {
         App.mediaplayer = mediaplayer;
+    }
+
+    public static String getRandomPassword() {
+        return randomPassword;
+    }
+
+    public static void setRandomPassword(String randomPassword) {
+        App.randomPassword = randomPassword;
     }
 
     public static Random getRandom() {

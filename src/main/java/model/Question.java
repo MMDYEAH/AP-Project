@@ -6,8 +6,6 @@ public class Question {
     String question, answer;
     protected static ArrayList<Question> questions = new ArrayList<>();
 
-    private static Question nowQuestion;
-
     public static Question getQuestionByNumber(int number) {
         return questions.get(number);
     }
@@ -30,14 +28,6 @@ public class Question {
 
     public static ArrayList<Question> getQuestions() {
         return questions;
-    }
-
-    public static Question getNowQuestion() {
-        return nowQuestion;
-    }
-
-    public static void setNowQuestion(Question nowQuestion) {
-        Question.nowQuestion = nowQuestion;
     }
 
     public Question(String question, String answer) {

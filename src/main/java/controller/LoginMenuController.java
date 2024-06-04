@@ -41,11 +41,19 @@ public class LoginMenuController {
     private String makeRandomPassword() {
         int bigChar = App.getRandom().nextInt(0, 26);
         int smallChar = App.getRandom().nextInt(0, 26);
+        ArrayList<String> specialCharacters = new ArrayList<>();
+        specialCharacters.add("!");
+        specialCharacters.add("&");
+        specialCharacters.add("$");
+        specialCharacters.add("#");
+        specialCharacters.add("@");
+        String randomSpecialCharacter = specialCharacters.get(App.getRandom().nextInt(0,4));
         ArrayList<Integer> integers = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             integers.add(App.getRandom().nextInt());
         }
         StringBuilder password = new StringBuilder();
+        password.append(randomSpecialCharacter);
         password.append('A' + bigChar);
         password.append('a' + smallChar);
         for (int i = 0; i < 4; i++) {
@@ -58,7 +66,7 @@ public class LoginMenuController {
         user.setQuestion(question);
     }
 
-    public Result register(String username, String password, String passwordConfirm, String nickname, String email) {
+    public Result register(String username, String password, String passwordConfirm, String nickname, String email, Question question) {
         if (username.equals("")
                 || password.equals("")
                 || passwordConfirm.equals("")
@@ -81,19 +89,20 @@ public class LoginMenuController {
             if (password.equals("random")) {
                 while (true) {
                     String randomPassword = makeRandomPassword();
+                    App.setRandomPassword(randomPassword);
                     String response = loginMenu.acceptRandomPassword(password);
                     if (response.equals("back")) {
                         return new Result(false, "back successfully");
                     } else if (response.equals("accept")) {
                         User user = new User(username, randomPassword, nickname, email);
-                        user.setQuestion(Question.getNowQuestion());
+                        user.setQuestion(question);
                         return new Result(true, "user created successfully");
                     } else if (response.equals("again")) {
                     }
                 }
             } else {
                 User user = new User(username, password, nickname, email);
-                user.setQuestion(Question.getNowQuestion());
+                user.setQuestion(question);
                 return new Result(true, "user created successfully");
             }
         }
