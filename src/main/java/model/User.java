@@ -12,7 +12,7 @@ public class User {
     private Faction faction;
     private FactionLeaderCard factionLeaderCard;
     private PlayBoard playBoard;
-    private ArrayList<Game> gamesPlayed = new ArrayList<>();
+    private final ArrayList<Game> gamesPlayed = new ArrayList<>();
 
     public User(String username, String password, String nickname, String email) {
         this.username = username;
@@ -46,6 +46,9 @@ public class User {
 
     public static void setUsers(ArrayList<User> users) {
         User.users = users;
+    }
+
+    public static void removeFromUsers(User user) {
     }
 
     public String getUsername() {
@@ -88,6 +91,7 @@ public class User {
         this.question = question;
     }
 
-    public static void removeFromUsers(User user) {
+    public PlayBoard getPlayBoard() {
+        return playBoard;
     }
 }
