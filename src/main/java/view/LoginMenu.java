@@ -129,11 +129,15 @@ public class LoginMenu extends Application implements Initializable {
 
     public void login() throws Exception {
         Result result = controller.login(username.getText(), password.getText());
-        if (result.isSuccessful()){
+        if (result.isSuccessful()) {
             MainMenu mainMenu = new MainMenu();
             mainMenu.start(App.getStage());
-        }
-        else {
+            loggedInSuccessfullyVideoPlay();
+        } else if (result.toString().equals("wrong password")) {
+            wrongPasswordVideoPlay();
+        } else if (result.toString().equals("no such user exist")) {
+            noSuchUserExistVideoPlay();
+        } else {
             System.out.println(result);
         }
     }
@@ -307,10 +311,10 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
+        Scene scene = new Scene(root, 1200, 600); // Set the width and height as needed
+        videoStage.setMinWidth(1200);
         videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
+        videoStage.setMaxWidth(1200);
         videoStage.setMaxHeight(600);
         videoStage.setScene(scene);
         videoStage.setTitle("there Is Exist User With this Username");
@@ -517,6 +521,64 @@ public class LoginMenu extends Application implements Initializable {
         videoStage.setMaxHeight(600);
         videoStage.setScene(scene);
         videoStage.setTitle("confirm Password Failed");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void loggedInSuccessfullyVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 1200, 600); // Set the width and height as needed
+        videoStage.setMinWidth(1200);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(1200);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("logged In Successfully");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void noSuchUserExistVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/noSuchUserExist.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("no Such User Exist");
         videoStage.show();
 
         // Play the video
