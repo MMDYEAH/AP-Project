@@ -3,8 +3,9 @@ package model;
 import java.util.ArrayList;
 
 public class User {
+    public static User registeringUser;
     private static User loggedInUser;
-    private static ArrayList<User> users;
+    private static ArrayList<User> users = new ArrayList<>();
     private String username, password, nickname, email;
     private Question question;
     private boolean isUserRequestForgotPassword, isUserRegisterSuccesfully;
@@ -12,13 +13,14 @@ public class User {
     private Faction faction;
     private FactionLeaderCard factionLeaderCard;
     private PlayBoard playBoard;
-    private ArrayList<Game> gamesPlayed = new ArrayList<>();
+    private final ArrayList<Game> gamesPlayed = new ArrayList<>();
 
     public User(String username, String password, String nickname, String email) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        users.add(this);
         //TODO: make play board and faction and etc and saving users
     }
 
@@ -46,6 +48,9 @@ public class User {
 
     public static void setUsers(ArrayList<User> users) {
         User.users = users;
+    }
+
+    public static void removeFromUsers(User user) {
     }
 
     public String getUsername() {
@@ -88,6 +93,7 @@ public class User {
         this.question = question;
     }
 
-    public static void removeFromUsers(User user) {
+    public PlayBoard getPlayBoard() {
+        return playBoard;
     }
 }
