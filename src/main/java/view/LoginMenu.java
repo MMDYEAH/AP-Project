@@ -1,6 +1,7 @@
 package view;
 
 import controller.LoginMenuController;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,8 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import model.App;
 import model.Question;
 import model.Result;
 import model.User;
@@ -58,6 +61,7 @@ public class LoginMenu extends Application implements Initializable {
     @Override
     public void start(Stage stage) throws Exception {
         controller.initialize();
+        App.setStage(stage);
         // Load the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/loginMenu.fxml"));
         Pane pane = fxmlLoader.load();
@@ -124,7 +128,14 @@ public class LoginMenu extends Application implements Initializable {
     }
 
     public void login() throws Exception {
-        controller.login(username.getText(), password.getText());
+        Result result = controller.login(username.getText(), password.getText());
+        if (result.isSuccessful()){
+            MainMenu mainMenu = new MainMenu();
+            mainMenu.start(App.getStage());
+        }
+        else {
+            System.out.println(result);
+        }
     }
 
     public void signUp() throws IOException {
@@ -132,6 +143,24 @@ public class LoginMenu extends Application implements Initializable {
         System.out.println(result);
         if (result.isSuccessful()) {
             securityQuestion();
+        } else if (result.toString().equals("empty field")) {
+            emptyFieldVideoPlay();
+        } else if (result.toString().equals("there is exist an user with this username")) {
+            thereIsExistUserWithUsernameVideoPlay();
+        } else if (result.toString().equals("wrong username format")) {
+            wrongUsernameFormatVideoPlay();
+        } else if (result.toString().equals("wrong email format")) {
+            wrongEmailFormatVideoPlay();
+        } else if (result.toString().equals("wrong password format")) {
+            wrongEmailFormatVideoPlay();
+        } else if (result.toString().equals("weak password")) {
+            weakPasswordVideoPlay();
+        } else if (result.toString().equals("user created successfully")) {
+            userCreatedSuccessfullyVideoPlay();
+        } else if (result.toString().equals("wrong password")) {
+            wrongPasswordVideoPlay();
+        } else if (result.toString().equals("confirm password failed")) {
+            wrongPasswordVideoPlay();
         }
     }
 
@@ -193,7 +222,7 @@ public class LoginMenu extends Application implements Initializable {
         paneSecurity.setBackground(new Background(background));
 
         apply.setOnMouseClicked(mouseEvent -> {
-            Question registeringUserQuestion = new Question(Question.getQuestionByNumber(Question.getQuestionNumberForRegistration()).getQuestion(),questionAnswer.getText());
+            Question registeringUserQuestion = new Question(Question.getQuestionByNumber(Question.getQuestionNumberForRegistration()).getQuestion(), questionAnswer.getText());
             User.registeringUser.setQuestion(registeringUserQuestion);
             System.out.println(User.registeringUser.getQuestion().getQuestion());
             System.out.println(User.registeringUser.getQuestion().getAnswer());
@@ -236,6 +265,267 @@ public class LoginMenu extends Application implements Initializable {
          * @return if accept : "accept" if request another password : "again" if back to menu : "back"
          */
         return null; // delete this and write code
+    }
+
+    public void emptyFieldVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/emptyField.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("Empty Field");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void thereIsExistUserWithUsernameVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/thereIsExistUserWithUsername.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("there Is Exist User With this Username");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void userCreatedSuccessfullyVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/userCreatedSuccessfully.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("user Created Successfully");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void weakPasswordVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/weakPassword.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("weak Password");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void wrongEmailFormatVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongEmailFormat.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("wrong Email Format");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void wrongPasswordVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPassword.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("wrong Password");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void wrongPasswordFormatVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPasswordFormat.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("wrong Password Format");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void wrongUsernameFormatVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongUsernameFormat.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("wrong Username Format");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
+    }
+
+    public void confirmPasswordFailedVideoPlay() {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/confirmPasswordFailed.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Create a new stage (window) for the video
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(600);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(600);
+        videoStage.setScene(scene);
+        videoStage.setTitle("confirm Password Failed");
+        videoStage.show();
+
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        pauseTransition.setOnFinished(actionEvent -> {
+            videoStage.close();
+        });
+        pauseTransition.play();
     }
 
     @Override
