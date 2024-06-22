@@ -1,4 +1,5 @@
 module GWENT {
+
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.media;
@@ -7,4 +8,5 @@ module GWENT {
 
     exports view;
     opens view to javafx.fxml;
+
 }

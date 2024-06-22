@@ -3,8 +3,9 @@ package model;
 import java.util.ArrayList;
 
 public class User {
+    public static User registeringUser;
     private static User loggedInUser;
-    private static ArrayList<User> users;
+    private static ArrayList<User> users = new ArrayList<>();
     private String username, password, nickname, email;
     private Question question;
     private boolean isUserRequestForgotPassword, isUserRegisterSuccesfully;
@@ -19,6 +20,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        users.add(this);
         //TODO: make play board and faction and etc and saving users
     }
 

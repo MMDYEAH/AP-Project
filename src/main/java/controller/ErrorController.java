@@ -14,7 +14,7 @@ public class ErrorController {
     }
 
     public static boolean isPasswordWeak(String password) {
-        return password.matches("(?=.*[!&$#@])(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}");
+        return !password.matches("(?=.*[!&$#@])(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}");
     }
 
     public static boolean AreStringsEqual(String firstString, String secondString) {
