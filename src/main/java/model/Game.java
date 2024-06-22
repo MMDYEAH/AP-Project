@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Game {
-    protected User me, enemy,Winner,currentUser;
+    protected User me, enemy,Winner,currentUser,nextUser;
     protected Date date;
     protected int myFinalScore,enemyFinalScore,roundNumber;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
@@ -20,6 +20,14 @@ public class Game {
     }
 
     protected static Game currentGame;
+
+    public User getNextUser() {
+        return nextUser;
+    }
+
+    public void setNextUser(User nextUser) {
+        this.nextUser = nextUser;
+    }
 
     public static Game getCurrentGame() {
         return currentGame;

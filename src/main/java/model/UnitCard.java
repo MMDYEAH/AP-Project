@@ -1,16 +1,25 @@
 package model;
 
 public abstract class UnitCard extends Card{
-    public UnitCard(String name, int primitiveNumberOfCards, int power, boolean isLegendary) {
-        super(name, primitiveNumberOfCards);
+    protected boolean isLegendary;
+    protected int power;
+    protected int firstPower;
+    public UnitCard(String name, int power, boolean isLegendary) {
+        super(name);
         this.power = power;
+        this.firstPower = power;
         this.isLegendary = isLegendary;
 
     }
-
     public abstract void apply();
-    protected boolean isLegendary;
-    protected int power;
+
+    public int getFirstPower() {
+        return firstPower;
+    }
+
+    public void setFirstPower(int firstPower) {
+        this.firstPower = firstPower;
+    }
 
     public boolean isLegendary() {
         return isLegendary;

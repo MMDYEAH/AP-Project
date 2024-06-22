@@ -1,12 +1,15 @@
 package model;
 
-public class SkelligeStorm extends Card{
-    public SkelligeStorm(String name, int primitiveNumberOfCards) {
-        super(name, primitiveNumberOfCards);
+public class SkelligeStorm extends WeatherCard{
+    public SkelligeStorm(String name) {
+        super(name);
     }
 
     @Override
     public void apply() {
+
+    }
+    public void unApply(){
 
     }
 }

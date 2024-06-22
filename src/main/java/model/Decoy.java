@@ -1,8 +1,8 @@
 package model;
 
 public class Decoy extends Card{
-    public Decoy(String name, int primitiveNumberOfCards) {
-        super(name, primitiveNumberOfCards);
+    public Decoy(String name) {
+        super(name);
     }
 
     @Override

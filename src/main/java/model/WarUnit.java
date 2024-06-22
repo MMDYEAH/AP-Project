@@ -10,4 +10,12 @@ public abstract class WarUnit extends Unit{
     public void setSpecialCard(Card specialCard) {
         this.specialCard = specialCard;
     }
+
+    public int getUnitPower(){
+        int power = 0;
+        for (Card card : cards){
+            power += ((UnitCard)card).power;
+        }
+        return power;
+    }
 }

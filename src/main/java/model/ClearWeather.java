@@ -1,12 +1,15 @@
 package model;
 
-public class ClearWeather extends Card{
-    public ClearWeather(String name, int primitiveNumberOfCards) {
-        super(name, primitiveNumberOfCards);
+public class ClearWeather extends WeatherCard{
+    public ClearWeather(String name) {
+        super(name);
     }
 
     @Override
     public void apply() {
+
+    }
+    public void unApply(){
 
     }
 }
