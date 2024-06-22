@@ -1,0 +1,84 @@
+/* Importing the new font */
+@font-face {
+    font-family: 'TheWitcherFont';
+    src: url('Thewitcher-jnOj.ttf');
+}
+
+
+/* Button style */
+.button {
+    -fx-background-color: #4e4e4e; /* Dark grey buttons */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #670000; /* Red border */
+    -fx-border-width: 2px;
+    -fx-font-size: 18px; /* Larger font size */
+    -fx-font-family: thewitcher; /* Applying the new font */
+    -fx-padding: 15px 30px; /* Larger padding */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0.5, 0, 0);
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+/* Button hover style */
+.button:hover {
+    -fx-background-color: #670000; /* Red background on hover */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #4e4e4e; /* Dark grey border */
+    -fx-scale-x: 1.1; /* Scale up the button on hover */
+    -fx-scale-y: 1.1;
+}
+
+/* Button click style */
+.button:pressed {
+    -fx-background-color: #8b0000; /* Darker red on click */
+    -fx-scale-x: 1.0; /* Reset scale on click */
+    -fx-scale-y: 1.0;
+}
+
+/* Text field style */
+.text-field {
+    -fx-background-color: #333333; /* Darker grey for text fields */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #680000; /* Red border */
+    -fx-border-width: 2px;
+    -fx-font-size: 18px; /* Larger font size */
+    -fx-font-family: thewitcher; /* Applying the new font */
+    -fx-padding: 15px; /* Larger padding */
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+/* Label style */
+.label {
+    -fx-text-fill: #c9c900; /* Silver text, similar to the Witcher's medallion */
+    -fx-font-size: 20px; /* Larger font size */
+    -fx-font-family: thewitcher; /* Applying the new font */
+    -fx-padding: 10px;
+}
+
+/* Hyperlink style */
+.hyperlink {
+    -fx-text-fill: #7d0000; /* Red text for hyperlinks */
+    -fx-underline: true;
+    -fx-font-size: 18px; /* Larger font size */
+    -fx-font-family: thewitcher; /* Applying the new font */
+}
+
+/* Text style */
+.text {
+    -fx-fill: #e78104; /* Silver text */
+    -fx-font-size: 18px; /* Larger font size */
+    -fx-font-family: thewitcher; /* Applying the new font */
+}
+
+/* Adding transition and animation */
+.button {
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    -fx-scale-x: 1.1; /* Scale up the button on hover */
+    -fx-scale-y: 1.1;
+}

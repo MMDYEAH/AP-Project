@@ -19,6 +19,7 @@ public class LoginMenuController {
     }
 
     public void initialize() {
+//        LoginMenu.questionCombo.setValue("...");
         Question.getQuestions().add(new Question("What's the name of your favorite high school teacher?", ""));
         Question.getQuestions().add(new Question("In what city did you have your first ever flight?", ""));
         Question.getQuestions().add(new Question("What was your favorite subject in high school??", ""));
@@ -38,7 +39,7 @@ public class LoginMenuController {
         System.out.println("register/login menu");
     }
 
-    private String makeRandomPassword() {
+    public String makeRandomPassword() {
         int bigChar = App.getRandom().nextInt(0, 26);
         int smallChar = App.getRandom().nextInt(0, 26);
         ArrayList<String> specialCharacters = new ArrayList<>();
@@ -50,13 +51,13 @@ public class LoginMenuController {
         String randomSpecialCharacter = specialCharacters.get(App.getRandom().nextInt(0,4));
         ArrayList<Integer> integers = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            integers.add(App.getRandom().nextInt());
+            integers.add(App.getRandom().nextInt(0,9));
         }
         StringBuilder password = new StringBuilder();
         password.append(randomSpecialCharacter);
-        password.append('A' + bigChar);
-        password.append('a' + smallChar);
-        for (int i = 0; i < 4; i++) {
+        password.append((char)('A' + bigChar));
+        password.append((char)('a' + smallChar));
+        for (int i = 0; i < 5; i++) {
             password.append(integers.get(i));
         }
         return password.toString();
@@ -103,6 +104,7 @@ public class LoginMenuController {
             } else {
                 User user = new User(username, password, nickname, email);
                 user.setQuestion(question);
+                User.registeringUser = user;
                 return new Result(true, "user created successfully");
             }
         }

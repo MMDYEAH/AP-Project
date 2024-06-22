@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Question {
     String question, answer;
+
+    private static int questionNumberForRegistration;
     protected static ArrayList<Question> questions = new ArrayList<>();
 
     public static Question getQuestionByNumber(int number) {
@@ -24,6 +26,14 @@ public class Question {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public static int getQuestionNumberForRegistration() {
+        return questionNumberForRegistration;
+    }
+
+    public static void setQuestionNumberForRegistration(int questionNumberForRegistration) {
+        Question.questionNumberForRegistration = questionNumberForRegistration;
     }
 
     public static ArrayList<Question> getQuestions() {
