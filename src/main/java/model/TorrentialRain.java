@@ -1,8 +1,8 @@
 package model;
 
 public class TorrentialRain extends WeatherCard{
-    public TorrentialRain(String name) {
-        super(name);
+    public TorrentialRain(String name,String path) {
+        super(name,path);
     }
 
     @Override

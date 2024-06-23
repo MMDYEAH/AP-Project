@@ -1,8 +1,8 @@
 package model;
 
 public class Muster extends UnitCard{
-    public Muster(String name, int power, boolean isLegendary) {
-        super(name, power, isLegendary);
+    public Muster(String name, int power, boolean isLegendary, String path) {
+        super(name, power, isLegendary, path);
     }
 
     @Override

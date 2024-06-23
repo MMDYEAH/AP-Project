@@ -1,12 +1,19 @@
 package model;
 
-public abstract class Card {
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+
+public abstract class Card extends Rectangle {
     protected String name;
     protected Unit unit;
 
     public abstract void apply();
 
-    public Card(String name) {
+    public Card(String name,String path) {
+        this.setHeight(400);
+        this.setWidth(200);
+        this.setFill(new ImagePattern(new Image(path)));
         this.name = name;
     }
 

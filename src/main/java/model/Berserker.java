@@ -1,8 +1,8 @@
 package model;
 
 public class Berserker extends UnitCard{
-    public Berserker(String name, int power, boolean isLegendary) {
-        super(name, power, isLegendary);
+    public Berserker(String name, int power, boolean isLegendary, String path) {
+        super(name, power, isLegendary, path);
     }
 
     @Override

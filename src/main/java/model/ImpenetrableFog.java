@@ -1,8 +1,8 @@
 package model;
 
 public class ImpenetrableFog extends WeatherCard{
-    public ImpenetrableFog(String name) {
-        super(name);
+    public ImpenetrableFog(String name,String path) {
+        super(name,path);
     }
 
     @Override

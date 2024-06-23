@@ -1,8 +1,8 @@
 package model;
 
 public class SpellScorch extends Card{
-    public SpellScorch(String name) {
-        super(name);
+    public SpellScorch(String name, String path) {
+        super(name, path);
     }
 
     @Override

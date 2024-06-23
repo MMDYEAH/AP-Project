@@ -56,6 +56,7 @@ public class LoginMenu extends Application implements Initializable {
     Button apply;
     //    @FXML
 //    private ComboBox<String> questionCombo;
+    static Media loginVideo;
     LoginMenuController controller = new LoginMenuController(this);
 
     @Override
@@ -67,9 +68,7 @@ public class LoginMenu extends Application implements Initializable {
         Pane pane = fxmlLoader.load();
 
         // Set up the background video
-        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/witcherMenu.mp4")).toExternalForm();
-        Media media = new Media(videoPath);
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaPlayer mediaPlayer = new MediaPlayer(loginVideo);
         MediaView mediaView = new MediaView(mediaPlayer);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
@@ -592,6 +591,7 @@ public class LoginMenu extends Application implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/witcherMenu.mp4")).toExternalForm();
+        loginVideo = new Media(videoPath);
     }
 }

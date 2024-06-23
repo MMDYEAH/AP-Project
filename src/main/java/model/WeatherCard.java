@@ -1,8 +1,8 @@
 package model;
 
 public abstract class WeatherCard extends Card{
-    public WeatherCard(String name) {
-        super(name);
+    public WeatherCard(String name, String path) {
+        super(name,path);
     }
 
     @Override
