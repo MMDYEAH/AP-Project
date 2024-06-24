@@ -130,6 +130,7 @@ public class LoginMenu extends Application implements Initializable {
     public void login() throws Exception {
         Result result = controller.login(username.getText(), password.getText());
         if (result.isSuccessful()) {
+            User.setLoggedInUser(User.registeringUser);
             MainMenu mainMenu = new MainMenu();
             mainMenu.start(App.getStage());
             loggedInSuccessfullyVideoPlay();
@@ -156,7 +157,7 @@ public class LoginMenu extends Application implements Initializable {
         } else if (result.toString().equals("wrong email format")) {
             wrongEmailFormatVideoPlay();
         } else if (result.toString().equals("wrong password format")) {
-            wrongEmailFormatVideoPlay();
+            wrongPasswordFormatVideoPlay();
         } else if (result.toString().equals("weak password")) {
             weakPasswordVideoPlay();
         } else if (result.toString().equals("user created successfully")) {
@@ -164,7 +165,7 @@ public class LoginMenu extends Application implements Initializable {
         } else if (result.toString().equals("wrong password")) {
             wrongPasswordVideoPlay();
         } else if (result.toString().equals("confirm password failed")) {
-            wrongPasswordVideoPlay();
+            confirmPasswordFailedVideoPlay();
         }
     }
 
@@ -311,10 +312,10 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 1200, 600); // Set the width and height as needed
-        videoStage.setMinWidth(1200);
+        Scene scene = new Scene(root, 900, 600); // Set the width and height as needed
+        videoStage.setMinWidth(900);
         videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(1200);
+        videoStage.setMaxWidth(900);
         videoStage.setMaxHeight(600);
         videoStage.setScene(scene);
         videoStage.setTitle("there Is Exist User With this Username");
@@ -340,11 +341,11 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
+        Scene scene = new Scene(root, 600, 400); // Set the width and height as needed
+        videoStage.setMinWidth(600);
+        videoStage.setMinHeight(400);
+        videoStage.setMaxWidth(600);
+        videoStage.setMaxHeight(400);
         videoStage.setScene(scene);
         videoStage.setTitle("user Created Successfully");
         videoStage.show();
@@ -369,18 +370,18 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
         videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
+        videoStage.setMinHeight(500);
         videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
+        videoStage.setMaxHeight(500);
         videoStage.setScene(scene);
         videoStage.setTitle("weak Password");
         videoStage.show();
 
         // Play the video
         mediaPlayer.play();
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
         });
@@ -427,18 +428,18 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
         videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
+        videoStage.setMinHeight(500);
         videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
+        videoStage.setMaxHeight(500);
         videoStage.setScene(scene);
         videoStage.setTitle("wrong Password");
         videoStage.show();
 
         // Play the video
         mediaPlayer.play();
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
         });
@@ -514,18 +515,18 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
         videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
+        videoStage.setMinHeight(500);
         videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
+        videoStage.setMaxHeight(500);
         videoStage.setScene(scene);
         videoStage.setTitle("confirm Password Failed");
         videoStage.show();
 
         // Play the video
         mediaPlayer.play();
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
         });
@@ -543,11 +544,11 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 1200, 600); // Set the width and height as needed
-        videoStage.setMinWidth(1200);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(1200);
-        videoStage.setMaxHeight(600);
+        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(500);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(500);
         videoStage.setScene(scene);
         videoStage.setTitle("logged In Successfully");
         videoStage.show();
@@ -572,18 +573,18 @@ public class LoginMenu extends Application implements Initializable {
         Stage videoStage = new Stage();
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
         videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
+        videoStage.setMinHeight(500);
         videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
+        videoStage.setMaxHeight(500);
         videoStage.setScene(scene);
         videoStage.setTitle("no Such User Exist");
         videoStage.show();
 
         // Play the video
         mediaPlayer.play();
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
         });
