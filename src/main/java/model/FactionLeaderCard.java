@@ -3,8 +3,8 @@ package model;
 import java.util.ArrayList;
 
 public class FactionLeaderCard extends Card {
-    public FactionLeaderCard(String name) {
-        super(name);
+    public FactionLeaderCard(String name, String path) {
+        super(name,path);
     }
 
     @Override

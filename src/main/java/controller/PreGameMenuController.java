@@ -11,83 +11,398 @@ public class PreGameMenuController {
     public PreGameMenuController(PreGameMenu preGameMenu) {
         this.preGameMenu = preGameMenu;
     }
-    public void initialize(){
+
+    public void initialize() {
         ArrayList<FactionLeaderCard> realmsNorthernFactionCards = new ArrayList<>();
         ArrayList<Card> realmsNorthernUnitCards = new ArrayList<>();
-
-        realmsNorthernFactionCards.add(new FactionLeaderCard("The Siegemaster"));
-        realmsNorthernFactionCards.add(new FactionLeaderCard("The Steel-Forged"));
-        realmsNorthernFactionCards.add(new FactionLeaderCard("King of Temeria"));
-        realmsNorthernFactionCards.add(new FactionLeaderCard("Lord Commander of the North"));
-        realmsNorthernFactionCards.add(new FactionLeaderCard("Son of Medell"));
+        addNorthernRealmsFactionCards(realmsNorthernFactionCards);
         addNorthernRealmsCard(realmsNorthernUnitCards);
-        for (int i = 0; i < 3 ; i++){
-            realmsNorthernUnitCards.add(new BitingFrost("BitingFrost"));
-            realmsNorthernUnitCards.add(new ImpenetrableFog("ImpenetrableFog"));
-            realmsNorthernUnitCards.add(new TorrentialRain("TorrentialRain"));
-            realmsNorthernUnitCards.add(new Decoy("Decoy"));
-            realmsNorthernUnitCards.add(new Muster("Gaunter O’DImm Darkness",4,false));
-        }
-        realmsNorthernUnitCards.add(new UnitCommandersHorn("Dandelion",2,false));
-        realmsNorthernUnitCards.add(new Solider("Emiel Regis",2,false));
-        realmsNorthernUnitCards.add(new Muster("Gaunter O’Dimm",2,false));
-        realmsNorthernUnitCards.add(new Spy("Mysterious Elf",0,true));
-        realmsNorthernUnitCards.add(new MoralBooster("Olgierd Von Everc",6,false));
-        realmsNorthernUnitCards.add(new Solider("Triss Merigold",7,true));
-        realmsNorthernUnitCards.add(new Scorch("Villentretenmerth",7,false));
-        realmsNorthernUnitCards.add(new Medic("Yennefer of Vengerberg",7,true));
-        realmsNorthernUnitCards.add(new Solider("Zoltan Chivay",5,false));
-        //TODO: set unit of all cards
+        addNaturalCards(realmsNorthernUnitCards);
+        RealmsNorthenFaction realmsNorthenFaction= new RealmsNorthenFaction(realmsNorthernFactionCards,realmsNorthernUnitCards);
+        ArrayList<FactionLeaderCard> monstersFactionCards = new ArrayList<>();
+        ArrayList<Card> monstersUnitCards = new ArrayList<>();
+        addMonstersFactionCards(monstersFactionCards);
+        addMonstersCard(monstersUnitCards);
+        addNaturalCards(monstersUnitCards);
+        MonstersFaction monstersFaction= new MonstersFaction(monstersFactionCards,monstersUnitCards);
+        ArrayList<FactionLeaderCard> nilfgaardFactionCards = new ArrayList<>();
+        ArrayList<Card> nilfgaardUnitCards = new ArrayList<>();
+        addNilfgaardFactionCards(nilfgaardFactionCards);
+        addNilfgaardCard(nilfgaardUnitCards);
+        addNaturalCards(nilfgaardUnitCards);
+        EmpireNilfgaardianFaction empireNilfgaardianFaction= new EmpireNilfgaardianFaction(nilfgaardFactionCards,nilfgaardUnitCards);
+        ArrayList<FactionLeaderCard> skelligeFactionCards = new ArrayList<>();
+        ArrayList<Card> skelligeUnitCards = new ArrayList<>();
+        addSkelligeFactionCards(skelligeFactionCards);
+        addSkelligeCard(skelligeUnitCards);
+        addNaturalCards(skelligeUnitCards);
+        SkelligeFaction skelligeFaction= new SkelligeFaction(skelligeFactionCards,skelligeUnitCards);
+        ArrayList<FactionLeaderCard> scoiataelFactionCards = new ArrayList<>();
+        ArrayList<Card> scoiataelUnitCards = new ArrayList<>();
+        addScoiataelFactionCards(scoiataelFactionCards);
+        addScoiataelCard(scoiataelUnitCards);
+        addNaturalCards(scoiataelUnitCards);
+        ScoiataelFaction scoiataelFaction= new ScoiataelFaction(scoiataelFactionCards,scoiataelUnitCards);
+        //TODO: set unit of all cards and add factions to app
     }
-    private void addNorthernRealmsCard(ArrayList<Card> realmsNorthernUnitCards){
-        for (int i = 0 ; i < 2 ; i++){
-            realmsNorthernUnitCards.add(new Solider("Ballista",6,false));
-            realmsNorthernUnitCards.add(new Solider("Redanian Foot Soldier",1,false));
-            realmsNorthernUnitCards.add(new TightBound("Catapult",8,false));
+
+    private void addScoiataelCard(ArrayList<Card> scoiataelUnitCards) {
+        for (int i = 0; i < 2; i++) {
+            scoiataelUnitCards.add(new Solider("Vrihedd Brigade Veteran", 5, false
+                    , this.getClass().getResource("/pics/scoiatael/VriheddBrigadeVeteran"+(i+1)+".jpg").toExternalForm()));
         }
-        for (int i = 0 ; i < 3 ; i++){
-            realmsNorthernUnitCards.add(new MoralBooster("Kaedweni Siege Expert",1,false));
-            realmsNorthernUnitCards.add(new TightBound("Dragon Hunter",5,false));
+        for (int i = 0; i < 3; i++) {
+            scoiataelUnitCards.add(new Muster("Elven Skirmisher", 2, false
+                    , this.getClass().getResource("/pics/scoiatael/ElvenSkirmisher"+(i+1)+".jpg").toExternalForm()));
+            scoiataelUnitCards.add(new Solider("Dol Blathanna Scout", 6, false
+                    , this.getClass().getResource("/pics/scoiatael/DolBlathannaScout"+(i+1)+".jpg").toExternalForm()));
+            scoiataelUnitCards.add(new Muster("Dwarven Skirmisher", 3, false
+                    , this.getClass().getResource("/pics/scoiatael/DwarvenSkirmisher"+(i+1)+".jpg").toExternalForm()));
+            scoiataelUnitCards.add(new Medic("Havekar Healer", 0, false
+                    , this.getClass().getResource("/pics/scoiatael/HavekarHealer"+(i+1)+".jpg").toExternalForm()));
+            scoiataelUnitCards.add(new Muster("Havekar Smuggler", 5, false
+                    , this.getClass().getResource("/pics/scoiatael/HavekarSmuggler"+(i+1)+".jpg").toExternalForm()));
+        }
+        scoiataelUnitCards.add(new Solider("Yaevinn", 6, false
+                , this.getClass().getResource("/pics/scoiatael/Yaevinn.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Ciaran aep", 3, false
+                , this.getClass().getResource("/pics/scoiatael/CiaranAep.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Dennis Cranmer", 6, false
+                , this.getClass().getResource("/pics/scoiatael/DennisCranmer.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Dol Blathanna Archer", 4, false
+                , this.getClass().getResource("/pics/scoiatael/DolBlathannaArcher.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Ida Emean Aep", 6, false
+                , this.getClass().getResource("/pics/scoiatael/IdaEmeanAep.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Riordain", 1, false
+                , this.getClass().getResource("/pics/scoiatael/Riordain.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Toruviel", 2, false
+                , this.getClass().getResource("/pics/scoiatael/Toruviel.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Vrihedd Brigade Recruit", 4, false
+                , this.getClass().getResource("/pics/scoiatael/VriheddBrigadeRecruit.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new MoralBooster("Milva", 10, false
+                , this.getClass().getResource("/pics/scoiatael/Milva.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Seasenthessis", 10, true
+                , this.getClass().getResource("/pics/scoiatael/Seasenthessis.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Scorch("Schirru", 8, false
+                , this.getClass().getResource("/pics/scoiatael/Schirru.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Eithne", 10, true
+                , this.getClass().getResource("/pics/scoiatael/Eithne.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new MoralBooster("Isengrim Faoiltiarna", 10, true
+                , this.getClass().getResource("/pics/scoiatael/IsengrimFaoiltiarna.jpg").toExternalForm()));
+    }
+
+    private void addScoiataelFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
+        factionLeaderCards.add(new FactionLeaderCard("Daisy Of The Valley",
+                this.getClass().getResource("/pics/scoiatael/faction/DaisyOfTheValley.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Hope Of The Aen Seidhe",
+                this.getClass().getResource("/pics/scoiatael/faction/HopeOfTheAenSeidhe.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Pureblood Elf",
+                this.getClass().getResource("/pics/scoiatael/faction/PurebloodElf.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Queen Of Dol Blathanna",
+                this.getClass().getResource("/pics/scoiatael/faction/QueenOfDolBlathanna.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("The Beautiful",
+                this.getClass().getResource("/pics/scoiatael/faction/TheBeautiful.jpg").toExternalForm()));
+    }
+
+    private void addSkelligeCard(ArrayList<Card> skelligeUnitCards) {
+        for (int i = 0; i < 3; i++) {
+            skelligeUnitCards.add(new Mardroeme("Mardroeme"
+                    , this.getClass().getResource("/pics/skellige/Mardroeme.jpg").toExternalForm()));
+            skelligeUnitCards.add(new TightBound("Clan Drummond Shieldmaiden", 6, false
+                    , this.getClass().getResource("/pics/skellige/ClanDrummondShieldmaiden"+(i+1)+".jpg").toExternalForm()));
+            skelligeUnitCards.add(new Solider("Clan Brokvar Archer", 6, false
+                    , this.getClass().getResource("/pics/skellige/ClanBrokvarArcher.jpg").toExternalForm()));
+            skelligeUnitCards.add(new TightBound("Clan An Craite", 6, false
+                    , this.getClass().getResource("/pics/skellige/ClanAnCraite.jpg").toExternalForm()));
+            skelligeUnitCards.add(new TightBound("War Longship", 6, false
+                    , this.getClass().getResource("/pics/skellige/WarLongship.jpg").toExternalForm()));
+            skelligeUnitCards.add(new Muster("Light Longship", 4, false
+                    , this.getClass().getResource("/pics/skellige/LightLongship.jpg").toExternalForm()));
+            skelligeUnitCards.add(new Berserker("Young Berserker", 3, false
+                    , this.getClass().getResource("/pics/skellige/YoungBerserker.jpg").toExternalForm()));
+        }
+        skelligeUnitCards.add(new Berserker("Berserker", 1, false
+                , this.getClass().getResource("/pics/skellige/Berserker.jpg").toExternalForm()));
+        //TODO: transform berserker and young berserker in logic
+        skelligeUnitCards.add(new Solider("Svanrige", 4, false
+                , this.getClass().getResource("/pics/skellige/Svanrige.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Udalryk", 4, false
+                , this.getClass().getResource("/pics/skellige/Udalryk.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Donar an Hindar", 4, false
+                , this.getClass().getResource("/pics/skellige/DonarAnHindar.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Madman Lugos", 6, false
+                , this.getClass().getResource("/pics/skellige/MadmanLugos.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Muster("Cerys", 10, true
+                , this.getClass().getResource("/pics/skellige/Cerys.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Transformers("Kambi", 0, true
+                , this.getClass().getResource("/pics/skellige/Kambi.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Medic("Birna Bran", 2, false
+                , this.getClass().getResource("/pics/skellige/BirnaBran.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Scorch("Clan Dimun Pirate", 6, false
+                , this.getClass().getResource("/pics/skellige/ClanDimunPirate.jpg").toExternalForm()));
+        skelligeUnitCards.add(new UnitMardroeme("Ermion", 8, true
+                , this.getClass().getResource("/pics/skellige/Ermion.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Hjalmar", 10, true
+                , this.getClass().getResource("/pics/skellige/Hjalmar.jpg").toExternalForm()));
+        skelligeUnitCards.add(new UnitCommandersHorn("Draig Bon-Dhu", 2, false
+                , this.getClass().getResource("/pics/skellige/DraigBonDhu.jpg").toExternalForm()));
+        skelligeUnitCards.add(new MoralBooster("Olaf", 12, false
+                , this.getClass().getResource("/pics/skellige/Olaf.jpg").toExternalForm()));
+    }
+
+    private void addSkelligeFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
+        factionLeaderCards.add(new FactionLeaderCard("Crach An Craite",
+                this.getClass().getResource("/pics/skellige/faction/CrachAnCraite.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("King Bran",
+                this.getClass().getResource("/pics/skellige/faction/KingBran.jpg").toExternalForm()));
+    }
+
+    private void addNilfgaardCard(ArrayList<Card> nilfgaardUnitCards) {
+        //TODO:************************************************
+    }
+
+
+    private void addNilfgaardFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
+        factionLeaderCards.add(new FactionLeaderCard("Emperor Of Nilfgaard",
+                this.getClass().getResource("/pics/nilfgaard/faction/EmperorOfNilfgaard.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("His Impreial Majesty",
+                this.getClass().getResource("/pics/nilfgaard/faction/HisImpreialMajesty.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Invader Of The North",
+                this.getClass().getResource("/pics/nilfgaard/faction/InvaderOfTheNorth.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("The Relentless",
+                this.getClass().getResource("/pics/nilfgaard/faction/TheRelentless.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("The White Flame",
+                this.getClass().getResource("/pics/nilfgaard/faction/TheWhiteFlame.jpg").toExternalForm()));
+    }
+
+    private void addMonstersCard(ArrayList<Card> monstersUnitCards) {
+        for (int i = 0; i < 3; i++) {
+            monstersUnitCards.add(new Muster("Arachas", 4, false
+                    , this.getClass().getResource("/pics/monsters/Arachas"+(i+1)+".jpg").toExternalForm()));
+            monstersUnitCards.add(new Muster("Nekker", 2, false
+                    , this.getClass().getResource("/pics/monsters/Nekker"+(i+1)+".jpg").toExternalForm()));
+            monstersUnitCards.add(new Muster("Ghoul", 1, false
+                    , this.getClass().getResource("/pics/monsters/Ghoul"+(i+1)+".jpg").toExternalForm()));
+        }
+        monstersUnitCards.add(new Solider("Draug", 10, true
+                , this.getClass().getResource("/pics/monsters/Draug.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Leshen", 10, true
+                , this.getClass().getResource("/pics/monsters/Leshen.jpg").toExternalForm()));
+        monstersUnitCards.add(new MoralBooster("Kayran", 8, true
+                , this.getClass().getResource("/pics/monsters/Kayran.jpg").toExternalForm()));
+        monstersUnitCards.add(new Scorch("Toad", 7, false
+                , this.getClass().getResource("/pics/monsters/Toad.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Arachas Behemoth", 6, false
+                , this.getClass().getResource("/pics/monsters/ArachasBehemoth.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Crone Weavess", 6, false
+                , this.getClass().getResource("/pics/monsters/CroneWeavess.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Crone Whispess", 6, false
+                , this.getClass().getResource("/pics/monsters/CroneWhispess.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Earth Elemental", 6, false
+                , this.getClass().getResource("/pics/monsters/EarthElemental.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Fiend", 6, false
+                , this.getClass().getResource("/pics/monsters/Fiend.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Fire Elemental", 6, false
+                , this.getClass().getResource("/pics/monsters/FireElemental.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Forktail", 5, false
+                , this.getClass().getResource("/pics/monsters/Forktail.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Grave Hag", 5, false
+                , this.getClass().getResource("/pics/monsters/GraveHag.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Griffin", 5, false
+                , this.getClass().getResource("/pics/monsters/Griffin.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Ice Giant", 5, false
+                , this.getClass().getResource("/pics/monsters/IceGiant.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Plague Maiden", 5, false
+                , this.getClass().getResource("/pics/monsters/PlagueMaiden.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Vampire Katakan", 5, false
+                , this.getClass().getResource("/pics/monsters/VampireKatakan.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Werewolf", 5, false
+                , this.getClass().getResource("/pics/monsters/Werewolf.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Vampire Bruxa", 4, false
+                , this.getClass().getResource("/pics/monsters/VampireBruxa.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Vampire Ekimmara", 4, false
+                , this.getClass().getResource("/pics/monsters/VampireEkimmara.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Vampire Fleder", 4, false
+                , this.getClass().getResource("/pics/monsters/VampireFleder.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Vampire Garkain", 4, false
+                , this.getClass().getResource("/pics/monsters/VampireGarkain.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Cockatrice", 2, false
+                , this.getClass().getResource("/pics/monsters/Cockatrice.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Endrega", 2, false
+                , this.getClass().getResource("/pics/monsters/Endrega.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Foglet", 2, false
+                , this.getClass().getResource("/pics/monsters/Foglet.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Harpy", 2, false
+                , this.getClass().getResource("/pics/monsters/Harpy.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Wyvern", 2, false
+                , this.getClass().getResource("/pics/monsters/Wyvern.jpg").toExternalForm()));
+    }
+
+    private void addMonstersFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
+        factionLeaderCards.add(new FactionLeaderCard("Bringer of Death",
+                this.getClass().getResource("/pics/monsters/faction/BringerOfDeath.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("King Of The Wild Hunt",
+                this.getClass().getResource("/pics/monsters/faction/KingOfTheWildHunt.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Commander Of Red Riders",
+                this.getClass().getResource("/pics/monsters/faction/CommanderOfRedRiders.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Destroyer Of Worlds",
+                this.getClass().getResource("/pics/monsters/faction/DestroyerOfWorlds.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("The Treacherous",
+                this.getClass().getResource("/pics/monsters/faction/TheTreacherous.jpg").toExternalForm()));
+    }
+
+    private void addNorthernRealmsFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
+        factionLeaderCards.add(new FactionLeaderCard("The Siegemaster",
+                this.getClass().getResource("/pics/northenRealms/faction/TheSiegemaster.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("The Steel-Forged",
+                this.getClass().getResource("/pics/northenRealms/faction/TheSteelForged.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("King of Temeria",
+                this.getClass().getResource("/pics/northenRealms/faction/KingOfTemeria.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Lord Commander of the North",
+                this.getClass().getResource("/pics/northenRealms/faction/LordCommanderOfTheNorth.jpg").toExternalForm()));
+        factionLeaderCards.add(new FactionLeaderCard("Son of Medell",
+                this.getClass().getResource("/pics/northenRealms/faction/SonOfMedell.jpg").toExternalForm()));
+    }
+
+    private void addNorthernRealmsCard(ArrayList<Card> realmsNorthernUnitCards) {
+        for (int i = 0; i < 2; i++) {
+            realmsNorthernUnitCards.add(new Solider("Ballista", 6, false
+                    , this.getClass().getResource("/pics/northenRealms/Ballista.jpg").toExternalForm()));
+            realmsNorthernUnitCards.add(new Solider("Redanian Foot Soldier", 1, false
+                    , this.getClass().getResource("/pics/northenRealms/RedanianFootSoldier"+(i+1)+".jpg").toExternalForm()));
+            realmsNorthernUnitCards.add(new TightBound("Catapult", 8, false
+                    , this.getClass().getResource("/pics/northenRealms/Catapult.jpg").toExternalForm()));
+        }
+        for (int i = 0; i < 3; i++) {
+            realmsNorthernUnitCards.add(new MoralBooster("Kaedweni Siege Expert", 1, false
+                    , this.getClass().getResource("/pics/northenRealms/KaedweniSiegeExpert"+(i+1)+".jpg").toExternalForm()));
+            realmsNorthernUnitCards.add(new TightBound("Dragon Hunter", 5, false
+                    , this.getClass().getResource("/pics/northenRealms/DragonHunter.jpg").toExternalForm()));
         }
         for (int i = 0; i < 4; i++) {
-            realmsNorthernUnitCards.add(new TightBound("Poor Fucking Infantry",1,false));
+            realmsNorthernUnitCards.add(new TightBound("Poor Fucking Infantry", 1, false
+                    , this.getClass().getResource("/pics/northenRealms/PoorFuckingInfantry.jpg").toExternalForm()));
         }
+        realmsNorthernUnitCards.add(new Medic("Dun Banner Medic", 5, false
+                , this.getClass().getResource("/pics/northenRealms/DunBannerMedic.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Esterad Thyssen", 10, true
+                , this.getClass().getResource("/pics/northenRealms/EsteradThyssen.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("John Natalis", 10, true
+                , this.getClass().getResource("/pics/northenRealms/JohnNatalis.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Philippa Eilhart", 10, true
+                , this.getClass().getResource("/pics/northenRealms/PhilippaEilhart.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Spy("Prince Stennis", 5, false
+                , this.getClass().getResource("/pics/northenRealms/PrinceStennis.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Sabrina Glevissing", 4, false
+                , this.getClass().getResource("/pics/northenRealms/SabrinaGlevissing.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Siege Tower", 6, false
+                , this.getClass().getResource("/pics/northenRealms/SiegeTower.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Siegfried of Denesle", 5, false
+                , this.getClass().getResource("/pics/northenRealms/SiegfriedOfDenesle.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Spy("Sigismund Dijkstra", 4, false
+                , this.getClass().getResource("/pics/northenRealms/SigismundDijkstra.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Sile de Tansarville", 5, false
+                , this.getClass().getResource("/pics/northenRealms/SileDeTansarville.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Spy("Thaler", 1, false
+                , this.getClass().getResource("/pics/northenRealms/Thaler.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Vernon Roche", 10, true
+                , this.getClass().getResource("/pics/northenRealms/VernonRoche.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Ves", 5, false
+                , this.getClass().getResource("/pics/northenRealms/Ves.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Yarpen Zirgrin", 2, false
+                , this.getClass().getResource("/pics/northenRealms/YarpenZirgrin.jpg").toExternalForm()));
     }
-    public void showCards(){}
-    public void showFactions(){}
-    public void showLeaders(){}
-    public void showDeck(){}
-    public void changeTurn(){}
-    public void showCurrentUserInfo(){}
-    public Result startGame(){
+    private void addNaturalCards(ArrayList<Card> UnitCards) {
+        for (int i = 0; i < 3; i++) {
+            UnitCards.add(new BitingFrost("BitingFrost"
+                    , this.getClass().getResource("/pics/neutral/BitingFrost.jpg").toExternalForm()));
+            UnitCards.add(new ImpenetrableFog("ImpenetrableFog"
+                    , this.getClass().getResource("/pics/neutral/ImpenetrableFog.jpg").toExternalForm()));
+            UnitCards.add(new TorrentialRain("TorrentialRain"
+                    , this.getClass().getResource("/pics/neutral/TorrentialRain.jpg").toExternalForm()));
+            UnitCards.add(new Decoy("Decoy"
+                    , this.getClass().getResource("/pics/neutral/Decoy.jpg").toExternalForm()));
+            UnitCards.add(new Muster("Gaunter O’DImm Darkness", 4, false
+                    , this.getClass().getResource("/pics/neutral/GaunterO’DImmDarkness.jpg").toExternalForm()));
+        }
+        UnitCards.add(new UnitCommandersHorn("Dandelion", 2, false
+                , this.getClass().getResource("/pics/neutral/Dandelion.jpg").toExternalForm()));
+        UnitCards.add(new Solider("Emiel Regis", 2, false
+                , this.getClass().getResource("/pics/neutral/EmielRegis.jpg").toExternalForm()));
+        UnitCards.add(new Muster("Gaunter O’Dimm", 2, false
+                , this.getClass().getResource("/pics/neutral/GaunterO’Dimm.jpg").toExternalForm()));
+        UnitCards.add(new Spy("Mysterious Elf", 0, true
+                , this.getClass().getResource("/pics/neutral/MysteriousElf.jpg").toExternalForm()));
+        UnitCards.add(new MoralBooster("Olgierd Von Everc", 6, false
+                , this.getClass().getResource("/pics/neutral/OlgierdVonEverc.jpg").toExternalForm()));
+        UnitCards.add(new Solider("Triss Merigold", 7, true
+                , this.getClass().getResource("/pics/neutral/TrissMerigold.jpg").toExternalForm()));
+        UnitCards.add(new Scorch("Villentretenmerth", 7, false
+                , this.getClass().getResource("/pics/neutral/Villentretenmerth.jpg").toExternalForm()));
+        UnitCards.add(new Medic("Yennefer of Vengerberg", 7, true
+                , this.getClass().getResource("/pics/neutral/YenneferOfVengerberg.jpg").toExternalForm()));
+        UnitCards.add(new Solider("Zoltan Chivay", 5, false
+                , this.getClass().getResource("/pics/neutral/ZoltanChivay.jpg").toExternalForm()));
+    }
+
+    public void showCards() {
+    }
+
+    public void showFactions() {
+    }
+
+    public void showLeaders() {
+    }
+
+    public void showDeck() {
+    }
+
+    public void changeTurn() {
+    }
+
+    public void showCurrentUserInfo() {
+    }
+
+    public Result startGame() {
         return null;//TODO: delete this code and write
     }
-    public Result selectFaction(String factionName){
+
+    public Result selectFaction(String factionName) {
         return null;//TODO: delete this code and write
     }
-    public Result createGame(String enemyUsername){
+
+    public Result createGame(String enemyUsername) {
         return null;//TODO: delete this code and write
     }
-    public Result selectLeader(String leaderName){
+
+    public Result selectLeader(String leaderName) {
         return null;//TODO: delete this code and write
     }
-    public Result saveDeckWithAddress(String address){
+
+    public Result saveDeckWithAddress(String address) {
         return null;//TODO: delete this code and write
     }
-    public Result saveDeckWithName(String name){
+
+    public Result saveDeckWithName(String name) {
         return null;//TODO: delete this code and write
     }
-    public Result loadDeckWithAddress(String address){
+
+    public Result loadDeckWithAddress(String address) {
         return null;//TODO: delete this code and write
     }
-    public Result loadDeckWithName(String name){
+
+    public Result loadDeckWithName(String name) {
         return null;//TODO: delete this code and write
     }
-    public Result addCardToDeck(String cardName, int count){
+
+    public Result addCardToDeck(String cardName, int count) {
         return null;//TODO: delete this code and write
     }
-    public Result removeFromDeck(String cardName, int count){
+
+    public Result removeFromDeck(String cardName, int count) {
         return null;//TODO: delete this code and write
     }
-    private void makeRandomFaction(){}
+
+    private void makeRandomFaction() {
+    }
 }

@@ -4,8 +4,8 @@ public abstract class UnitCard extends Card{
     protected boolean isLegendary;
     protected int power;
     protected int firstPower;
-    public UnitCard(String name, int power, boolean isLegendary) {
-        super(name);
+    public UnitCard(String name, int power, boolean isLegendary,String path) {
+        super(name,path);
         this.power = power;
         this.firstPower = power;
         this.isLegendary = isLegendary;

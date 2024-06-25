@@ -1,8 +1,8 @@
 package model;
 
 public class CommandersHorn extends Card{
-    public CommandersHorn(String name) {
-        super(name);
+    public CommandersHorn(String name, String path) {
+        super(name,path);
     }
 
     @Override
