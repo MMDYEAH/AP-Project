@@ -51,7 +51,7 @@ public class LoginMenu extends Application implements Initializable {
     @FXML
     private Text yourRandomPassword;
     @FXML
-    Button securityQuestion;
+    Button login;
     @FXML
     Button apply;
     //    @FXML
@@ -60,6 +60,9 @@ public class LoginMenu extends Application implements Initializable {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+        // Set the logo image as the window icon
+        stage.getIcons().add(logo);
         controller.initialize();
         App.setStage(stage);
         // Load the FXML file
@@ -101,7 +104,15 @@ public class LoginMenu extends Application implements Initializable {
         nickname = (TextField) scene.lookup("#nickname");
         email = (TextField) scene.lookup("#email");
         yourRandomPassword = (Text) scene.lookup("#yourRandomPassword");
-        securityQuestion = (Button) scene.lookup("#securityQuestion");
+        login = (Button) scene.lookup("#login");
+
+        login.setOnMouseClicked(mouseEvent -> {
+            try {
+                login(stage);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // Ensure the video fits the stage
         scene.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -127,12 +138,10 @@ public class LoginMenu extends Application implements Initializable {
         launch(args);
     }
 
-    public void login() throws Exception {
+    public void login(Stage stage) throws Exception {
         Result result = controller.login(username.getText(), password.getText());
         if (result.isSuccessful()) {
             User.setLoggedInUser(User.registeringUser);
-            MainMenu mainMenu = new MainMenu();
-            mainMenu.start(App.getStage());
             loggedInSuccessfullyVideoPlay();
         } else if (result.toString().equals("wrong password")) {
             wrongPasswordVideoPlay();
@@ -141,6 +150,7 @@ public class LoginMenu extends Application implements Initializable {
         } else {
             System.out.println(result);
         }
+        stage.setFullScreen(true);
     }
 
     public void signUp() throws IOException {
@@ -533,7 +543,7 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void loggedInSuccessfullyVideoPlay() {
+    public void loggedInSuccessfullyVideoPlay() throws Exception {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -558,6 +568,12 @@ public class LoginMenu extends Application implements Initializable {
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
+            MainMenu mainMenu = new MainMenu();
+            try {
+                mainMenu.start(App.getStage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
         pauseTransition.play();
     }

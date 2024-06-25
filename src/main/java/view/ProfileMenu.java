@@ -45,6 +45,8 @@ public class ProfileMenu extends Application {
     @FXML
     private TextField oldPassword;
     ProfileMenuController controller = new ProfileMenuController(this);
+    @FXML
+    Button backToMainMenu;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -86,11 +88,7 @@ public class ProfileMenu extends Application {
             mediaView.setFitHeight(newVal.doubleValue());
         });
 
-        mediaView.setFitWidth(stage.getWidth());
-        mediaView.setFitHeight(stage.getHeight());
-        mediaView.setPreserveRatio(false);
-        stage.setFullScreen(true);
-        stage.setResizable(false);
+
 
         //add text fields
         username = (TextField) scene.lookup("#username");
@@ -103,12 +101,22 @@ public class ProfileMenu extends Application {
         changeNickname = (Button) scene.lookup("#changeNickname");
         changeEmail = (Button) scene.lookup("#changeEmail");
         oldPassword = (TextField) scene.lookup("#oldPassword");
+        backToMainMenu = (Button) scene.lookup("#backToMainMenu");
 
         // TODO: 6/24/2024 az comment vardar
         username.setText(User.getLoggedInUser().getUsername());
         nickname.setText(User.getLoggedInUser().getNickname());
         email.setText(User.getLoggedInUser().getEmail());
         password.setText("Enter New Password");
+
+        backToMainMenu.setOnMouseClicked(mouseEvent -> {
+            MainMenu mainMenu = new MainMenu();
+            try {
+                mainMenu.start(App.getStage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         changeUsername.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeUsername(username.getText());
@@ -178,6 +186,12 @@ public class ProfileMenu extends Application {
                 changedSuccessfullyVideoPlay();
             }
         });
+
+        mediaView.setFitWidth(stage.getWidth());
+        mediaView.setFitHeight(stage.getHeight());
+        mediaView.setPreserveRatio(false);
+        stage.setFullScreen(true);
+        stage.setResizable(false);
 
         stage.setTitle("Profile Menu");
         stage.setScene(scene);

@@ -68,30 +68,40 @@ public class MainMenu extends Application {
         profile = (Button) scene.lookup("#profile");
 
         start.setOnMouseClicked(mouseEvent -> {
-            PreGameMenu preGameMenu = new PreGameMenu();
-            try {
-                preGameMenu.start(App.getStage());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            toGame(stage);
         });
         profile.setOnMouseClicked(mouseEvent -> {
-            ProfileMenu profileMenu = new ProfileMenu();
-            try {
-                profileMenu.start(App.getStage());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            toProfile(stage);
         });
 
         mediaView.setFitWidth(stage.getWidth());
         mediaView.setFitHeight(stage.getHeight());
         mediaView.setPreserveRatio(false);
-        stage.setFullScreen(true);
         stage.setResizable(false);
+        stage.setFullScreen(true);
 
         stage.setTitle("Main Menu");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void toProfile(Stage stage) {
+        ProfileMenu profileMenu = new ProfileMenu();
+        try {
+            profileMenu.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setFullScreen(true);
+    }
+
+    public void toGame(Stage stage) {
+        PreGameMenu preGameMenu = new PreGameMenu();
+        try {
+            preGameMenu.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setFullScreen(true);
     }
 }
