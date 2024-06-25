@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -54,8 +55,6 @@ public class LoginMenu extends Application implements Initializable {
     Button securityQuestion;
     @FXML
     Button apply;
-    //    @FXML
-//    private ComboBox<String> questionCombo;
     static Media loginVideo;
     LoginMenuController controller = new LoginMenuController(this);
 
@@ -96,7 +95,7 @@ public class LoginMenu extends Application implements Initializable {
         //add text fields
         username = (TextField) scene.lookup("#username");
         password = (PasswordField) scene.lookup("#password");
-        password = (PasswordField) scene.lookup("#passwordConfirm");
+        passwordConfirm = (PasswordField) scene.lookup("#passwordConfirm");
         nickname = (TextField) scene.lookup("#nickname");
         email = (TextField) scene.lookup("#email");
         yourRandomPassword = (Text) scene.lookup("#yourRandomPassword");
@@ -115,11 +114,8 @@ public class LoginMenu extends Application implements Initializable {
         mediaView.setPreserveRatio(false);
         stage.setFullScreen(true);
         stage.setResizable(false);
-
         stage.setTitle("Login Menu");
         stage.show();
-
-
     }
 
     public static void main(String[] args) {
