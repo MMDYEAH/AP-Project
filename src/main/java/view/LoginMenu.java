@@ -108,7 +108,7 @@ public class LoginMenu extends Application implements Initializable {
 
         login.setOnMouseClicked(mouseEvent -> {
             try {
-                login(stage);
+                login();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -138,7 +138,7 @@ public class LoginMenu extends Application implements Initializable {
         launch(args);
     }
 
-    public void login(Stage stage) throws Exception {
+    public void login() throws Exception {
         Result result = controller.login(username.getText(), password.getText());
         if (result.isSuccessful()) {
             User.setLoggedInUser(User.registeringUser);
@@ -150,7 +150,6 @@ public class LoginMenu extends Application implements Initializable {
         } else {
             System.out.println(result);
         }
-        stage.setFullScreen(true);
     }
 
     public void signUp() throws IOException {
@@ -571,6 +570,7 @@ public class LoginMenu extends Application implements Initializable {
             MainMenu mainMenu = new MainMenu();
             try {
                 mainMenu.start(App.getStage());
+                App.getStage().setFullScreen(true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

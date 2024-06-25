@@ -29,6 +29,7 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setFullScreen(true);
         App.setStage(stage);
         // Load the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/mainMenu.fxml"));
