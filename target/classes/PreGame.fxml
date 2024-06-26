@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="PreGame"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="700.0" prefWidth="1262.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.PreGameMenu">
+   <children>
+      <Text layoutX="644.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total cards in deck" />
+      <ScrollPane fx:id="scrollPaneOfCardCollection" layoutX="122.0" layoutY="126.0" prefHeight="547.0" prefWidth="458.0">
+         <content>
+            <TilePane fx:id="tilePaneOfCardCollection" prefHeight="310.0" prefWidth="456.0" />
+         </content></ScrollPane>
+      <ScrollPane fx:id="scrollPaneOfCardsInDeck" layoutX="794.0" layoutY="127.0" prefHeight="547.0" prefWidth="458.0">
+         <content>
+            <TilePane fx:id="tilePaneOfCardsInDeck" prefHeight="310.0" prefWidth="456.0" />
+         </content></ScrollPane>
+      <Text fx:id="totalCardsInDeck" layoutX="691.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" />
+      <Text layoutX="636.0" layoutY="446.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Unit Cards" />
+      <Text fx:id="numberOfUnitCards" layoutX="681.0" layoutY="475.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text fx:id="slashAnd22" layoutX="695.0" layoutY="474.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/22" />
+      <Text layoutX="660.0" layoutY="507.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Cards" />
+      <Text layoutX="681.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text layoutX="695.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/10" />
+      <Text layoutX="632.0" layoutY="576.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Unit Card Strength" />
+      <Text fx:id="strengthOfCards" layoutX="693.0" layoutY="604.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text layoutX="665.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hero Cards" />
+      <Text fx:id="numberOfHeroCards" layoutX="692.0" layoutY="667.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text layoutX="671.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader" />
+      <TilePane fx:id="leaderCard" layoutX="612.0" layoutY="111.0" prefHeight="246.0" prefWidth="147.0" />
+   </children>
 </AnchorPane>
