@@ -3,11 +3,58 @@ package model;
 import javafx.stage.Stage;
 import javafx.scene.media.MediaPlayer;
 
+import java.text.Normalizer;
 import java.util.Random;
 
 
 public class App {
     private static Stage stage = new Stage();
+
+    private static SkelligeFaction skelligeFaction;
+    private static RealmsNorthenFaction realmsNorthenFaction;
+    private static MonstersFaction monstersFaction;
+    private static EmpireNilfgaardianFaction empireNilfgaardianFaction;
+    private static ScoiataelFaction scoiataelFaction;
+
+    public static SkelligeFaction getSkelligeFaction() {
+        return skelligeFaction;
+    }
+
+    public static void setSkelligeFaction(SkelligeFaction skelligeFaction) {
+        App.skelligeFaction = skelligeFaction;
+    }
+
+    public static RealmsNorthenFaction getRealmsNorthenFaction() {
+        return realmsNorthenFaction;
+    }
+
+    public static void setRealmsNorthenFaction(RealmsNorthenFaction realmsNorthenFaction) {
+        App.realmsNorthenFaction = realmsNorthenFaction;
+    }
+
+    public static MonstersFaction getMonstersFaction() {
+        return monstersFaction;
+    }
+
+    public static void setMonstersFaction(MonstersFaction monstersFaction) {
+        App.monstersFaction = monstersFaction;
+    }
+
+    public static EmpireNilfgaardianFaction getEmpireNilfgaardianFaction() {
+        return empireNilfgaardianFaction;
+    }
+
+    public static void setEmpireNilfgaardianFaction(EmpireNilfgaardianFaction empireNilfgaardianFaction) {
+        App.empireNilfgaardianFaction = empireNilfgaardianFaction;
+    }
+
+    public static ScoiataelFaction getScoiataelFaction() {
+        return scoiataelFaction;
+    }
+
+    public static void setScoiataelFaction(ScoiataelFaction scoiataelFaction) {
+        App.scoiataelFaction = scoiataelFaction;
+    }
 
     private static MediaPlayer mediaplayer;
 
