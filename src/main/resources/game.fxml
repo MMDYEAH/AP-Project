@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.TilePane?>
+
+<Pane fx:id="pane" prefHeight="810" prefWidth="1440" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GameMenu">
+   <ImageView fx:id="img" fitHeight="810" fitWidth="1440" preserveRatio="true">
+      <image>
+         <Image url="@pics/board.jpg" />
+      </image>
+   </ImageView>
+   <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="432.0" layoutY="629.0" opacity="0.02" prefHeight="97.0" prefWidth="705.0" vbarPolicy="NEVER">
+      <content>
+         <TilePane fx:id="tilePane" prefHeight="90.0" prefWidth="704.0" />
+      </content>
+   </ScrollPane>
+   <AnchorPane fx:id="myLeader" layoutX="98.0" layoutY="618.0" prefHeight="111.0" prefWidth="87.0" />
+   <AnchorPane fx:id="spell" layoutX="105.0" layoutY="335.0" prefHeight="103.0" prefWidth="214.0" />
+   <AnchorPane fx:id="enemyLeader" layoutX="98.0" layoutY="58.0" prefHeight="111.0" prefWidth="87.0" />
+   <AnchorPane fx:id="mySiege" layoutX="529.0" layoutY="529.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="myRanged" layoutX="529.0" layoutY="425.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="myClose" layoutX="529.0" layoutY="330.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="enemyClose" layoutX="529.0" layoutY="211.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="enemyRanged" layoutX="529.0" layoutY="107.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="enemySiege" layoutX="529.0" layoutY="11.0" prefHeight="89.0" prefWidth="611.0">
+      <children>
+         <HBox layoutY="-5.0" prefHeight="100.0" prefWidth="611.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane fx:id="enemyRangedSpell" layoutX="432.0" layoutY="110.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="enemyCloseSpell" layoutX="432.0" layoutY="215.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="enemySiegeSpell" layoutX="432.0" layoutY="14.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="myCloseSpell" layoutX="432.0" layoutY="330.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="myRangedSpell" layoutX="432.0" layoutY="429.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="mySiegeSpell" layoutX="432.0" layoutY="529.0" prefHeight="87.0" prefWidth="87.0" />
+   <AnchorPane fx:id="myDiscard" layoutX="1156.0" layoutY="618.0" prefHeight="111.0" prefWidth="87.0" />
+   <AnchorPane fx:id="enemyDiscard" layoutX="1156.0" layoutY="52.0" prefHeight="111.0" prefWidth="87.0" />
+   <AnchorPane fx:id="enemyDeck" layoutX="1294.0" layoutY="52.0" prefHeight="111.0" prefWidth="87.0" />
+   <AnchorPane fx:id="myDeck" layoutX="1294.0" layoutY="618.0" prefHeight="111.0" prefWidth="87.0" />
+   <TextField fx:id="enemyTotalPower" layoutX="327.0" layoutY="236.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="enemyClosePower" layoutX="389.0" layoutY="245.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="enemyRangedPower" layoutX="389.0" layoutY="141.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="enemySiegePower" layoutX="389.0" layoutY="43.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="myClosePower" layoutX="389.0" layoutY="357.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="myRangedPower" layoutX="389.0" layoutY="456.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="mySiegePower" layoutX="389.0" layoutY="560.0" prefHeight="25.0" prefWidth="27.0" />
+   <TextField fx:id="myTotalPower" layoutX="327.0" layoutY="538.0" prefHeight="25.0" prefWidth="27.0" />
+</Pane>

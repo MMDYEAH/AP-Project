@@ -11,8 +11,8 @@ public abstract class Card extends Rectangle {
     public abstract void apply();
 
     public Card(String name,String path) {
-        this.setHeight(400);
-        this.setWidth(200);
+        this.setHeight(80);
+        this.setWidth(40);
         this.setFill(new ImagePattern(new Image(path)));
         this.name = name;
     }

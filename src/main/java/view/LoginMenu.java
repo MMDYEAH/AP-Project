@@ -71,7 +71,8 @@ public class LoginMenu extends Application implements Initializable {
 
         // Set up the background video
         MediaPlayer mediaPlayer = new MediaPlayer(loginVideo);
-        MediaView mediaView = new MediaView(mediaPlayer);
+        MediaView mediaView = new MediaView();
+        mediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == MediaPlayer.Status.READY) {
