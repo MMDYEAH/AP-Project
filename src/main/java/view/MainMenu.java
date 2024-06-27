@@ -2,19 +2,29 @@ package view;
 
 import controller.LoginMenuController;
 import controller.MainMenuController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.App;
+import model.User;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -25,6 +35,8 @@ public class MainMenu extends Application {
     Button start;
     @FXML
     Button profile;
+    @FXML
+    Button pointChart;
 //    MainMenuController controller = new MainMenuController(this);
 
     @Override
@@ -67,12 +79,25 @@ public class MainMenu extends Application {
 
         start = (Button) scene.lookup("#start");
         profile = (Button) scene.lookup("#profile");
+        pointChart = (Button) scene.lookup(("#pointChart"));
+
+        start.setOnMouseEntered(e -> animateButton(start, 1.1));
+        start.setOnMouseExited(e -> animateButton(start, 1.0));
+
+        profile.setOnMouseEntered(e -> animateButton(profile, 1.1));
+        profile.setOnMouseExited(e -> animateButton(profile, 1.0));
+
+        pointChart.setOnMouseEntered(e -> animateButton(pointChart, 1.1));
+        pointChart.setOnMouseExited(e -> animateButton(pointChart, 1.0));
 
         start.setOnMouseClicked(mouseEvent -> {
             toGame(stage);
         });
         profile.setOnMouseClicked(mouseEvent -> {
             toProfile(stage);
+        });
+        pointChart.setOnMouseClicked(mouseEvent -> {
+            pointChart();
         });
 
         mediaView.setFitWidth(stage.getWidth());
@@ -105,4 +130,89 @@ public class MainMenu extends Application {
         }
         stage.setFullScreen(true);
     }
+
+    public void pointChart() {
+        TilePane tilePane = new TilePane();
+        Stage videoStage = new Stage();
+        StackPane root = new StackPane();
+        try {
+            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/style.css")).toExternalForm();
+            tilePane.getStylesheets().add(cssPath); // Adding the CSS file
+        } catch (NullPointerException t) {
+            System.out.println("CSS file not found.");
+        }
+        Scene scene = new Scene(tilePane, 800, 500); // Set the width and height as needed
+        videoStage.setMinWidth(800);
+        videoStage.setMinHeight(500);
+        videoStage.setMaxWidth(800);
+        videoStage.setMaxHeight(500);
+        videoStage.setScene(scene);
+        videoStage.setTitle("point chart");
+        videoStage.show();
+        // Set TilePane properties
+        tilePane.setHgap(10); // horizontal gap between tiles
+        tilePane.setVgap(10); // vertical gap between tiles
+
+        // TODO: 6/27/2024 sort bar asas point
+        int i = 0;
+        for (User user : User.getUsers()) {
+            VBox userBox = new VBox();
+            userBox.getStyleClass().add("user-box");
+
+            Label rankLabel = new Label((i + 1) + ". " + user.getUsername());
+            rankLabel.getStyleClass().add("rank-label");
+
+            Label scoreLabel = new Label("Score: " + user.getPassword());
+            scoreLabel.getStyleClass().add("score-label");
+
+            if (i == 0) {
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/gold.png").toExternalForm());
+                Image image = new Image(imagePath);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitHeight(55);
+                imageView.setFitWidth(50);
+                userBox.getChildren().add(imageView);
+            } else if (i == 1) {
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/silver.png").toExternalForm());
+                Image image = new Image(imagePath);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitHeight(55);
+                imageView.setFitWidth(50);
+                userBox.getChildren().add(imageView);
+            } else if (i == 2) {
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/bronze.png").toExternalForm());
+                Image image = new Image(imagePath);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitHeight(55);
+                imageView.setFitWidth(50);
+                userBox.getChildren().add(imageView);
+            }
+            userBox.setOnMouseEntered(e -> animateBox(userBox, 1.1));
+            userBox.setOnMouseExited(e -> animateBox(userBox, 1.0));
+            userBox.getChildren().addAll(rankLabel, scoreLabel);
+            tilePane.getChildren().add(userBox);
+
+            i++;
+        }
+
+    }
+
+    private void animateBox(VBox box, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(box.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(box.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+
+    private void animateButton(Button button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+
 }
