@@ -1,5 +1,7 @@
 package model;
 
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -98,7 +100,7 @@ public class FactionLeaderCard extends Card {
         } else if (name.equals("Hope Of The Aen Seidhe")) {
             //TODO: agile card and write this ability
         } else if (name.equals("Crach An Craite")) {
-            ArrayList<Card> discardPile = currentPlayerPlayBoard.getDiscardPileUnit().cards;
+            ObservableList<Card> discardPile = currentPlayerPlayBoard.getDiscardPileUnit().cards;
             Collections.shuffle(discardPile);
             for (Card card : discardPile){
                 currentPlayerPlayBoard.getDiscardPileUnit().removeCardFromUnit(card);
@@ -110,7 +112,7 @@ public class FactionLeaderCard extends Card {
         } else if (name.equals("Emperor Of Nilfgaard")) {
             //TODO: check and write
         } else if (name.equals("His Impreial Majesty")) {
-            ArrayList<Card> enemyCards = nextPlayerPlayBoard.getHandUnit().cards;
+            ObservableList<Card> enemyCards = nextPlayerPlayBoard.getHandUnit().cards;
             ArrayList<Integer> randomNumbers = new ArrayList<>();
             ArrayList<Card> shownCard = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
@@ -143,7 +145,7 @@ public class FactionLeaderCard extends Card {
     }
 
     private ArrayList<Card> getNotLegendInUnit(Unit unit) {
-        ArrayList<Card> discardPile = unit.cards;
+        ObservableList<Card> discardPile = unit.cards;
         ArrayList<Card> notLegends = new ArrayList<>();
         for (Card card : discardPile){
             if (!((UnitCard)card).isLegendary){
@@ -153,7 +155,7 @@ public class FactionLeaderCard extends Card {
         return notLegends;
     }
 
-    private void killBiggestUnitCard(int power, ArrayList<Card> unit) {
+    private void killBiggestUnitCard(int power, ObservableList<Card> unit) {
         if (power > 10) {
             UnitCard biggestPowerCard = (UnitCard) unit.get(0);
             for (Card card : unit) {
@@ -170,7 +172,7 @@ public class FactionLeaderCard extends Card {
         }
     }
 
-    private void doubleStrangeOfUnit(ArrayList<Card> warUnit) {
+    private void doubleStrangeOfUnit(ObservableList<Card> warUnit) {
         boolean isThereCommandersHorn = false;
         for (Card card : warUnit) {
             if (card instanceof CommandersHorn) isThereCommandersHorn = true;
@@ -184,7 +186,7 @@ public class FactionLeaderCard extends Card {
         }
     }
 
-    private void doubleStrangeOfSpy(ArrayList<Card> unitCards){
+    private void doubleStrangeOfSpy(ObservableList<Card> unitCards){
         for (Card card : unitCards){
             if (card instanceof Spy && !((UnitCard)card).isLegendary){
                 ((Spy) card).setPower(((Spy) card).getPower()*2);

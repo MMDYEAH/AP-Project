@@ -26,7 +26,10 @@
       <Text fx:id="strengthOfCards" layoutX="693.0" layoutY="604.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
       <Text layoutX="665.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hero Cards" />
       <Text fx:id="numberOfHeroCards" layoutX="692.0" layoutY="667.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text layoutX="671.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader" />
-      <TilePane fx:id="leaderCard" layoutX="612.0" layoutY="111.0" prefHeight="246.0" prefWidth="147.0" />
+      <Text  layoutX="671.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader" />
+      <TilePane fx:id="leaderCard" layoutX="612.0" layoutY="113.0" prefHeight="246.0" prefWidth="147.0" />
+      <Text layoutX="309.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Card Collection" />
+      <Text layoutX="999.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards in Deck" />
+      <Text layoutX="645.0" layoutY="56.0" fx:id="changeFaction" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Faction" />
    </children>
 </AnchorPane>
