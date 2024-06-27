@@ -1,5 +1,7 @@
 package model;
 
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -136,4 +138,5 @@ public class Game {
     public void setSpellUnit(SpellUnit spellUnit) {
         this.spellUnit = spellUnit;
     }
+
 }

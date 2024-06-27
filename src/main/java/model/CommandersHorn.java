@@ -7,6 +7,9 @@ public class CommandersHorn extends Card{
 
     @Override
     public void apply() {
-
+        for (Card card : unit.cards) {
+            UnitCard unitCard = (UnitCard) card;
+            if (!unitCard.isLegendary) unitCard.setPower(unitCard.getPower() * 2);
+        }
     }
 }

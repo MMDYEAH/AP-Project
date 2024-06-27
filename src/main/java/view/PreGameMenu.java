@@ -17,6 +17,7 @@ import model.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PreGameMenu extends Application {
     @FXML
@@ -44,18 +45,25 @@ public class PreGameMenu extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        controller.initialize();
         App.setStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/PreGame.fxml"));
         Pane pane = fxmlLoader.load();
         Scene scene = new Scene(pane);
         stage.setScene(scene);
 
-        controller.initialize();
         scrollPaneOfCardsInDeck = (ScrollPane) scene.lookup("#scrollPaneOfCardsInDeck");
         tilePaneOfCardsInDeck = (TilePane) scrollPaneOfCardsInDeck.getContent().lookup("#tilePaneOfCardsInDeck");
         scrollPaneOfCardCollection = (ScrollPane) scene.lookup("#scrollPaneOfCardCollection");
         tilePaneOfCardCollection = (TilePane) scrollPaneOfCardCollection.getContent().lookup("#tilePaneOfCardCollection");
         totalCardsInDeck = (Text) scene.lookup("#totalCardsInDeck");
+        totalCardsInDeck.setOnMouseClicked(mouseEvent -> {
+            try {
+                goToGame();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         numberOfUnitCards = (Text) scene.lookup("#numberOfUnitCards");
         slashAnd22 = (Text) scene.lookup("#slashAnd22");
         strengthOfCards = (Text) scene.lookup("#strengthOfCards");
@@ -107,7 +115,31 @@ public class PreGameMenu extends Application {
         launch(args);
     }
 
-    public void goToGame(MouseEvent mouseEvent) throws Exception {
+    public void goToGame() throws Exception {
+        DeckUnit deckUnit = new DeckUnit();
+        deckUnit.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
+        PlayBoard current = new PlayBoard();
+        current.setCloseCombatUnit(new CloseCombatUnit());
+        current.setDiscardPileUnit(new DiscardPileUnit());
+        current.setRangedCombatUnit(new RangedCombatUnit());
+        current.setSiegeUnit(new SiegeUnit());
+        current.setHandUnit(new HandUnit());
+        PlayBoard next= new PlayBoard();
+        next.setCloseCombatUnit(new CloseCombatUnit());
+        next.setDiscardPileUnit(new DiscardPileUnit());
+        next.setRangedCombatUnit(new RangedCombatUnit());
+        next.setSiegeUnit(new SiegeUnit());
+        next.setHandUnit(new HandUnit());
+        User.getLoggedInUser().setPlayBoard(current);
+        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
+        User enemy = new User("a","a","a","a");
+        enemy.setPlayBoard(next);
+        enemy.getPlayBoard().setDeckUnit(deckUnit);
+        Game.setCurrentGame(new Game(User.getLoggedInUser(),enemy,new Date()));
+        Game.getCurrentGame().setSpellUnit(new SpellUnit());
+        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
+        Game.getCurrentGame().setNextUser(enemy);
+        //TODO: remove up code and write it correctly
         GameMenu gameMenu = new GameMenu();
         this.stop();
         gameMenu.start(App.getStage());
