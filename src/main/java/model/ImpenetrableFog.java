@@ -7,12 +7,13 @@ public class ImpenetrableFog extends WeatherCard{
 
     @Override
     public void apply() {
-        for (Card card : Game.getCurrentGame().currentUser.getPlayBoard().rangedCombatUnit.cards){
+        //TODO: commanders horn
+        for (Card card : Game.getCurrentGame().getCurrentUser().getPlayBoard().getRangedCombatUnit().cards){
             if (!((UnitCard)card).isLegendary){
                 ((UnitCard)card).setPower(1);
             }
         }
-        for (Card card : Game.getCurrentGame().nextUser.getPlayBoard().rangedCombatUnit.cards){
+        for (Card card : Game.getCurrentGame().getNextUser().getPlayBoard().getRangedCombatUnit().cards){
             if (!((UnitCard)card).isLegendary){
                 ((UnitCard)card).setPower(1);
             }
@@ -20,12 +21,12 @@ public class ImpenetrableFog extends WeatherCard{
         //TODO: apply somethings like commanders horn
     }
     public void unApply(){
-        for (Card card : Game.getCurrentGame().currentUser.getPlayBoard().rangedCombatUnit.cards){
+        for (Card card : Game.getCurrentGame().getCurrentUser().getPlayBoard().getRangedCombatUnit().cards){
             if (!((UnitCard)card).isLegendary){
                 ((UnitCard)card).setPower(((UnitCard)card).firstPower);
             }
         }
-        for (Card card : Game.getCurrentGame().nextUser.getPlayBoard().rangedCombatUnit.cards){
+        for (Card card : Game.getCurrentGame().getNextUser().getPlayBoard().getRangedCombatUnit().cards){
             if (!((UnitCard)card).isLegendary){
                 ((UnitCard)card).setPower(((UnitCard)card).firstPower);
             }

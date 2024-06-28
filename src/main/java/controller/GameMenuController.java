@@ -8,6 +8,7 @@ public class GameMenuController {
 
     public GameMenuController(GameMenu gameMenu) {
         this.gameMenu = gameMenu;
+        Game.getCurrentGame().setController(this);
     }
 
     public void passRound() {
@@ -47,6 +48,26 @@ public class GameMenuController {
             card.setUnit(Game.getCurrentGame().getSpellUnit());
         }
         card.apply();
+        doRepeatedCards();
+        updatePowerText(currentPlayBoard, nextPlayBoard);
+    }
+
+    private void updatePowerText(PlayBoard currentPlayBoard, PlayBoard nextPlayBoard) {
+        gameMenu.getMyClosePower().setText(Integer.toString(currentPlayBoard.getCloseCombatUnit().getUnitPower()));
+        gameMenu.getMyRangedPower().setText(Integer.toString(currentPlayBoard.getRangedCombatUnit().getUnitPower()));
+        gameMenu.getMySiegePower().setText(Integer.toString(currentPlayBoard.getSiegeUnit().getUnitPower()));
+        int myTotal = currentPlayBoard.getCloseCombatUnit().getUnitPower()+
+                currentPlayBoard.getRangedCombatUnit().getUnitPower()+ currentPlayBoard.getSiegeUnit().getUnitPower();
+        gameMenu.getMyTotalPower().setText(Integer.toString(myTotal));
+        gameMenu.getEnemyClosePower().setText(Integer.toString(nextPlayBoard.getCloseCombatUnit().getUnitPower()));
+        gameMenu.getEnemyRangedPower().setText(Integer.toString(nextPlayBoard.getRangedCombatUnit().getUnitPower()));
+        gameMenu.getEnemySiegePower().setText(Integer.toString(nextPlayBoard.getSiegeUnit().getUnitPower()));
+        int enemyTotal = nextPlayBoard.getCloseCombatUnit().getUnitPower()+
+                nextPlayBoard.getRangedCombatUnit().getUnitPower()+ nextPlayBoard.getSiegeUnit().getUnitPower();
+        gameMenu.getEnemyTotalPower().setText(Integer.toString(enemyTotal));
+    }
+    private void doRepeatedCards(){
+        //TODO: complete this like commanders and tightBounds and moral and weathers ;
     }
 
     public Result showHandCard(int number) {

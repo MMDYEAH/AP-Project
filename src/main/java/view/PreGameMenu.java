@@ -57,6 +57,15 @@ private Text changeFaction;
         scrollPaneOfCardCollection = (ScrollPane) scene.lookup("#scrollPaneOfCardCollection");
         tilePaneOfCardCollection = (TilePane) scrollPaneOfCardCollection.getContent().lookup("#tilePaneOfCardCollection");
         totalCardsInDeck = (Text) scene.lookup("#totalCardsInDeck");
+        //TODO: delete it
+        totalCardsInDeck.setOnMouseClicked(mouseEvent -> {
+            try {
+                goToGame();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        //TODO:
         numberOfUnitCards = (Text) scene.lookup("#numberOfUnitCards");
         slashAnd22 = (Text) scene.lookup("#slashAnd22");
         strengthOfCards = (Text) scene.lookup("#strengthOfCards");
@@ -72,37 +81,6 @@ private Text changeFaction;
         stage.show();
     }
 
-    private void addCardsOfNorthernRealmsFactionToScrollPane(Pane pane) {
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth() * 3 / 4);
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight() * 3 / 4);
-        leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
-        for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
-            card.setPrefWidth(card.getPrefWidth() * 3 / 4);
-            card.setPrefHeight(card.getPrefHeight() * 3 / 4);
-            card.setOnMouseClicked(e -> {
-                //TODO : you should run the code i commented when other menus completed
-                //User.getLoggedInUser().getPlayBoard().getDeckUnit().addCardToUnit(card);
-                tilePaneOfCardsInDeck.getChildren().add(card);
-                int numberOfTotalCards = Integer.parseInt(totalCardsInDeck.getText());
-                numberOfTotalCards += 1;
-                totalCardsInDeck.setText(String.valueOf(numberOfTotalCards));
-                if ((card instanceof UnitCard)) {
-                    int parsedIntNumberOfUnitCards = Integer.parseInt(numberOfUnitCards.getText());
-                    parsedIntNumberOfUnitCards += 1;
-                    numberOfUnitCards.setText(String.valueOf(parsedIntNumberOfUnitCards));
-                    if (parsedIntNumberOfUnitCards > 22) pane.getChildren().remove(slashAnd22);
-                    int parsedIntStrengthOfCards = Integer.parseInt(strengthOfCards.getText());
-                    parsedIntStrengthOfCards += ((UnitCard) card).getPower();
-                    strengthOfCards.setText(String.valueOf(parsedIntStrengthOfCards));
-                    if (((UnitCard) card).isLegendary()) {
-                        int parsedIntnumberOfHeroCards = Integer.parseInt(numberOfHeroCards.getText());
-                        parsedIntnumberOfHeroCards += 1;
-                        numberOfHeroCards.setText(String.valueOf(parsedIntnumberOfHeroCards));
-                    }
-                }
-            });
-        }
-    }
     private void addUnitCardsOfNorthernRealmsFactionToScrollPane() {
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
@@ -120,7 +98,7 @@ private Text changeFaction;
         tilePaneOfCardsInDeck.getChildren().clear();
         for(Card card : App.getMonstersFaction().getUnitCards()){
             //TODO: id does not work. solve it :(
-            //tilePaneOfCardCollection.getChildren().add(card);
+            tilePaneOfCardCollection.getChildren().add(card);
         }
     }
     private void addUnitCardsOfScoiaTaelFactionToScrollPane(){

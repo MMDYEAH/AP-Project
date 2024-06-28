@@ -5,7 +5,12 @@ public class Medic extends UnitCard {
         super(name, power, isLegendary, path);
     }
 
+    Card chosenCard;
     @Override
     public void apply() {
+    }
+
+    public void setChosenCard(Card chosenCard) {
+        this.chosenCard = chosenCard;
     }
 }

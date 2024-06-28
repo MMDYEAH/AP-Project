@@ -2,12 +2,10 @@ package view;
 
 import controller.GameMenuController;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -72,6 +70,7 @@ public class GameMenu extends Application {
 
     Card chosenCard;
     GameMenuController controller = new GameMenuController(this);
+
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(GameMenu.class.getResource("/game.fxml"));
@@ -85,13 +84,16 @@ public class GameMenu extends Application {
         tilePane.setHgap(10);
         tilePane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
         Collections.shuffle(rn.getUnitCards());
-        int number = 0;
         for (Card card : rn.getUnitCards()) {
-            setCardOnMouseCliked(card);
-            chosenCard = card;
-            if (number > 9) break;
             card.setPrefWidth(50);
             card.setPrefHeight(90);
+            setCardOnMouseClicked(card);
+        }
+        int number = 0;
+        for (Card card : rn.getUnitCards()) {
+            setCardOnMouseClicked(card);
+            chosenCard = card;
+            if (number > 30) break;
             tilePane.getChildren().add(card);
             number++;
         }
@@ -195,7 +197,7 @@ public class GameMenu extends Application {
 
     }
 
-    private void setCardOnMouseCliked(Card card) {
+    private void setCardOnMouseClicked(Card card) {
         PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
         PlayBoard nextPlayBoard = Game.getCurrentGame().getNextUser().getPlayBoard();
         card.setOnMouseReleased(mouseEvent -> {
@@ -205,29 +207,39 @@ public class GameMenu extends Application {
             type = type.substring(1, type.length() - 1);
             System.out.println(type);
             boolean isSpy = card instanceof Spy;
-            if (!isSpy) {
+            boolean isDecoy = card instanceof Decoy;
+            boolean isMedic = card instanceof Medic;
+            if (isDecoy){
+                decoy(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
+                decoy(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
+                decoy(card, mouseEvent, currentPlayBoard.getSiegeUnit());
+            } else if (isMedic) {
+                medic(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
+                medic(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
+                medic(card, mouseEvent, currentPlayBoard.getSiegeUnit());
+            } else if (!isSpy) {
                 if (type.equals("close")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
-                        controller.putCard(card,currentPlayBoard.getCloseCombatUnit(),true);
+                        controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
                     }
                 } else if (type.equals("ranged")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
-                        controller.putCard(card,currentPlayBoard.getRangedCombatUnit(),true);
+                        controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
                     }
                 } else if (type.equals("siege")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 510 && mouseEvent.getSceneY() < 590) {
-                        controller.putCard(card,currentPlayBoard.getSiegeUnit(),true);
+                        controller.putCard(card, currentPlayBoard.getSiegeUnit(), true);
                     }
                 } else if (type.equals("agile")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
-                        controller.putCard(card,currentPlayBoard.getCloseCombatUnit(),true);
+                        controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
                     } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
-                        controller.putCard(card,currentPlayBoard.getRangedCombatUnit(),true);
+                        controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
                     }
                 } else if (type.equals("weather")) {
                     if (mouseEvent.getSceneX() > 110 && mouseEvent.getSceneX() < 310
@@ -236,37 +248,71 @@ public class GameMenu extends Application {
                         if (spellTile.getChildren().size() == 3) {
                             spellTile.getChildren().remove(0);
                         }
-                        controller.putCard(card,Game.getCurrentGame().getSpellUnit(),true);
+                        controller.putCard(card, Game.getCurrentGame().getSpellUnit(), true);
                     }
                 }
             } else {
                 if (type.equals("close")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
-                        controller.putCard(card,nextPlayBoard.getCloseCombatUnit(),false);
+                        controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
                     }
                 } else if (type.equals("ranged")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
-                        controller.putCard(card,nextPlayBoard.getRangedCombatUnit(),false);
+                        controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
                     }
                 } else if (type.equals("siege")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 40 && mouseEvent.getSceneY() < 120) {
-                        controller.putCard(card,nextPlayBoard.getSiegeUnit(),false);
+                        controller.putCard(card, nextPlayBoard.getSiegeUnit(), false);
                     }
                 } else if (type.equals("agile")) {
                     if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
-                        controller.putCard(card,nextPlayBoard.getCloseCombatUnit(),false);
+                        controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
                     } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
                             && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
-                        controller.putCard(card,nextPlayBoard.getRangedCombatUnit(),false);
+                        controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
                     }
                 }
             }
 
         });
+    }
+
+    private void decoy(Card card, MouseEvent mouseEvent, Unit unit) {
+        for (Card card1 : unit.getCards()){
+            System.out.println(card1.getName() + " " + mouseEvent.getSceneX()+ " " + mouseEvent.getSceneY()
+            + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() +" "+
+                    card1.localToScene(card1.getBoundsInLocal()).getMinY());
+            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX()+card1.getPrefWidth()
+            && mouseEvent.getSceneX() > card1.localToScene(card1.getBoundsInLocal()).getMinX()
+            && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY()+card1.getPrefHeight()
+            && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()){
+                System.out.println(card1.getName());
+                ((Decoy) card).setCardShouldBeReplaced(card1);
+                controller.putCard(card, unit,true);
+                break;
+            }
+        }
+    }
+
+    private void medic(Card card,MouseEvent mouseEvent, Unit unit){
+        for (Card card1 : unit.getCards()){
+            System.out.println(card1.getName() + " " + mouseEvent.getSceneX()+ " " + mouseEvent.getSceneY()
+                    + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() +" "+
+                    card1.localToScene(card1.getBoundsInLocal()).getMinY());
+            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX()+card1.getPrefWidth()
+                    && mouseEvent.getSceneX() > card1.localToScene(card1.getBoundsInLocal()).getMinX()
+                    && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY()+card1.getPrefHeight()
+                    && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()){
+                System.out.println(card1.getName());
+                ((Medic) card).setChosenCard(card1);
+                controller.putCard(card, unit,true);
+                break;
+            }
+        }
     }
 
     private void transparentTextFields() {
@@ -337,35 +383,35 @@ public class GameMenu extends Application {
         myRangedTile = (TilePane) myRanged.getChildren().get(0);
     }
 
-    public ObservableList<Card> getCurrentHand() {
-        return currentHand;
+    public TextField getEnemyTotalPower() {
+        return enemyTotalPower;
     }
 
-    public ObservableList<Card> getCurrentClose() {
-        return currentClose;
+    public TextField getEnemyClosePower() {
+        return enemyClosePower;
     }
 
-    public ObservableList<Card> getCurrentRanged() {
-        return currentRanged;
+    public TextField getEnemyRangedPower() {
+        return enemyRangedPower;
     }
 
-    public ObservableList<Card> getCurrentSiege() {
-        return currentSiege;
+    public TextField getEnemySiegePower() {
+        return enemySiegePower;
     }
 
-    public ObservableList<Card> getNextClose() {
-        return nextClose;
+    public TextField getMyClosePower() {
+        return myClosePower;
     }
 
-    public ObservableList<Card> getNextRanged() {
-        return nextRanged;
+    public TextField getMyRangedPower() {
+        return myRangedPower;
     }
 
-    public ObservableList<Card> getNextSiege() {
-        return nextSiege;
+    public TextField getMySiegePower() {
+        return mySiegePower;
     }
 
-    public ObservableList<Card> getWeatherUnit() {
-        return weatherUnit;
+    public TextField getMyTotalPower() {
+        return myTotalPower;
     }
 }
