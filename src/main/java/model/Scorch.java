@@ -57,7 +57,7 @@ public class Scorch extends UnitCard {
 
     private boolean isSumOfPowersInThisUnitMoreThanTen(Unit unit) {
         int sumOfPowers = 0;
-        for (Card card : unit) {
+        for (Card card : unit.cards) {
             UnitCard unitCard = (UnitCard) card;
             if (!unitCard.isLegendary) sumOfPowers += unitCard.power;
         }

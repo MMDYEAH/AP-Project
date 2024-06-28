@@ -1,0 +1,28 @@
+/* witcher-dark-theme.css */
+
+/* Background color for the dialog pane */
+.dialog-pane {
+    -fx-background-color: #1a1a1a; /* Dark gray or black */
+}
+
+/* Header area (if applicable) */
+.dialog-pane:header .header-panel {
+    -fx-background-color: #333333; /* Darker gray */
+}
+
+/* Header label text color */
+.dialog-pane:header .header-panel .label {
+    -fx-text-fill: white;
+}
+
+/* Content area (text, padding, etc.) */
+.dialog-pane > .content.label {
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+}
+
+/* Buttons in the button bar */
+.dialog-pane > .button-bar > .container .button {
+    -fx-background-color: #333333; /* Darker gray */
+    -fx-text-fill: white;
+}
