@@ -12,6 +12,7 @@ public class TightBound extends UnitCard{
         int numberOfSimilarCards = 0;
         ArrayList<Card> similars = new ArrayList<>();
          for(Card card : this.getUnit().cards){
+             if (!(card instanceof UnitCard)) continue;
              UnitCard unitCard = (UnitCard) card;
              if(unitCard.name.equals(this.name) && !unitCard.equals(this)) {
                  similars.add(card);
