@@ -318,7 +318,7 @@ public class LoginMenu extends Application implements Initializable {
 
     public void securityQuestion(StackPane root) throws IOException {
         // Load the image
-        String imagePath = "/pics/security.jpg"; // Change this to the path of your image file
+        String imagePath = "/pics/security.png"; // Change this to the path of your image file
         Image image = new Image(getClass().getResource(imagePath).toExternalForm());
         ImageView imageView = new ImageView(image);
         root.getChildren().add(imageView);
@@ -714,6 +714,9 @@ public class LoginMenu extends Application implements Initializable {
 
 //        // Create a new stage (window) for the video
         Stage videoStage = new Stage();
+        Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+        // Set the logo image as the window icon
+        videoStage.getIcons().add(logo);
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
         Scene scene = new Scene(root, 800, 500); // Set the width and height as needed

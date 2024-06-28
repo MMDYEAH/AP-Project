@@ -1,10 +1,14 @@
 package view;
 
 import controller.PreGameMenuController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,14 +17,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PreGameMenu extends Application {  @FXML
-private Text changeFaction;
+public class PreGameMenu extends Application {
+    @FXML
+    private Text changeFaction;
     @FXML
     private TilePane leaderCard;
     @FXML
@@ -65,7 +71,7 @@ private Text changeFaction;
         changeFaction = (Text) scene.lookup("#changeFaction");
         addUnitCardsOfNorthernRealmsFactionToScrollPane();
         addLeaderCardsOfNorthernRealmsFactionToScrollPane();
-        writeOnMouseClickedFunctionsForFactionCards(pane,App.getRealmsNorthenFaction());
+        writeOnMouseClickedFunctionsForFactionCards(pane, App.getRealmsNorthenFaction());
         writeOnMouseClickedFunctionsToChangeFaction(pane);
         stage.setFullScreen(true);
         stage.setResizable(false);
@@ -79,84 +85,112 @@ private Text changeFaction;
         //User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
 
     }
-    private void addUnitCardsOfMonstersFactionToScrollPane(){
+
+    private void addUnitCardsOfMonstersFactionToScrollPane() {
         //TODO : you should run the code i commented when other menus completed
         //User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
-        for(Card card : App.getMonstersFaction().getUnitCards()){
+        for (Card card : App.getMonstersFaction().getUnitCards()) {
             //TODO: id does not work. solve it :(
             //tilePaneOfCardCollection.getChildren().add(card);
         }
     }
-    private void addUnitCardsOfScoiaTaelFactionToScrollPane(){
+
+    private void addUnitCardsOfScoiaTaelFactionToScrollPane() {
         //TODO : you should run the code i commented when other menus completed
         //User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
-        for(Card card : App.getScoiataelFaction().getUnitCards()){
+        for (Card card : App.getScoiataelFaction().getUnitCards()) {
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
             tilePaneOfCardCollection.getChildren().add(card);
         }
     }
-    private void addUnitCardsOfSkelligeFactionToScrollPane(){
+
+    private void addUnitCardsOfSkelligeFactionToScrollPane() {
         //TODO : you should run the code i commented when other menus completed
         //User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
-        for(Card card : App.getSkelligeFaction().getUnitCards()){
+        for (Card card : App.getSkelligeFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
-    private void addUnitCardsOfEmpireNilfGaardianFactionToScrollPane(){
+
+    private void addUnitCardsOfEmpireNilfGaardianFactionToScrollPane() {
         //TODO : you should run the code i commented when other menus completed
         //User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
-        for(Card card : App.getEmpireNilfgaardianFaction().getUnitCards()){
+        for (Card card : App.getEmpireNilfgaardianFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
+
     private void addLeaderCardsOfNorthernRealmsFactionToScrollPane() {
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
     }
+
     private void addLeaderCardsOfSkelligeFactionToScrollPane() {
         App.getSkelligeFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getSkelligeFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getSkelligeFaction().getFactionLeaderCards().get(0));
     }
+
     private void addLeaderCardsOfEmpireNilfGaardianFactionToScrollPane() {
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getEmpireNilfgaardianFaction().getFactionLeaderCards().get(0));
     }
+
     private void addLeaderCardsOfScoiataelFactionToScrollPane() {
         App.getScoiataelFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
         App.getScoiataelFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getScoiataelFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getScoiataelFaction().getFactionLeaderCards().get(0));
     }
+
     private void addLeaderCardsOfMonstersFactionToScrollPane() {
         App.getMonstersFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
         App.getMonstersFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getMonstersFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getMonstersFaction().getFactionLeaderCards().get(0));
     }
+
     private void writeOnMouseClickedFunctionsForFactionCards(Pane pane, Faction faction) {
         for (Card card : faction.getUnitCards()) {
-            card.setWidth(tilePaneOfCardCollection.getPrefWidth()/3);
+            card.setWidth(tilePaneOfCardCollection.getPrefWidth() / 3);
             card.setHeight(tilePaneOfCardCollection.getPrefHeight());
             card.setOnMouseClicked(e -> {
                 if (tilePaneOfCardCollection.getChildren().contains(card))
@@ -220,33 +254,48 @@ private Text changeFaction;
         changeFaction.setOnMouseClicked(e -> {
             Image imageOfMonstersFaction = new Image(LoginMenu.class.getResource("/pics/monsters/faction/MonstersFaction.jpg").toExternalForm());
             ImageView imageViewMonstersFaction = new ImageView(imageOfMonstersFaction);
-            imageViewMonstersFaction.setX(pane.getWidth()/2-imageOfMonstersFaction.getWidth()/2-100);
-            imageViewMonstersFaction.setY(pane.getHeight()/2-imageOfMonstersFaction.getHeight()/2);
+            imageViewMonstersFaction.setX(pane.getWidth() / 2 - imageOfMonstersFaction.getWidth() / 2 - 100);
+            imageViewMonstersFaction.setY(pane.getHeight() / 2 - imageOfMonstersFaction.getHeight() / 2);
             pane.getChildren().add(imageViewMonstersFaction);
             Image imageOfNilfGaardFaction = new Image(LoginMenu.class.getResource("/pics/nilfgaard/faction/NilfgaardFaction.jpg").toExternalForm());
             ImageView imageViewOfNilfGaardFaction = new ImageView(imageOfNilfGaardFaction);
-            imageViewOfNilfGaardFaction.setX(imageViewMonstersFaction.getX()+imageOfNilfGaardFaction.getWidth()+50);
+            imageViewOfNilfGaardFaction.setX(imageViewMonstersFaction.getX() + imageOfNilfGaardFaction.getWidth() + 50);
             imageViewOfNilfGaardFaction.setY(imageViewMonstersFaction.getY());
             pane.getChildren().add(imageViewOfNilfGaardFaction);
             Image imageOfNorthenRealms = new Image(LoginMenu.class.getResource("/pics/northenRealms/faction/NorthenRealmsFaction.jpg").toExternalForm());
             ImageView imageViewOfNorthenRealms = new ImageView(imageOfNorthenRealms);
-            imageViewOfNorthenRealms.setX(imageViewMonstersFaction.getX()-imageOfNorthenRealms.getWidth()-50);
+            imageViewOfNorthenRealms.setX(imageViewMonstersFaction.getX() - imageOfNorthenRealms.getWidth() - 50);
             imageViewOfNorthenRealms.setY(imageViewOfNilfGaardFaction.getY());
             pane.getChildren().add(imageViewOfNorthenRealms);
             Image imageOfScoiatael = new Image(LoginMenu.class.getResource("/pics/scoiatael/faction/scoiataelFaction.jpg").toExternalForm());
             ImageView imageViewOfScoiatael = new ImageView(imageOfScoiatael);
-            imageViewOfScoiatael.setX(imageViewOfNilfGaardFaction.getX()+imageOfScoiatael.getWidth()+50);
+            imageViewOfScoiatael.setX(imageViewOfNilfGaardFaction.getX() + imageOfScoiatael.getWidth() + 50);
             imageViewOfScoiatael.setY(imageViewOfNilfGaardFaction.getY());
             pane.getChildren().add(imageViewOfScoiatael);
             Image imageOfSkellige = new Image(LoginMenu.class.getResource("/pics/skellige/faction/SkelligeFaction.jpg").toExternalForm());
             ImageView imageViewOfSkellige = new ImageView(imageOfSkellige);
-            imageViewOfSkellige.setX(imageViewOfNorthenRealms.getX()-imageOfSkellige.getWidth()-50);
+            imageViewOfSkellige.setX(imageViewOfNorthenRealms.getX() - imageOfSkellige.getWidth() - 50);
             imageViewOfSkellige.setY(imageViewOfNorthenRealms.getY());
             pane.getChildren().add(imageViewOfSkellige);
+            imageViewOfSkellige.setOnMouseEntered(ed -> animateButton(imageViewOfSkellige, 1.1));
+            imageViewOfSkellige.setOnMouseExited(ed -> animateButton(imageViewOfSkellige, 1.0));
+
+            imageViewOfScoiatael.setOnMouseEntered(ez -> animateButton(imageViewOfScoiatael, 1.1));
+            imageViewOfScoiatael.setOnMouseExited(ez -> animateButton(imageViewOfScoiatael, 1.0));
+
+            imageViewMonstersFaction.setOnMouseEntered(ea -> animateButton(imageViewMonstersFaction, 1.1));
+            imageViewMonstersFaction.setOnMouseExited(ea -> animateButton(imageViewMonstersFaction, 1.0));
+
+            imageViewOfNilfGaardFaction.setOnMouseEntered(ee -> animateButton(imageViewOfNilfGaardFaction, 1.1));
+            imageViewOfNilfGaardFaction.setOnMouseExited(ee -> animateButton(imageViewOfNilfGaardFaction, 1.0));
+
+            imageViewOfNorthenRealms.setOnMouseEntered(eg -> animateButton(imageViewOfNorthenRealms, 1.1));
+            imageViewOfNorthenRealms.setOnMouseExited(eg -> animateButton(imageViewOfNorthenRealms, 1.0));
+
             imageViewOfSkellige.setOnMouseClicked(e2 -> {
                 addUnitCardsOfSkelligeFactionToScrollPane();
                 addLeaderCardsOfSkelligeFactionToScrollPane();
-                writeOnMouseClickedFunctionsForFactionCards(pane,App.getSkelligeFaction());
+                writeOnMouseClickedFunctionsForFactionCards(pane, App.getSkelligeFaction());
                 User.getLoggedInUser().setFaction(App.getSkelligeFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
@@ -254,10 +303,10 @@ private Text changeFaction;
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
             });
-            imageViewOfScoiatael.setOnMouseClicked(e3 ->{
+            imageViewOfScoiatael.setOnMouseClicked(e3 -> {
                 addUnitCardsOfScoiaTaelFactionToScrollPane();
                 addLeaderCardsOfScoiataelFactionToScrollPane();
-                writeOnMouseClickedFunctionsForFactionCards(pane,App.getScoiataelFaction());
+                writeOnMouseClickedFunctionsForFactionCards(pane, App.getScoiataelFaction());
                 User.getLoggedInUser().setFaction(App.getScoiataelFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
@@ -265,10 +314,10 @@ private Text changeFaction;
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
             });
-            imageViewMonstersFaction.setOnMouseClicked(e4 ->{
+            imageViewMonstersFaction.setOnMouseClicked(e4 -> {
                 addUnitCardsOfMonstersFactionToScrollPane();
                 addLeaderCardsOfMonstersFactionToScrollPane();
-                writeOnMouseClickedFunctionsForFactionCards(pane,App.getMonstersFaction());
+                writeOnMouseClickedFunctionsForFactionCards(pane, App.getMonstersFaction());
                 User.getLoggedInUser().setFaction(App.getMonstersFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
@@ -276,10 +325,10 @@ private Text changeFaction;
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
             });
-            imageViewOfNilfGaardFaction.setOnMouseClicked(e5 ->{
+            imageViewOfNilfGaardFaction.setOnMouseClicked(e5 -> {
                 addUnitCardsOfEmpireNilfGaardianFactionToScrollPane();
                 addLeaderCardsOfEmpireNilfGaardianFactionToScrollPane();
-                writeOnMouseClickedFunctionsForFactionCards(pane,App.getEmpireNilfgaardianFaction());
+                writeOnMouseClickedFunctionsForFactionCards(pane, App.getEmpireNilfgaardianFaction());
                 User.getLoggedInUser().setFaction(App.getEmpireNilfgaardianFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
@@ -287,10 +336,10 @@ private Text changeFaction;
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
             });
-            imageViewOfNorthenRealms.setOnMouseClicked(e6 ->{
+            imageViewOfNorthenRealms.setOnMouseClicked(e6 -> {
                 addUnitCardsOfNorthernRealmsFactionToScrollPane();
                 addLeaderCardsOfNorthernRealmsFactionToScrollPane();
-                writeOnMouseClickedFunctionsForFactionCards(pane,App.getRealmsNorthenFaction());
+                writeOnMouseClickedFunctionsForFactionCards(pane, App.getRealmsNorthenFaction());
                 User.getLoggedInUser().setFaction(App.getRealmsNorthenFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
@@ -300,12 +349,12 @@ private Text changeFaction;
             });
         });
     }
-    private void writeOnMouseClickedFunctionToChangeLeaderCard(Pane pane){
-        leaderCard.setOnMouseClicked(e ->{
+
+    private void writeOnMouseClickedFunctionToChangeLeaderCard(Pane pane) {
+        leaderCard.setOnMouseClicked(e -> {
 
         });
     }
-
 
 
     public static void main(String[] args) {
@@ -321,7 +370,7 @@ private Text changeFaction;
         current.setRangedCombatUnit(new RangedCombatUnit());
         current.setSiegeUnit(new SiegeUnit());
         current.setHandUnit(new HandUnit());
-        PlayBoard next= new PlayBoard();
+        PlayBoard next = new PlayBoard();
         next.setCloseCombatUnit(new CloseCombatUnit());
         next.setDiscardPileUnit(new DiscardPileUnit());
         next.setRangedCombatUnit(new RangedCombatUnit());
@@ -329,10 +378,10 @@ private Text changeFaction;
         next.setHandUnit(new HandUnit());
         User.getLoggedInUser().setPlayBoard(current);
         User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
-        User enemy = new User("a","a","a","a");
+        User enemy = new User("a", "a", "a", "a");
         enemy.setPlayBoard(next);
         enemy.getPlayBoard().setDeckUnit(deckUnit);
-        Game.setCurrentGame(new Game(User.getLoggedInUser(),enemy,new Date()));
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));
         Game.getCurrentGame().setSpellUnit(new SpellUnit());
         Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
         Game.getCurrentGame().setNextUser(enemy);
@@ -340,6 +389,31 @@ private Text changeFaction;
         GameMenu gameMenu = new GameMenu();
         this.stop();
         gameMenu.start(App.getStage());
+    }
+
+    private void animateButton(ImageView button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+    private void animateButton(TilePane button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+    private void animateButton(Card button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
     }
 }
 

@@ -9,9 +9,11 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -26,11 +28,19 @@ import javafx.util.Duration;
 import model.App;
 import model.User;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Scanner;
 
 
 public class MainMenu extends Application {
+//    @FXML
+//    Button exitPointChart;
+//    @FXML
+//    public ScrollPane scrollPaneRanking;
+//    @FXML
+//    public TilePane tilePaneRanking;
     @FXML
     Button start;
     @FXML
@@ -81,6 +91,7 @@ public class MainMenu extends Application {
         profile = (Button) scene.lookup("#profile");
         pointChart = (Button) scene.lookup(("#pointChart"));
 
+
         start.setOnMouseEntered(e -> animateButton(start, 1.1));
         start.setOnMouseExited(e -> animateButton(start, 1.0));
 
@@ -97,7 +108,11 @@ public class MainMenu extends Application {
             toProfile(stage);
         });
         pointChart.setOnMouseClicked(mouseEvent -> {
-            pointChart();
+            try {
+                pointChart(root);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         mediaView.setFitWidth(stage.getWidth());
@@ -131,27 +146,30 @@ public class MainMenu extends Application {
         stage.setFullScreen(true);
     }
 
-    public void pointChart() {
-        TilePane tilePane = new TilePane();
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+    public void pointChart(StackPane root) throws IOException {
+        // Load the image
+        String imagePathOIP = "/pics/OIP.jpg"; // Change this to the path of your image file
+        Image imageOIP = new Image(getClass().getResource(imagePathOIP).toExternalForm());
+        ImageView imageViewOIP = new ImageView(imageOIP);
+        root.getChildren().add(imageViewOIP);
+
+        Button exitPointChart = new Button("exit point chart");
+        TilePane tilePaneRanking = new TilePane();
+
+        exitPointChart.setOnMouseEntered(e -> animateButton(exitPointChart, 1.1));
+        exitPointChart.setOnMouseExited(e -> animateButton(exitPointChart, 1.0));
+
+        VBox vbox = new VBox(30); // VBox with 30px spacing
+        vbox.getChildren().addAll(exitPointChart, tilePaneRanking);
+
+        vbox.setAlignment(Pos.CENTER);
+
         try {
             String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/style.css")).toExternalForm();
-            tilePane.getStylesheets().add(cssPath); // Adding the CSS file
+            tilePaneRanking.getStylesheets().add(cssPath);
         } catch (NullPointerException t) {
             System.out.println("CSS file not found.");
         }
-        Scene scene = new Scene(tilePane, 800, 500); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(500);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(500);
-        videoStage.setScene(scene);
-        videoStage.setTitle("point chart");
-        videoStage.show();
-        // Set TilePane properties
-        tilePane.setHgap(10); // horizontal gap between tiles
-        tilePane.setVgap(10); // vertical gap between tiles
 
         // TODO: 6/27/2024 sort bar asas point
         int i = 0;
@@ -166,36 +184,43 @@ public class MainMenu extends Application {
             scoreLabel.getStyleClass().add("score-label");
 
             if (i == 0) {
-                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/gold.png").toExternalForm());
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/gold.png")).toExternalForm();
                 Image image = new Image(imagePath);
                 ImageView imageView = new ImageView(image);
                 imageView.setFitHeight(55);
                 imageView.setFitWidth(50);
                 userBox.getChildren().add(imageView);
             } else if (i == 1) {
-                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/silver.png").toExternalForm());
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/silver.png")).toExternalForm();
                 Image image = new Image(imagePath);
                 ImageView imageView = new ImageView(image);
                 imageView.setFitHeight(55);
                 imageView.setFitWidth(50);
                 userBox.getChildren().add(imageView);
             } else if (i == 2) {
-                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/bronze.png").toExternalForm());
+                String imagePath = Objects.requireNonNull(getClass().getResource("/pics/bronze.png")).toExternalForm();
                 Image image = new Image(imagePath);
                 ImageView imageView = new ImageView(image);
                 imageView.setFitHeight(55);
                 imageView.setFitWidth(50);
                 userBox.getChildren().add(imageView);
             }
+
             userBox.setOnMouseEntered(e -> animateBox(userBox, 1.1));
             userBox.setOnMouseExited(e -> animateBox(userBox, 1.0));
             userBox.getChildren().addAll(rankLabel, scoreLabel);
-            tilePane.getChildren().add(userBox);
-
+            tilePaneRanking.getChildren().add(userBox);
             i++;
         }
 
+        exitPointChart.setOnMouseClicked(mouseEvent -> {
+            root.getChildren().remove(imageViewOIP);
+            root.getChildren().remove(vbox);
+        });
+
+        root.getChildren().add(vbox);
     }
+
 
     private void animateBox(VBox box, double scale) {
         Timeline timeline = new Timeline();
