@@ -86,6 +86,37 @@ public class PreGameMenu extends Application {
         stage.show();
     }
 
+    private void addCardsOfNorthernRealmsFactionToScrollPane(Pane pane) {
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth() * 3 / 4);
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight() * 3 / 4);
+        leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
+            card.setPrefWidth(card.getPrefWidth() * 3 / 4);
+            card.setPrefHeight(card.getPrefHeight() * 3 / 4);
+            card.setOnMouseClicked(e -> {
+                //TODO : you should run the code i commented when other menus completed
+                //User.getLoggedInUser().getPlayBoard().getDeckUnit().addCardToUnit(card);
+                tilePaneOfCardsInDeck.getChildren().add(card);
+                int numberOfTotalCards = Integer.parseInt(totalCardsInDeck.getText());
+                numberOfTotalCards += 1;
+                totalCardsInDeck.setText(String.valueOf(numberOfTotalCards));
+                if ((card instanceof UnitCard)) {
+                    int parsedIntNumberOfUnitCards = Integer.parseInt(numberOfUnitCards.getText());
+                    parsedIntNumberOfUnitCards += 1;
+                    numberOfUnitCards.setText(String.valueOf(parsedIntNumberOfUnitCards));
+                    if (parsedIntNumberOfUnitCards > 22) pane.getChildren().remove(slashAnd22);
+                    int parsedIntStrengthOfCards = Integer.parseInt(strengthOfCards.getText());
+                    parsedIntStrengthOfCards += ((UnitCard) card).getPower();
+                    strengthOfCards.setText(String.valueOf(parsedIntStrengthOfCards));
+                    if (((UnitCard) card).isLegendary()) {
+                        int parsedIntnumberOfHeroCards = Integer.parseInt(numberOfHeroCards.getText());
+                        parsedIntnumberOfHeroCards += 1;
+                        numberOfHeroCards.setText(String.valueOf(parsedIntnumberOfHeroCards));
+                    }
+                }
+            });
+        }
+    }
     private void addUnitCardsOfNorthernRealmsFactionToScrollPane() {
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
@@ -134,40 +165,40 @@ public class PreGameMenu extends Application {
     }
 
     private void addLeaderCardsOfNorthernRealmsFactionToScrollPane() {
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
         User.getLoggedInUser().setFactionLeaderCard(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfSkelligeFactionToScrollPane() {
-        App.getSkelligeFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getSkelligeFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getSkelligeFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getSkelligeFaction().getFactionLeaderCards().get(0));
         User.getLoggedInUser().setFactionLeaderCard(App.getSkelligeFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfEmpireNilfGaardianFactionToScrollPane() {
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
         User.getLoggedInUser().setFactionLeaderCard(App.getEmpireNilfgaardianFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfScoiataelFactionToScrollPane() {
-        App.getScoiataelFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getScoiataelFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getScoiataelFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
+        App.getScoiataelFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getScoiataelFaction().getFactionLeaderCards().get(0));
         User.getLoggedInUser().setFactionLeaderCard(App.getScoiataelFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfMonstersFactionToScrollPane() {
-        App.getMonstersFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getMonstersFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getMonstersFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
+        App.getMonstersFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getMonstersFaction().getFactionLeaderCards().get(0));
         User.getLoggedInUser().setFactionLeaderCard(App.getMonstersFaction().getFactionLeaderCards().get(0));
@@ -189,8 +220,8 @@ public class PreGameMenu extends Application {
             else index++;
             leaderCard.getChildren().clear();
             User.getLoggedInUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
-            currentFaction.getFactionLeaderCards().get(index).setWidth(leaderCard.getPrefWidth());
-            currentFaction.getFactionLeaderCards().get(index).setHeight(leaderCard.getPrefHeight());
+            currentFaction.getFactionLeaderCards().get(index).setPrefWidth(leaderCard.getPrefWidth());
+            currentFaction.getFactionLeaderCards().get(index).setPrefHeight(leaderCard.getPrefHeight());
             leaderCard.getChildren().add(currentFaction.getFactionLeaderCards().get(index));
         });
         buttonOfChangeLeaderCardToPrevious.setOnMouseClicked(e -> {
@@ -200,8 +231,8 @@ public class PreGameMenu extends Application {
             if (index == 0) index = currentFaction.getFactionLeaderCards().size() - 1;
             else index--;
             leaderCard.getChildren().clear();
-            currentFaction.getFactionLeaderCards().get(index).setWidth(leaderCard.getPrefWidth());
-            currentFaction.getFactionLeaderCards().get(index).setHeight(leaderCard.getPrefHeight());
+            currentFaction.getFactionLeaderCards().get(index).setPrefWidth(leaderCard.getPrefWidth());
+            currentFaction.getFactionLeaderCards().get(index).setPrefHeight(leaderCard.getPrefHeight());
             leaderCard.getChildren().add(currentFaction.getFactionLeaderCards().get(index));
             User.getLoggedInUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
         });
@@ -209,8 +240,8 @@ public class PreGameMenu extends Application {
 
     private void writeOnMouseClickedFunctionsForFactionCards(Pane pane, Faction faction) {
         for (Card card : faction.getUnitCards()) {
-            card.setWidth(tilePaneOfCardCollection.getPrefWidth() / 3);
-            card.setHeight(tilePaneOfCardCollection.getPrefHeight());
+            card.setPrefWidth(tilePaneOfCardCollection.getPrefWidth()/3);
+            card.setPrefHeight(tilePaneOfCardCollection.getPrefHeight());
             card.setOnMouseClicked(e -> {
                 if (tilePaneOfCardCollection.getChildren().contains(card))
                     doFunctionsForCardCollection(card, pane);
@@ -366,14 +397,14 @@ public class PreGameMenu extends Application {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setContentText("Your deck must have at least 22 unit cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("styles/AlertStyle.css").toExternalForm());
+                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
                 alert.show();
             }
             else if(parsedIntNumberOfSpecialCards>10){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setContentText("Your deck most have no more than 10 special cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("styles/AlertStyle.css").toExternalForm());
+                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
                 alert.show();
             }
             else {

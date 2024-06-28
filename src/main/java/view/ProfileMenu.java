@@ -1,7 +1,7 @@
 package view;
 
 import controller.ProfileMenuController;
-import javafx.animation.PauseTransition;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -103,11 +103,127 @@ public class ProfileMenu extends Application {
         oldPassword = (TextField) scene.lookup("#oldPassword");
         backToMainMenu = (Button) scene.lookup("#backToMainMenu");
 
+        // Set up a timeline for color animation
+        Timeline timelineNickname = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> nickname.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> nickname.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> nickname.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> nickname.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> nickname.setStyle("-fx-text-fill: blue;"))
+        );
+        timelineNickname.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        nickname.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timelineNickname.play();
+            } else {
+                timelineNickname.stop();
+                nickname.setStyle(""); // Reset style when not focused
+            }
+        });
+
+        // Set up a timeline for color animation
+        Timeline timelineUser = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> username.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> username.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> username.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> username.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> username.setStyle("-fx-text-fill: blue;"))
+        );
+        timelineUser.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        username.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timelineUser.play();
+            } else {
+                timelineUser.stop();
+                username.setStyle(""); // Reset style when not focused
+            }
+        });
+
+        // Set up a timeline for color animation
+        Timeline timelineEmail = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> email.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> email.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> email.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> email.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> email.setStyle("-fx-text-fill: blue;"))
+        );
+        timelineEmail.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        email.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timelineEmail.play();
+            } else {
+                timelineEmail.stop();
+                email.setStyle(""); // Reset style when not focused
+            }
+        });
+
+        // Set up a timeline for color animation
+        Timeline timelinePassword = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> password.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> password.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> password.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> password.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> password.setStyle("-fx-text-fill: blue;"))
+        );
+        timelinePassword.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        password.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timelinePassword.play();
+            } else {
+                timelinePassword.stop();
+                password.setStyle(""); // Reset style when not focused
+            }
+        });
+
+        // Set up a timeline for color animation
+        Timeline timelineOldPassword = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> oldPassword.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> oldPassword.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> oldPassword.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> oldPassword.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> oldPassword.setStyle("-fx-text-fill: blue;"))
+        );
+        timelineOldPassword.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        oldPassword.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timelineOldPassword.play();
+            } else {
+                timelineOldPassword.stop();
+                oldPassword.setStyle(""); // Reset style when not focused
+            }
+        });
+
+
         // TODO: 6/24/2024 az comment vardar
         username.setText(User.getLoggedInUser().getUsername());
         nickname.setText(User.getLoggedInUser().getNickname());
         email.setText(User.getLoggedInUser().getEmail());
         password.setText("Enter New Password");
+
+        backToMainMenu.setOnMouseEntered(e -> animateButton(backToMainMenu, 1.1));
+        backToMainMenu.setOnMouseExited(e -> animateButton(backToMainMenu, 1.0));
+
+        changeUsername.setOnMouseEntered(e -> animateButton(changeUsername, 1.1));
+        changeUsername.setOnMouseExited(e -> animateButton(changeUsername, 1.0));
+
+        changeEmail.setOnMouseEntered(e -> animateButton(changeEmail, 1.1));
+        changeEmail.setOnMouseExited(e -> animateButton(changeEmail, 1.0));
+
+        changePassword.setOnMouseEntered(e -> animateButton(changePassword, 1.1));
+        changePassword.setOnMouseExited(e -> animateButton(changePassword, 1.0));
+
+        changeNickname.setOnMouseEntered(e -> animateButton(changeNickname, 1.1));
+        changeNickname.setOnMouseExited(e -> animateButton(changeNickname, 1.0));
 
         backToMainMenu.setOnMouseClicked(mouseEvent -> {
             MainMenu mainMenu = new MainMenu();
@@ -116,6 +232,7 @@ public class ProfileMenu extends Application {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            App.getStage().setFullScreen(true);
         });
 
         changeUsername.setOnMouseClicked(mouseEvent -> {
@@ -126,13 +243,13 @@ public class ProfileMenu extends Application {
                 alert.setContentText("it's the same as your current username");
                 alert.show();
             } else if (result.toString().equals("empty username")) {
-                emptyFieldVideoPlay();
+                emptyFieldVideoPlay(root);
             } else if (result.toString().equals("there is exist an user with this username")) {
-                thereIsExistUserWithUsernameVideoPlay();
+                thereIsExistUserWithUsernameVideoPlay(root);
             } else if (result.toString().equals("wrong username format")) {
-                wrongUsernameFormatVideoPlay();
+                wrongUsernameFormatVideoPlay(root);
             } else if (result.isSuccessful()) {
-                changedSuccessfullyVideoPlay();
+                changedSuccessfullyVideoPlay(root);
             }
         });
         changeNickname.setOnMouseClicked(mouseEvent -> {
@@ -143,25 +260,25 @@ public class ProfileMenu extends Application {
                 alert.setContentText("it's the same as your current nickname");
                 alert.show();
             } else if (result.toString().equals("empty nickname")) {
-                emptyFieldVideoPlay();
+                emptyFieldVideoPlay(root);
             } else if (result.isSuccessful()) {
-                changedSuccessfullyVideoPlay();
+                changedSuccessfullyVideoPlay(root);
             }
 
         });
         changeEmail.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeEmail(email.getText());
             if(result.toString().equals("empty email")){
-                emptyFieldVideoPlay();
+                emptyFieldVideoPlay(root);
             } else if (result.toString().equals("it's the same as your current email")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("change email alert");
                 alert.setContentText("it's the same as your current email");
                 alert.show();
             } else if (result.toString().equals("wrong email format")) {
-                wrongEmailFormatVideoPlay();
+                wrongEmailFormatVideoPlay(root);
             } else if (result.isSuccessful()) {
-                changedSuccessfullyVideoPlay();
+                changedSuccessfullyVideoPlay(root);
             }
         });
         changePassword.setOnMouseClicked(mouseEvent -> {
@@ -177,13 +294,13 @@ public class ProfileMenu extends Application {
                 alert.setContentText("it's the same as your current password");
                 alert.show();
             } else if (result.toString().equals("empty password")) {
-                emptyFieldVideoPlay();
+                emptyFieldVideoPlay(root);
             } else if (result.toString().equals("wrong password format")) {
-                wrongPasswordFormatVideoPlay();
+                wrongPasswordFormatVideoPlay(root);
             } else if (result.toString().equals("weak password")) {
-                weakPasswordVideoPlay();
+                weakPasswordVideoPlay(root);
             } else if (result.isSuccessful()) {
-                changedSuccessfullyVideoPlay();
+                changedSuccessfullyVideoPlay(root);
             }
         });
 
@@ -197,7 +314,7 @@ public class ProfileMenu extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    public void emptyFieldVideoPlay() {
+    public void emptyFieldVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/emptyField.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -205,27 +322,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
-        videoStage.setScene(scene);
-        videoStage.setTitle("Empty Field");
-        videoStage.show();
+//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+//        videoStage.setMinWidth(800);
+//        videoStage.setMinHeight(600);
+//        videoStage.setMaxWidth(800);
+//        videoStage.setMaxHeight(600);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("Empty Field");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void thereIsExistUserWithUsernameVideoPlay() {
+    public void thereIsExistUserWithUsernameVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/thereIsExistUserWithUsername.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -233,27 +351,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 900, 600); // Set the width and height as needed
-        videoStage.setMinWidth(900);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(900);
-        videoStage.setMaxHeight(600);
-        videoStage.setScene(scene);
-        videoStage.setTitle("there Is Exist User With this Username");
-        videoStage.show();
+//        Scene scene = new Scene(root, 900, 600); // Set the width and height as needed
+//        videoStage.setMinWidth(900);
+//        videoStage.setMinHeight(600);
+//        videoStage.setMaxWidth(900);
+//        videoStage.setMaxHeight(600);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("there Is Exist User With this Username");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void wrongUsernameFormatVideoPlay() {
+    public void wrongUsernameFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongUsernameFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -261,27 +380,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
-        videoStage.setScene(scene);
-        videoStage.setTitle("wrong Username Format");
-        videoStage.show();
+//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+//        videoStage.setMinWidth(800);
+//        videoStage.setMinHeight(600);
+//        videoStage.setMaxWidth(800);
+//        videoStage.setMaxHeight(600);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("wrong Username Format");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void changedSuccessfullyVideoPlay() {
+    public void changedSuccessfullyVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/changedSuccessfully.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -289,27 +409,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 1080, 1080); // Set the width and height as needed
-        videoStage.setMinWidth(1080);
-        videoStage.setMinHeight(1080);
-        videoStage.setMaxWidth(1080);
-        videoStage.setMaxHeight(1080);
-        videoStage.setScene(scene);
-        videoStage.setTitle("changed Successfully");
-        videoStage.show();
+//        Scene scene = new Scene(root, 1080, 1080); // Set the width and height as needed
+//        videoStage.setMinWidth(1080);
+//        videoStage.setMinHeight(1080);
+//        videoStage.setMaxWidth(1080);
+//        videoStage.setMaxHeight(1080);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("changed Successfully");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void wrongEmailFormatVideoPlay() {
+    public void wrongEmailFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongEmailFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -317,27 +438,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
-        videoStage.setScene(scene);
-        videoStage.setTitle("wrong Email Format");
-        videoStage.show();
+//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+//        videoStage.setMinWidth(800);
+//        videoStage.setMinHeight(600);
+//        videoStage.setMaxWidth(800);
+//        videoStage.setMaxHeight(600);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("wrong Email Format");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void wrongPasswordFormatVideoPlay() {
+    public void wrongPasswordFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPasswordFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -345,27 +467,28 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(600);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(600);
-        videoStage.setScene(scene);
-        videoStage.setTitle("wrong Password Format");
-        videoStage.show();
+//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
+//        videoStage.setMinWidth(800);
+//        videoStage.setMinHeight(600);
+//        videoStage.setMaxWidth(800);
+//        videoStage.setMaxHeight(600);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("wrong Password Format");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
-    public void weakPasswordVideoPlay() {
+    public void weakPasswordVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/weakPassword.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -373,25 +496,34 @@ public class ProfileMenu extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
 
         // Create a new stage (window) for the video
-        Stage videoStage = new Stage();
-        StackPane root = new StackPane();
+//        Stage videoStage = new Stage();
+//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
-        videoStage.setMinWidth(800);
-        videoStage.setMinHeight(500);
-        videoStage.setMaxWidth(800);
-        videoStage.setMaxHeight(500);
-        videoStage.setScene(scene);
-        videoStage.setTitle("weak Password");
-        videoStage.show();
+//        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
+//        videoStage.setMinWidth(800);
+//        videoStage.setMinHeight(500);
+//        videoStage.setMaxWidth(800);
+//        videoStage.setMaxHeight(500);
+//        videoStage.setScene(scene);
+//        videoStage.setTitle("weak Password");
+//        videoStage.show();
 
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
-            videoStage.close();
+//            videoStage.close();
+            root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
+    }
+    private void animateButton(Button button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
     }
     public void changeUsername() {
 

@@ -4,6 +4,48 @@
     src: url('Thewitcher-jnOj.ttf');
 }
 
+/*#yourRandomPassword{*/
+/*    -fx-text-fill: #979797 !important;*/
+/*}*/
+
+/* witcher-theme.css */
+.tile-pane {
+    -fx-background-color: #1a1a1a; /* Dark background */
+    -fx-padding: 20;
+}
+
+.user-box {
+    -fx-border-color: #444444;
+    -fx-border-width: 2px;
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 10, 0, 0, 0);
+    -fx-transition: transform 0.3s ease, background-color 0.3s ease;
+    -fx-transform-origin: center;
+}
+
+.user-box:hover {
+    -fx-background-color: #383838;
+    /*-fx-transform: scale(1.1);*/
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 20, 0, 0, 0);
+    -fx-transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.rank-label {
+    -fx-font-family: "thewitcher", fantasy;
+    -fx-font-size: 18px;
+    -fx-text-fill: #ffffff;
+}
+
+.score-label {
+    -fx-font-family: "thewitcher", fantasy;
+    -fx-font-size: 16px;
+    -fx-text-fill: #cccccc;
+}
+
 
 /* Button style */
 .button {
@@ -13,12 +55,12 @@
     -fx-border-width: 2px;
     -fx-font-size: 18px; /* Larger font size */
     -fx-font-family: thewitcher; /* Applying the new font */
-    -fx-padding: 15px 30px; /* Larger padding */
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0.5, 0, 0);
-    -fx-background-radius: 5px;
-    -fx-border-radius: 5px;
-    -fx-transition: all 0.3s ease-in-out;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 10, 0, 0, 0);
+    -fx-transition: transform 0.3s ease, background-color 0.3s ease;
+    -fx-transform-origin: center;
 }
 
 /* Button hover style */
@@ -26,15 +68,15 @@
     -fx-background-color: #670000; /* Red background on hover */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-color: #4e4e4e; /* Dark grey border */
-    -fx-scale-x: 1.1; /* Scale up the button on hover */
-    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 20, 0, 0, 0);
+    -fx-transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 /* Button click style */
 .button:pressed {
     -fx-background-color: #8b0000; /* Darker red on click */
-    -fx-scale-x: 1.0; /* Reset scale on click */
-    -fx-scale-y: 1.0;
+    /*-fx-transform: scale(0.95);*/
+    -fx-transition: transform 0.1s ease-in-out, background-color 0.1s ease-in-out;
 }
 
 /* Text field style */
@@ -81,4 +123,21 @@
 .button:hover {
     -fx-scale-x: 1.1; /* Scale up the button on hover */
     -fx-scale-y: 1.1;
+}
+
+#yourRandomPassword{
+    -fx-fill: #979797 !important;
+}
+
+/* Adding typing animation */
+.typing {
+    animation: colorChange 1s infinite;
+}
+
+@keyframes colorChange {
+    0% { color: red; }
+    25% { color: orange; }
+    50% { color: yellow; }
+    75% { color: green; }
+    100% { color: blue; }
 }
