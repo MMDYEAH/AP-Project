@@ -76,28 +76,28 @@ public class PreGameMenu extends Application {
     }
 
     private void addCardsOfNorthernRealmsFactionToScrollPane(Pane pane) {
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setWidth(leaderCard.getPrefWidth());
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setHeight(leaderCard.getPrefHeight());
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth() * 3 / 4);
+        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight() * 3 / 4);
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
         for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
-            card.setWidth(card.getWidth() * 3 / 4);
-            card.setHeight(card.getHeight() * 3 / 4);
+            card.setPrefWidth(card.getPrefWidth() * 3 / 4);
+            card.setPrefHeight(card.getPrefHeight() * 3 / 4);
             card.setOnMouseClicked(e -> {
                 //TODO : you should run the code i commented when other menus completed
                 //User.getLoggedInUser().getPlayBoard().getDeckUnit().addCardToUnit(card);
                 tilePaneOfCardsInDeck.getChildren().add(card);
                 int numberOfTotalCards = Integer.parseInt(totalCardsInDeck.getText());
-                numberOfTotalCards+=1;
+                numberOfTotalCards += 1;
                 totalCardsInDeck.setText(String.valueOf(numberOfTotalCards));
-                if((card instanceof UnitCard)){
+                if ((card instanceof UnitCard)) {
                     int parsedIntNumberOfUnitCards = Integer.parseInt(numberOfUnitCards.getText());
-                    parsedIntNumberOfUnitCards+=1;
+                    parsedIntNumberOfUnitCards += 1;
                     numberOfUnitCards.setText(String.valueOf(parsedIntNumberOfUnitCards));
-                    if(parsedIntNumberOfUnitCards>22) pane.getChildren().remove(slashAnd22);
+                    if (parsedIntNumberOfUnitCards > 22) pane.getChildren().remove(slashAnd22);
                     int parsedIntStrengthOfCards = Integer.parseInt(strengthOfCards.getText());
                     parsedIntStrengthOfCards += ((UnitCard) card).getPower();
                     strengthOfCards.setText(String.valueOf(parsedIntStrengthOfCards));
-                    if(((UnitCard) card).isLegendary()){
+                    if (((UnitCard) card).isLegendary()) {
                         int parsedIntnumberOfHeroCards = Integer.parseInt(numberOfHeroCards.getText());
                         parsedIntnumberOfHeroCards += 1;
                         numberOfHeroCards.setText(String.valueOf(parsedIntnumberOfHeroCards));
@@ -108,7 +108,6 @@ public class PreGameMenu extends Application {
         }
 
     }
-
 
 
     public static void main(String[] args) {
@@ -124,7 +123,7 @@ public class PreGameMenu extends Application {
         current.setRangedCombatUnit(new RangedCombatUnit());
         current.setSiegeUnit(new SiegeUnit());
         current.setHandUnit(new HandUnit());
-        PlayBoard next= new PlayBoard();
+        PlayBoard next = new PlayBoard();
         next.setCloseCombatUnit(new CloseCombatUnit());
         next.setDiscardPileUnit(new DiscardPileUnit());
         next.setRangedCombatUnit(new RangedCombatUnit());
@@ -132,10 +131,10 @@ public class PreGameMenu extends Application {
         next.setHandUnit(new HandUnit());
         User.getLoggedInUser().setPlayBoard(current);
         User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
-        User enemy = new User("a","a","a","a");
+        User enemy = new User("a", "a", "a", "a");
         enemy.setPlayBoard(next);
         enemy.getPlayBoard().setDeckUnit(deckUnit);
-        Game.setCurrentGame(new Game(User.getLoggedInUser(),enemy,new Date()));
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));
         Game.getCurrentGame().setSpellUnit(new SpellUnit());
         Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
         Game.getCurrentGame().setNextUser(enemy);

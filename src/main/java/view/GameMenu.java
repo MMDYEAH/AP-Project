@@ -90,8 +90,8 @@ public class GameMenu extends Application {
             setCardOnMouseCliked(card);
             chosenCard = card;
             if (number > 9) break;
-            card.setWidth(50);
-            card.setHeight(90);
+            card.setPrefWidth(50);
+            card.setPrefHeight(90);
             tilePane.getChildren().add(card);
             number++;
         }
@@ -113,7 +113,7 @@ public class GameMenu extends Application {
         nextClose = nextPlayBoard.getCloseCombatUnit().getCards();
         nextRanged = nextPlayBoard.getRangedCombatUnit().getCards();
         nextSiege = nextPlayBoard.getSiegeUnit().getCards();
-        currentHand.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        currentHand.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     tilePane.getChildren().addAll(change.getAddedSubList());
@@ -122,61 +122,68 @@ public class GameMenu extends Application {
                 }
             }
         });
-        currentClose.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        currentClose.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     myCloseTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     myCloseTile.getChildren().removeAll(change.getRemoved());
                 }
+                myClosePower.setText(Integer.toString(currentPlayBoard.getCloseCombatUnit().getUnitPower()));
             }
         });
-        currentRanged.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        currentRanged.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     myRangedTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     myRangedTile.getChildren().removeAll(change.getRemoved());
                 }
+                myRangedPower.setText(Integer.toString(currentPlayBoard.getRangedCombatUnit().getUnitPower()));
             }
         });
-        currentSiege.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        currentSiege.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     mySiegeTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     mySiegeTile.getChildren().removeAll(change.getRemoved());
                 }
+                mySiegePower.setText(Integer.toString(currentPlayBoard.getSiegeUnit().getUnitPower()));
             }
         });
-        nextClose.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        nextClose.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     enemyCloseTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     enemyCloseTile.getChildren().removeAll(change.getRemoved());
                 }
+                enemyClosePower.setText(Integer.toString(nextPlayBoard.getCloseCombatUnit().getUnitPower()));
             }
+
         });
-        nextRanged.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        nextRanged.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     enemyRangedTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     enemyRangedTile.getChildren().removeAll(change.getRemoved());
                 }
+                enemyRangedPower.setText(Integer.toString(nextPlayBoard.getRangedCombatUnit().getUnitPower()));
             }
         });
-        nextSiege.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        nextSiege.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     enemySiegeTile.getChildren().addAll(change.getAddedSubList());
                 } else if (change.wasRemoved()) {
                     enemySiegeTile.getChildren().removeAll(change.getRemoved());
                 }
+                enemySiegePower.setText(Integer.toString(nextPlayBoard.getSiegeUnit().getUnitPower()));
             }
         });
-        weatherUnit.addListener((ListChangeListener.Change<? extends Node> change) -> {
+        weatherUnit.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     spellTile.getChildren().addAll(change.getAddedSubList());
