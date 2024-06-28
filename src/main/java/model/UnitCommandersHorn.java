@@ -9,7 +9,20 @@ public class UnitCommandersHorn extends UnitCard{
     public void apply() {
         for (Card card : unit.cards) {
             UnitCard unitCard = (UnitCard) card;
-            if (!unitCard.isLegendary) unitCard.setPower(unitCard.getPower() * 2);
+            if (unitCard instanceof TightBound){
+                int similars = 0;
+                for (Card c : unit.cards){
+                    if (c.getName().equals(unitCard.getName())) similars++;
+                }
+                if (!unitCard.isLegendary) {
+                    if (unitCard.getPower() < unitCard.getFirstPower()*similars*2)
+                        unitCard.setPower(unitCard.getPower() * 2);
+                }
+            }
+            if (!unitCard.isLegendary && !(card instanceof UnitCommandersHorn)) {
+                if (unitCard.getPower() < unitCard.getFirstPower()*2)
+                    unitCard.setPower(unitCard.getPower() * 2);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ public abstract class WarUnit extends Unit{
     public int getUnitPower(){
         int power = 0;
         for (Card card : cards){
-            power += ((UnitCard)card).power;
+            if (card instanceof  UnitCard) power += ((UnitCard)card).power;
         }
         return power;
     }

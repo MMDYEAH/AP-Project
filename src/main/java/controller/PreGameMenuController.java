@@ -4,6 +4,7 @@ import model.*;
 import view.PreGameMenu;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PreGameMenuController {
     PreGameMenu preGameMenu;
@@ -49,6 +50,30 @@ public class PreGameMenuController {
         App.setSkelligeFaction(skelligeFaction);
         App.setRealmsNorthenFaction(realmsNorthenFaction);
         //TODO: set unit of all cards
+        DeckUnit deckUnit = new DeckUnit();
+        deckUnit.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
+        PlayBoard currentPlayBoard = new PlayBoard();
+        currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
+        currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
+        currentPlayBoard.setRangedCombatUnit(new RangedCombatUnit());
+        currentPlayBoard.setSiegeUnit(new SiegeUnit());
+        currentPlayBoard.setHandUnit(new HandUnit());
+        PlayBoard next = new PlayBoard();
+        next.setCloseCombatUnit(new CloseCombatUnit());
+        next.setDiscardPileUnit(new DiscardPileUnit());
+        next.setRangedCombatUnit(new RangedCombatUnit());
+        next.setSiegeUnit(new SiegeUnit());
+        next.setHandUnit(new HandUnit());
+        User.getLoggedInUser().setPlayBoard(currentPlayBoard);
+        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
+        User enemy = new User("a", "a", "a", "a");
+        enemy.setPlayBoard(next);
+        enemy.getPlayBoard().setDeckUnit(deckUnit);
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));
+        Game.getCurrentGame().setSpellUnit(new SpellUnit());
+        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
+        Game.getCurrentGame().setNextUser(enemy);
+        //TODO: remove up code and write it correctly
     }
 
     private void addScoiataelCard(ArrayList<Card> scoiataelUnitCards) {

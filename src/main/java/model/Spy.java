@@ -12,13 +12,14 @@ public class Spy extends UnitCard {
 
     @Override
     public void apply() {
-        ObservableList<Card> deckCards = Game.getCurrentGame().currentUser.getPlayBoard().deckUnit.cards;
+        ObservableList<Card> deckCards = Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().cards;
         for (int i = 0; i < 2; i++) {
             if (deckCards.isEmpty()) break;
             Random random = new Random();
             Card card = deckCards.get(random.nextInt(0, deckCards.size() - 1));
             deckCards.remove(card);
-            card.setUnit(Game.getCurrentGame().currentUser.getPlayBoard().handUnit);
+            Game.currentGame.getCurrentUser().getPlayBoard().getHandUnit().addCardToUnit(card);
+            card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getHandUnit());
         }
     }
 }

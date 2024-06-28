@@ -9,7 +9,10 @@ public class CommandersHorn extends Card{
     public void apply() {
         for (Card card : unit.cards) {
             UnitCard unitCard = (UnitCard) card;
-            if (!unitCard.isLegendary) unitCard.setPower(unitCard.getPower() * 2);
+            if (!unitCard.isLegendary) {
+                if (unitCard.getPower() < unitCard.getFirstPower()*2)
+                    unitCard.setPower(unitCard.getPower() * 2);
+            }
         }
     }
 }

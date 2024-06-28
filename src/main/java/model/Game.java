@@ -1,5 +1,6 @@
 package model;
 
+import controller.GameMenuController;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Game {
     protected int myFinalScore,enemyFinalScore,roundNumber;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
     protected SpellUnit spellUnit;
-
+    private GameMenuController controller;
     protected boolean mePassRound, enemyPassRound;
 
     public Game(User me, User enemy, Date date) {
@@ -139,4 +140,11 @@ public class Game {
         this.spellUnit = spellUnit;
     }
 
+    public GameMenuController getController() {
+        return controller;
+    }
+
+    public void setController(GameMenuController controller) {
+        this.controller = controller;
+    }
 }
