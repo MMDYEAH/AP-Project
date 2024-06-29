@@ -19,83 +19,55 @@ public class PreGameMenuController {
         addNorthernRealmsFactionCards(realmsNorthernFactionCards);
         addNorthernRealmsCard(realmsNorthernUnitCards);
         addNaturalCards(realmsNorthernUnitCards);
-        RealmsNorthenFaction realmsNorthenFaction= new RealmsNorthenFaction(realmsNorthernFactionCards,realmsNorthernUnitCards);
+        RealmsNorthenFaction realmsNorthenFaction = new RealmsNorthenFaction(realmsNorthernFactionCards, realmsNorthernUnitCards);
         ArrayList<FactionLeaderCard> monstersFactionCards = new ArrayList<>();
         ArrayList<Card> monstersUnitCards = new ArrayList<>();
         addMonstersFactionCards(monstersFactionCards);
         addMonstersCard(monstersUnitCards);
         addNaturalCards(monstersUnitCards);
-        MonstersFaction monstersFaction= new MonstersFaction(monstersFactionCards,monstersUnitCards);
+        MonstersFaction monstersFaction = new MonstersFaction(monstersFactionCards, monstersUnitCards);
         ArrayList<FactionLeaderCard> nilfgaardFactionCards = new ArrayList<>();
         ArrayList<Card> nilfgaardUnitCards = new ArrayList<>();
         addNilfgaardFactionCards(nilfgaardFactionCards);
         addNilfgaardCard(nilfgaardUnitCards);
         addNaturalCards(nilfgaardUnitCards);
-        EmpireNilfgaardianFaction empireNilfgaardianFaction= new EmpireNilfgaardianFaction(nilfgaardFactionCards,nilfgaardUnitCards);
+        EmpireNilfgaardianFaction empireNilfgaardianFaction = new EmpireNilfgaardianFaction(nilfgaardFactionCards, nilfgaardUnitCards);
         ArrayList<FactionLeaderCard> skelligeFactionCards = new ArrayList<>();
         ArrayList<Card> skelligeUnitCards = new ArrayList<>();
         addSkelligeFactionCards(skelligeFactionCards);
         addSkelligeCard(skelligeUnitCards);
         addNaturalCards(skelligeUnitCards);
-        SkelligeFaction skelligeFaction= new SkelligeFaction(skelligeFactionCards,skelligeUnitCards);
+        SkelligeFaction skelligeFaction = new SkelligeFaction(skelligeFactionCards, skelligeUnitCards);
         ArrayList<FactionLeaderCard> scoiataelFactionCards = new ArrayList<>();
         ArrayList<Card> scoiataelUnitCards = new ArrayList<>();
         addScoiataelFactionCards(scoiataelFactionCards);
         addScoiataelCard(scoiataelUnitCards);
         addNaturalCards(scoiataelUnitCards);
-        ScoiataelFaction scoiataelFaction= new ScoiataelFaction(scoiataelFactionCards,scoiataelUnitCards);
+        ScoiataelFaction scoiataelFaction = new ScoiataelFaction(scoiataelFactionCards, scoiataelUnitCards);
         App.setEmpireNilfgaardianFaction(empireNilfgaardianFaction);
         App.setMonstersFaction(monstersFaction);
         App.setScoiataelFaction(scoiataelFaction);
         App.setSkelligeFaction(skelligeFaction);
         App.setRealmsNorthenFaction(realmsNorthenFaction);
         //TODO: set unit of all cards
-        DeckUnit deckUnit = new DeckUnit();
-        deckUnit.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
-        DeckUnit deckUnit2 = new DeckUnit();
-        deckUnit2.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
-        PlayBoard currentPlayBoard = new PlayBoard();
-        currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
-        currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
-        currentPlayBoard.setRangedCombatUnit(new RangedCombatUnit());
-        currentPlayBoard.setSiegeUnit(new SiegeUnit());
-        currentPlayBoard.setHandUnit(new HandUnit());
-        PlayBoard next = new PlayBoard();
-        next.setCloseCombatUnit(new CloseCombatUnit());
-        next.setDiscardPileUnit(new DiscardPileUnit());
-        next.setRangedCombatUnit(new RangedCombatUnit());
-        next.setSiegeUnit(new SiegeUnit());
-        next.setHandUnit(new HandUnit());
-        User.getLoggedInUser().setPlayBoard(currentPlayBoard);
-        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
-        User enemy = new User("a", "a", "a", "a");
-        enemy.setPlayBoard(next);
-        enemy.getPlayBoard().setDeckUnit(deckUnit2);
-        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));
-        Game.getCurrentGame().setSpellUnit(new SpellUnit());
-        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
-        Game.getCurrentGame().setNextUser(enemy);
-        Game.getCurrentGame().setMe(User.getLoggedInUser());
-        Game.getCurrentGame().setEnemy(enemy);
-        //TODO: remove up code and write it correctly
     }
 
     private void addScoiataelCard(ArrayList<Card> scoiataelUnitCards) {
         for (int i = 0; i < 2; i++) {
             scoiataelUnitCards.add(new Solider("Vrihedd Brigade Veteran <agile>", 5, false
-                    , this.getClass().getResource("/pics/scoiatael/VriheddBrigadeVeteran"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/VriheddBrigadeVeteran" + (i + 1) + ".jpg").toExternalForm()));
         }
         for (int i = 0; i < 3; i++) {
             scoiataelUnitCards.add(new Muster("Elven Skirmisher <ranged>", 2, false
-                    , this.getClass().getResource("/pics/scoiatael/ElvenSkirmisher"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/ElvenSkirmisher" + (i + 1) + ".jpg").toExternalForm()));
             scoiataelUnitCards.add(new Solider("Dol Blathanna Scout <agile>", 6, false
-                    , this.getClass().getResource("/pics/scoiatael/DolBlathannaScout"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/DolBlathannaScout" + (i + 1) + ".jpg").toExternalForm()));
             scoiataelUnitCards.add(new Muster("Dwarven Skirmisher <close>", 3, false
-                    , this.getClass().getResource("/pics/scoiatael/DwarvenSkirmisher"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/DwarvenSkirmisher" + (i + 1) + ".jpg").toExternalForm()));
             scoiataelUnitCards.add(new Medic("Havekar Healer <ranged>", 0, false
-                    , this.getClass().getResource("/pics/scoiatael/HavekarHealer"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/HavekarHealer" + (i + 1) + ".jpg").toExternalForm()));
             scoiataelUnitCards.add(new Muster("Havekar Smuggler <close>", 5, false
-                    , this.getClass().getResource("/pics/scoiatael/HavekarSmuggler"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/scoiatael/HavekarSmuggler" + (i + 1) + ".jpg").toExternalForm()));
         }
         scoiataelUnitCards.add(new Solider("Yaevinn <agile>", 6, false
                 , this.getClass().getResource("/pics/scoiatael/Yaevinn.jpg").toExternalForm()));
@@ -143,7 +115,7 @@ public class PreGameMenuController {
             skelligeUnitCards.add(new Mardroeme("Mardroeme <spell>"
                     , this.getClass().getResource("/pics/skellige/Mardroeme.jpg").toExternalForm()));
             skelligeUnitCards.add(new TightBound("Clan Drummond Shieldmaiden <close>", 6, false
-                    , this.getClass().getResource("/pics/skellige/ClanDrummondShieldmaiden"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/skellige/ClanDrummondShieldmaiden" + (i + 1) + ".jpg").toExternalForm()));
             skelligeUnitCards.add(new Solider("Clan Brokvar Archer <ranged>", 6, false
                     , this.getClass().getResource("/pics/skellige/ClanBrokvarArcher.jpg").toExternalForm()));
             skelligeUnitCards.add(new TightBound("Clan An Craite <close>", 6, false
@@ -212,11 +184,11 @@ public class PreGameMenuController {
     private void addMonstersCard(ArrayList<Card> monstersUnitCards) {
         for (int i = 0; i < 3; i++) {
             monstersUnitCards.add(new Muster("Arachas <close>", 4, false
-                    , this.getClass().getResource("/pics/monsters/Arachas"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/monsters/Arachas" + (i + 1) + ".jpg").toExternalForm()));
             monstersUnitCards.add(new Muster("Nekker <close>", 2, false
-                    , this.getClass().getResource("/pics/monsters/Nekker"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/monsters/Nekker" + (i + 1) + ".jpg").toExternalForm()));
             monstersUnitCards.add(new Muster("Ghoul <close>", 1, false
-                    , this.getClass().getResource("/pics/monsters/Ghoul"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/monsters/Ghoul" + (i + 1) + ".jpg").toExternalForm()));
         }
         monstersUnitCards.add(new Solider("Draug <close>", 10, true
                 , this.getClass().getResource("/pics/monsters/Draug.jpg").toExternalForm()));
@@ -303,13 +275,13 @@ public class PreGameMenuController {
             realmsNorthernUnitCards.add(new Solider("Ballista <siege>", 6, false
                     , this.getClass().getResource("/pics/northenRealms/Ballista.jpg").toExternalForm()));
             realmsNorthernUnitCards.add(new Solider("Redanian Foot Soldier <close>", 1, false
-                    , this.getClass().getResource("/pics/northenRealms/RedanianFootSoldier"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/northenRealms/RedanianFootSoldier" + (i + 1) + ".jpg").toExternalForm()));
             realmsNorthernUnitCards.add(new TightBound("Catapult <siege>", 8, false
                     , this.getClass().getResource("/pics/northenRealms/Catapult.jpg").toExternalForm()));
         }
         for (int i = 0; i < 3; i++) {
             realmsNorthernUnitCards.add(new MoralBooster("Kaedweni Siege Expert <siege>", 1, false
-                    , this.getClass().getResource("/pics/northenRealms/KaedweniSiegeExpert"+(i+1)+".jpg").toExternalForm()));
+                    , this.getClass().getResource("/pics/northenRealms/KaedweniSiegeExpert" + (i + 1) + ".jpg").toExternalForm()));
             realmsNorthernUnitCards.add(new TightBound("Dragon Hunter <ranged>", 5, false
                     , this.getClass().getResource("/pics/northenRealms/DragonHunter.jpg").toExternalForm()));
         }
@@ -346,6 +318,7 @@ public class PreGameMenuController {
         realmsNorthernUnitCards.add(new Solider("Yarpen Zirgrin <close>", 2, false
                 , this.getClass().getResource("/pics/northenRealms/YarpenZirgrin.jpg").toExternalForm()));
     }
+
     private void addNaturalCards(ArrayList<Card> UnitCards) {
         for (int i = 0; i < 3; i++) {
             UnitCards.add(new BitingFrost("BitingFrost <weather>"

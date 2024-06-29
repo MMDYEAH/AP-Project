@@ -25,17 +25,17 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.App;
-import model.User;
+import model.*;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
 
 public class MainMenu extends Application {
-//    @FXML
+    //    @FXML
 //    Button exitPointChart;
 //    @FXML
 //    public ScrollPane scrollPaneRanking;
@@ -137,6 +137,7 @@ public class MainMenu extends Application {
     }
 
     public void toGame(Stage stage) {
+        initialize();
         PreGameMenu preGameMenu = new PreGameMenu();
         try {
             preGameMenu.start(App.getStage());
@@ -144,6 +145,34 @@ public class MainMenu extends Application {
             throw new RuntimeException(e);
         }
         stage.setFullScreen(true);
+    }
+
+    private void initialize() {
+        DeckUnit deckUnit = new DeckUnit();
+        DeckUnit deckUnit2 = new DeckUnit();
+        PlayBoard currentPlayBoard = new PlayBoard();
+        currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
+        currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
+        currentPlayBoard.setRangedCombatUnit(new RangedCombatUnit());
+        currentPlayBoard.setSiegeUnit(new SiegeUnit());
+        currentPlayBoard.setHandUnit(new HandUnit());
+        PlayBoard next = new PlayBoard();
+        next.setCloseCombatUnit(new CloseCombatUnit());
+        next.setDiscardPileUnit(new DiscardPileUnit());
+        next.setRangedCombatUnit(new RangedCombatUnit());
+        next.setSiegeUnit(new SiegeUnit());
+        next.setHandUnit(new HandUnit());
+        User.getLoggedInUser().setPlayBoard(currentPlayBoard);
+        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
+        User enemy = new User("a", "a", "a", "a"); //TODO: change it
+        enemy.setPlayBoard(next);
+        enemy.getPlayBoard().setDeckUnit(deckUnit2);
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));//TODO: change date
+        Game.getCurrentGame().setSpellUnit(new SpellUnit());
+        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
+        Game.getCurrentGame().setNextUser(enemy);
+        Game.getCurrentGame().setMe(User.getLoggedInUser());
+        Game.getCurrentGame().setEnemy(enemy);
     }
 
     public void pointChart(StackPane root) throws IOException {

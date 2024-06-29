@@ -1,7 +1,6 @@
 package model;
 
 import controller.GameMenuController;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 public class Game {
     protected User me, enemy,Winner,currentUser,nextUser;
     protected Date date;
-    protected int myFinalScore,enemyFinalScore,roundNumber;
+    protected int myFinalScore,enemyFinalScore, turnNumber;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
     protected SpellUnit spellUnit;
     private GameMenuController controller;
@@ -60,12 +59,12 @@ public class Game {
         this.roundsScore = roundsScore;
     }
 
-    public int getRoundNumber() {
-        return roundNumber;
+    public int getTurnNumber() {
+        return turnNumber;
     }
 
-    public void setRoundNumber(int roundNumber) {
-        this.roundNumber = roundNumber;
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
     }
 
     public boolean isMePassRound() {
