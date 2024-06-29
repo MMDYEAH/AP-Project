@@ -4,41 +4,30 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LoginMenu">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LoginMenu">
     <children>
-        <TextField fx:id="username" layoutX="55.0" layoutY="41.0" prefHeight="60.0" prefWidth="245.0"
-                   promptText="username" styleClass="text-field"/>
-        <PasswordField fx:id="password" layoutX="55.0" layoutY="137.0" prefHeight="60.0" prefWidth="245.0"
-                       promptText="password" styleClass="password-field"/>
-        <PasswordField fx:id="passwordConfirm" layoutX="55.0" layoutY="248.0" prefHeight="60.0" prefWidth="245.0"
-                       promptText="password confirm" styleClass="password-field"/>
-        <Button fx:id="signUp" layoutX="57.0" layoutY="585.0" mnemonicParsing="false" prefHeight="133.0"
-                prefWidth="185.0" text="sign-up">
+        <TextField fx:id="username" layoutX="55.0" layoutY="41.0" prefHeight="60.0" prefWidth="245.0" promptText="username" styleClass="text-field" text="mmd" />
+        <PasswordField fx:id="password" layoutX="55.0" layoutY="137.0" prefHeight="60.0" prefWidth="245.0" promptText="password" styleClass="password-field" text="Mm12345@" />
+        <PasswordField fx:id="passwordConfirm" layoutX="55.0" layoutY="248.0" prefHeight="60.0" prefWidth="245.0" promptText="password confirm" styleClass="password-field" text="Mm12345@" />
+        <Button fx:id="signUp" layoutX="57.0" layoutY="585.0" mnemonicParsing="false" prefHeight="133.0" prefWidth="185.0" text="sign-up">
             <font>
-                <Font size="24.0"/>
+                <Font size="24.0" />
             </font>
         </Button>
-        <Button layoutX="286.0" fx:id="login" layoutY="585.0" mnemonicParsing="false" prefHeight="133.0"
-                prefWidth="185.0" text="log-in">
+        <Button fx:id="login" layoutX="286.0" layoutY="585.0" mnemonicParsing="false" prefHeight="133.0" prefWidth="185.0" text="log-in">
             <font>
-                <Font size="31.0"/>
+                <Font size="31.0" />
             </font>
         </Button>
-        <TextField fx:id="nickname" layoutX="55.0" layoutY="359.0" prefHeight="60.0" prefWidth="245.0"
-                   promptText="nickname" styleClass="text-field"/>
-        <TextField fx:id="email" layoutX="55.0" layoutY="469.0" prefHeight="60.0" prefWidth="245.0" promptText="email"
-                   styleClass="text-field"/>
-        <Button fx:id="randomPassword" layoutX="432.0" layoutY="278.0" mnemonicParsing="false"
-                onMouseClicked="#randomPasswordSet" prefHeight="60.0" prefWidth="203.0" text="random password"/>
-        <Text fx:id="yourRandomPassword" layoutX="460.0" layoutY="402.0" strokeType="OUTSIDE" strokeWidth="0.0" text=""
-              textAlignment="CENTER">
+        <TextField fx:id="nickname" layoutX="55.0" layoutY="359.0" prefHeight="60.0" prefWidth="245.0" promptText="nickname" styleClass="text-field" text="mmd" />
+        <TextField fx:id="email" layoutX="55.0" layoutY="469.0" prefHeight="60.0" prefWidth="245.0" promptText="email" styleClass="text-field" text="m@gmail.com" />
+        <Button fx:id="randomPassword" layoutX="432.0" layoutY="278.0" mnemonicParsing="false" onMouseClicked="#randomPasswordSet" prefHeight="60.0" prefWidth="203.0" text="random password" />
+        <Text fx:id="yourRandomPassword" layoutX="460.0" layoutY="402.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER">
             <font>
-                <Font size="32.0"/>
+                <Font size="32.0" />
             </font>
         </Text>
-        <Button fx:id="chooseRandomPassword" layoutX="451.0" layoutY="442.0" mnemonicParsing="false"
-                onMouseClicked="#chooseRandomPassword" prefHeight="75.0" prefWidth="170.0" text="choose it"/>
+        <Button fx:id="chooseRandomPassword" layoutX="451.0" layoutY="442.0" mnemonicParsing="false" onMouseClicked="#chooseRandomPassword" prefHeight="75.0" prefWidth="170.0" text="choose it" />
         <!--      <Button fx:id="securityQuestion" layoutX="413.0" layoutY="113.0" mnemonicParsing="false" onMouseClicked="#securityQuestion" prefHeight="75.0" prefWidth="160.0" text="security question" />-->
         <!--      <ComboBox layoutX="255.0" fx:id="questionCombo" layoutY="48.0" prefHeight="51.0" prefWidth="201.0" promptText="Choose a question">-->
         <!--              <items>-->

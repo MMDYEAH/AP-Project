@@ -5,37 +5,38 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1262.0" stylesheets="@styles/preGameMenu.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.PreGameMenu">
-   <children>
-      <Text layoutX="644.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total cards in deck" />
-      <ScrollPane fx:id="scrollPaneOfCardCollection" layoutX="122.0" layoutY="126.0" prefHeight="547.0" prefWidth="458.0">
-         <content>
-            <TilePane fx:id="tilePaneOfCardCollection" prefHeight="310.0" prefWidth="456.0" />
-         </content></ScrollPane>
-      <ScrollPane fx:id="scrollPaneOfCardsInDeck" layoutX="794.0" layoutY="127.0" prefHeight="547.0" prefWidth="458.0">
-         <content>
-            <TilePane fx:id="tilePaneOfCardsInDeck" prefHeight="310.0" prefWidth="456.0" />
-         </content></ScrollPane>
-      <Text fx:id="totalCardsInDeck" layoutX="691.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" />
-      <Text layoutX="636.0" layoutY="446.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Unit Cards" />
-      <Text fx:id="numberOfUnitCards" layoutX="681.0" layoutY="475.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text fx:id="slashAnd22" layoutX="695.0" layoutY="474.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/22" />
-      <Text layoutX="660.0" layoutY="507.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Cards" />
-      <Text fx:id="numberOfSpecialCards" layoutX="681.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text layoutX="695.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/10" />
-      <Text layoutX="632.0" layoutY="576.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Unit Card Strength" />
-      <Text fx:id="strengthOfCards" layoutX="693.0" layoutY="604.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text layoutX="665.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hero Cards" />
-      <Text fx:id="numberOfHeroCards" layoutX="692.0" layoutY="667.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text layoutX="671.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader">
-         <font>
-            <Font name="Arial" size="12.0" />
-         </font></Text>
-      <TilePane fx:id="leaderCard" layoutX="612.0" layoutY="113.0" prefHeight="246.0" prefWidth="147.0" />
-      <Text layoutX="309.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Card Collection" />
-      <Text layoutX="999.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards in Deck" />
-      <Text fx:id="changeFaction" layoutX="645.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Faction" />
-      <ImageView fx:id="buttonOfChangeLeaderCardToNext" fitHeight="25.0" fitWidth="26.0" layoutX="764.0" layoutY="224.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="buttonOfChangeLeaderCardToPrevious" fitHeight="25.0" fitWidth="26.0" layoutX="586.0" layoutY="224.0" pickOnBounds="true" preserveRatio="true" />
-   </children>
+<AnchorPane prefHeight="700.0" prefWidth="1262.0" stylesheets="@styles/preGameMenu.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.PreGameMenu">
+    <children>
+        <Text layoutX="708.0" layoutY="397.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total cards in deck" textAlignment="CENTER" />
+        <ScrollPane fx:id="scrollPaneOfCardCollection" layoutX="145.0" layoutY="154.0" opacity="0.6" prefHeight="670.0" prefWidth="458.0">
+            <content>
+                <TilePane fx:id="tilePaneOfCardCollection" prefHeight="310.0" prefWidth="456.0" />
+            </content></ScrollPane>
+        <ScrollPane fx:id="scrollPaneOfCardsInDeck" layoutX="990.0" layoutY="155.0" opacity="0.6" prefHeight="670.0" prefWidth="458.0">
+            <content>
+                <TilePane fx:id="tilePaneOfCardsInDeck" prefHeight="310.0" prefWidth="456.0" />
+            </content></ScrollPane>
+        <Text fx:id="totalCardsInDeck" layoutX="796.0" layoutY="433.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" />
+        <Text layoutX="691.0" layoutY="476.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Unit Cards" textAlignment="CENTER" />
+        <Text fx:id="numberOfUnitCards" layoutX="775.0" layoutY="516.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text fx:id="slashAnd22" layoutX="789.0" layoutY="515.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/22" />
+        <Text layoutX="731.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Cards" textAlignment="CENTER" />
+        <Text fx:id="numberOfSpecialCards" layoutX="780.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text layoutX="794.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/10" />
+        <Text layoutX="683.0" layoutY="648.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Unit Card Strength" textAlignment="CENTER" />
+        <Text fx:id="strengthOfCards" layoutX="797.0" layoutY="690.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text layoutX="749.0" layoutY="733.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hero Cards" textAlignment="CENTER" />
+        <Text fx:id="numberOfHeroCards" layoutX="800.0" layoutY="770.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text layoutX="766.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader" textAlignment="CENTER">
+            <font>
+                <Font name="Arial" size="12.0" />
+            </font></Text>
+        <TilePane fx:id="leaderCard" layoutX="730.0" layoutY="113.0" prefHeight="246.0" prefWidth="147.0" />
+        <Text layoutX="305.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Card Collection" textAlignment="CENTER" />
+        <Text layoutX="1196.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards in Deck" textAlignment="CENTER" />
+        <Text fx:id="changeFaction" layoutX="712.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Faction" textAlignment="CENTER" />
+        <ImageView fx:id="buttonOfChangeLeaderCardToNext" fitHeight="25.0" fitWidth="26.0" layoutX="880.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="buttonOfChangeLeaderCardToPrevious" fitHeight="25.0" fitWidth="26.0" layoutX="705.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="startGame" layoutX="731.0" layoutY="810.0" mnemonicParsing="false" text="start game" />
+    </children>
 </AnchorPane>

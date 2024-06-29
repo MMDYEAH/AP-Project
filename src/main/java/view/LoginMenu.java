@@ -328,7 +328,8 @@ public class LoginMenu extends Application implements Initializable {
         Button secondQ = new Button(Question.getQuestionByNumber(1).getQuestion());
         Button thirdQ = new Button(Question.getQuestionByNumber(2).getQuestion());
         Button apply = new Button("Apply");
-        TextField questionAnswer = new TextField("Enter your answer");
+        TextField questionAnswer = new TextField("");
+        questionAnswer.setPromptText("enter your answer");
 
         // Set up a timeline for color animation
         Timeline timeline = new Timeline(

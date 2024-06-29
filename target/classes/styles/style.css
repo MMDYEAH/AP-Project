@@ -114,6 +114,11 @@
     -fx-font-size: 18px; /* Larger font size */
     -fx-font-family: thewitcher; /* Applying the new font */
 }
+/*Text{*/
+/*    -fx-fill: #ffa943; !* Silver text *!*/
+/*    -fx-font-size: 22px; !* Larger font size *!*/
+/*    -fx-font-family: thewitcher; !* Applying the new font *!*/
+/*}*/
 
 /* Adding transition and animation */
 .button {
