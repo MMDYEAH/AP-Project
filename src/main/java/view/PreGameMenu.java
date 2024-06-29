@@ -1,6 +1,9 @@
 package view;
 
 import controller.PreGameMenuController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,13 +14,18 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.*;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Objects;
 
 public class PreGameMenu extends Application {
     @FXML
@@ -48,6 +56,8 @@ public class PreGameMenu extends Application {
     private ScrollPane scrollPaneOfCardCollection;
     @FXML
     private TilePane tilePaneOfCardCollection;
+    @FXML
+    private Button startGame;
 
     PreGameMenuController controller = new PreGameMenuController(this);
 
@@ -56,15 +66,69 @@ public class PreGameMenu extends Application {
         App.setStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/PreGame.fxml"));
         Pane pane = fxmlLoader.load();
+        // Set up the background video
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/preGameMenuVideo.mp4")).toExternalForm();
+        Media preGameMenuVideo = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(preGameMenuVideo);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == MediaPlayer.Status.READY) {
+                mediaPlayer.play();
+            }
+        });
+        pane.getChildren().add(0, mediaView);
         Scene scene = new Scene(pane);
+
+        startGame = (Button) scene.lookup("#startGame");
+        startGame.setOnMouseEntered(e -> animateButton(startGame, 1.1));
+        startGame.setOnMouseExited(e -> animateButton(startGame, 1.0));
+        startGame.setOnMouseClicked(mouseEvent -> {
+                int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
+                if (User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().size() < 22) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Your deck must have at least 22 unit cards");
+                    alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
+                    alert.show();
+                } else if (parsedIntNumberOfSpecialCards > 10) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Your deck most have no more than 10 special cards");
+                    alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
+                    alert.show();
+                } else {
+                    try {
+                        goToGame();
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+
+        try {
+            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/preGameMenu.css")).toExternalForm();
+            scene.getStylesheets().add(cssPath); // Adding the CSS file to the scene
+        } catch (NullPointerException e) {
+            System.out.println("CSS file not found.");
+        }
+
         stage.setScene(scene);
         controller.initialize();
+        initializeComponents(scene, pane);
+        stage.setFullScreen(true);
+        mediaView.setFitWidth(1920);
+        mediaView.setFitHeight(1080);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    private void initializeComponents(Scene scene, Pane pane) {
         scrollPaneOfCardsInDeck = (ScrollPane) scene.lookup("#scrollPaneOfCardsInDeck");
         tilePaneOfCardsInDeck = (TilePane) scrollPaneOfCardsInDeck.getContent().lookup("#tilePaneOfCardsInDeck");
         scrollPaneOfCardCollection = (ScrollPane) scene.lookup("#scrollPaneOfCardCollection");
         tilePaneOfCardCollection = (TilePane) scrollPaneOfCardCollection.getContent().lookup("#tilePaneOfCardCollection");
         totalCardsInDeck = (Text) scene.lookup("#totalCardsInDeck");
-        //TODO: delete it
         totalCardsInDeck.setOnMouseClicked(mouseEvent -> {
             try {
                 goToGame();
@@ -72,7 +136,7 @@ public class PreGameMenu extends Application {
                 throw new RuntimeException(e);
             }
         });
-        //TODO:
+
         numberOfUnitCards = (Text) scene.lookup("#numberOfUnitCards");
         slashAnd22 = (Text) scene.lookup("#slashAnd22");
         strengthOfCards = (Text) scene.lookup("#strengthOfCards");
@@ -82,6 +146,7 @@ public class PreGameMenu extends Application {
         buttonOfChangeLeaderCardToNext = (ImageView) scene.lookup("#buttonOfChangeLeaderCardToNext");
         buttonOfChangeLeaderCardToPrevious = (ImageView) scene.lookup("#buttonOfChangeLeaderCardToPrevious");
         numberOfSpecialCards = (Text) scene.lookup("#numberOfSpecialCards");
+
         addUnitCardsOfNorthernRealmsFactionToScrollPane();
         addLeaderCardsOfNorthernRealmsFactionToScrollPane();
         addButtonOfChangeLeaderCard();
@@ -89,11 +154,8 @@ public class PreGameMenu extends Application {
         writeOnMouseClickedFunctionToChangeLeaderCard();
         writeOnMouseClickedFunctionsToChangeFaction(pane);
         User.getLoggedInUser().setFaction(App.getRealmsNorthenFaction());
-        createButtonOfStartGame(pane);
-        stage.setFullScreen(true);
-        stage.setResizable(false);
-        stage.show();
     }
+
 
     private void addUnitCardsOfNorthernRealmsFactionToScrollPane() {
         tilePaneOfCardCollection.getChildren().clear();
@@ -101,6 +163,8 @@ public class PreGameMenu extends Application {
         User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
         for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
 
     }
@@ -112,6 +176,8 @@ public class PreGameMenu extends Application {
         for (Card card : App.getMonstersFaction().getUnitCards()) {
             //TODO: id does not work. solve it :(
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
 
@@ -121,6 +187,8 @@ public class PreGameMenu extends Application {
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getScoiataelFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
 
@@ -130,6 +198,8 @@ public class PreGameMenu extends Application {
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getSkelligeFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
 
@@ -139,6 +209,8 @@ public class PreGameMenu extends Application {
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getEmpireNilfgaardianFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
+            card.setOnMouseEntered(e -> animateButton(card, 1.1));
+            card.setOnMouseExited(e -> animateButton(card, 1.0));
         }
     }
 
@@ -147,6 +219,8 @@ public class PreGameMenu extends Application {
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
     }
 
@@ -155,6 +229,8 @@ public class PreGameMenu extends Application {
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getSkelligeFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getSkelligeFaction().getFactionLeaderCards().get(0));
     }
 
@@ -163,6 +239,8 @@ public class PreGameMenu extends Application {
         App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getEmpireNilfgaardianFaction().getFactionLeaderCards().get(0));
     }
 
@@ -171,6 +249,8 @@ public class PreGameMenu extends Application {
         App.getScoiataelFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getScoiataelFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getScoiataelFaction().getFactionLeaderCards().get(0));
     }
 
@@ -179,6 +259,8 @@ public class PreGameMenu extends Application {
         App.getMonstersFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getMonstersFaction().getFactionLeaderCards().get(0));
+        leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
+        leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
         User.getLoggedInUser().setFactionLeaderCard(App.getMonstersFaction().getFactionLeaderCards().get(0));
     }
 
@@ -218,7 +300,7 @@ public class PreGameMenu extends Application {
 
     private void writeOnMouseClickedFunctionsForFactionCards(Pane pane, Faction faction) {
         for (Card card : faction.getUnitCards()) {
-            card.setPrefWidth(tilePaneOfCardCollection.getPrefWidth()/3);
+            card.setPrefWidth(tilePaneOfCardCollection.getPrefWidth() / 3);
             card.setPrefHeight(tilePaneOfCardCollection.getPrefHeight());
             card.setOnMouseClicked(e -> {
                 if (tilePaneOfCardCollection.getChildren().contains(card))
@@ -282,26 +364,36 @@ public class PreGameMenu extends Application {
             ImageView imageViewMonstersFaction = new ImageView(imageOfMonstersFaction);
             imageViewMonstersFaction.setX(pane.getWidth() / 2 - imageOfMonstersFaction.getWidth() / 2 - 50);
             imageViewMonstersFaction.setY(pane.getHeight() / 2 - imageOfMonstersFaction.getHeight() / 2);
+            imageViewMonstersFaction.setOnMouseEntered(e1 -> animateButton(imageViewMonstersFaction, 1.1));
+            imageViewMonstersFaction.setOnMouseExited(e1 -> animateButton(imageViewMonstersFaction, 1.0));
             pane.getChildren().add(imageViewMonstersFaction);
             Image imageOfNilfGaardFaction = new Image(LoginMenu.class.getResource("/pics/nilfgaard/faction/NilfgaardFaction.jpg").toExternalForm());
             ImageView imageViewOfNilfGaardFaction = new ImageView(imageOfNilfGaardFaction);
             imageViewOfNilfGaardFaction.setX(imageViewMonstersFaction.getX() + imageOfNilfGaardFaction.getWidth() + 100);
             imageViewOfNilfGaardFaction.setY(imageViewMonstersFaction.getY());
+            imageViewOfNilfGaardFaction.setOnMouseEntered(e2 -> animateButton(imageViewOfNilfGaardFaction, 1.1));
+            imageViewOfNilfGaardFaction.setOnMouseExited(e2 -> animateButton(imageViewOfNilfGaardFaction, 1.0));
             pane.getChildren().add(imageViewOfNilfGaardFaction);
             Image imageOfNorthenRealms = new Image(LoginMenu.class.getResource("/pics/northenRealms/faction/NorthenRealmsFaction.jpg").toExternalForm());
             ImageView imageViewOfNorthenRealms = new ImageView(imageOfNorthenRealms);
             imageViewOfNorthenRealms.setX(imageViewMonstersFaction.getX() - imageOfNorthenRealms.getWidth() - 100);
             imageViewOfNorthenRealms.setY(imageViewOfNilfGaardFaction.getY());
+            imageViewOfNorthenRealms.setOnMouseEntered(e3 -> animateButton(imageViewOfNorthenRealms, 1.1));
+            imageViewOfNorthenRealms.setOnMouseExited(e3 -> animateButton(imageViewOfNorthenRealms, 1.0));
             pane.getChildren().add(imageViewOfNorthenRealms);
             Image imageOfScoiatael = new Image(LoginMenu.class.getResource("/pics/scoiatael/faction/scoiataelFaction.jpg").toExternalForm());
             ImageView imageViewOfScoiatael = new ImageView(imageOfScoiatael);
             imageViewOfScoiatael.setX(imageViewOfNilfGaardFaction.getX() + imageOfScoiatael.getWidth() + 100);
             imageViewOfScoiatael.setY(imageViewOfNilfGaardFaction.getY());
+            imageViewOfScoiatael.setOnMouseEntered(e4 -> animateButton(imageViewOfScoiatael, 1.1));
+            imageViewOfScoiatael.setOnMouseExited(e4 -> animateButton(imageViewOfScoiatael, 1.0));
             pane.getChildren().add(imageViewOfScoiatael);
             Image imageOfSkellige = new Image(LoginMenu.class.getResource("/pics/skellige/faction/SkelligeFaction.jpg").toExternalForm());
             ImageView imageViewOfSkellige = new ImageView(imageOfSkellige);
             imageViewOfSkellige.setX(imageViewOfNorthenRealms.getX() - imageOfSkellige.getWidth() - 100);
             imageViewOfSkellige.setY(imageViewOfNorthenRealms.getY());
+            imageViewOfSkellige.setOnMouseEntered(e5 -> animateButton(imageViewOfSkellige, 1.1));
+            imageViewOfSkellige.setOnMouseExited(e5 -> animateButton(imageViewOfSkellige, 1.0));
             pane.getChildren().add(imageViewOfSkellige);
             imageViewOfSkellige.setOnMouseClicked(e2 -> {
                 addUnitCardsOfSkelligeFactionToScrollPane();
@@ -360,41 +452,54 @@ public class PreGameMenu extends Application {
             });
         });
     }
-    private void createButtonOfStartGame(Pane pane){
-        Button startGameButton = new Button("Start game");
-        startGameButton.setStyle("-fx-background-color: gray; -fx-border-color: white; -fx-border-width: 2px;");
-        startGameButton.setLayoutX(655);
-        startGameButton.setLayoutY(736);
-        pane.getChildren().add(startGameButton);
-        writeOnMouseClickedFunctionTpStartGame(startGameButton);
-    }
-    private void writeOnMouseClickedFunctionTpStartGame(Button startGameButton){
-        startGameButton.setOnMouseClicked(e ->{
-            int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
-            if(User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().size()<22){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("Your deck must have at least 22 unit cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                alert.show();
-            }
-            else if(parsedIntNumberOfSpecialCards>10){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("Your deck most have no more than 10 special cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                alert.show();
-            }
-            else {
-                try {
-                    goToGame();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+
+//    private void createButtonOfStartGame(Pane pane) {
+//        Button startGameButton = new Button("Start game");
+//
+//        startGameButton.setStyle("-fx-background-color: gray; -fx-border-color: white; -fx-border-width: 2px;");
+//        startGameButton.setLayoutX(655);
+//        startGameButton.setLayoutY(736);
+//        pane.getChildren().add(startGameButton);
+//        writeOnMouseClickedFunctionTpStartGame(startGameButton);
+//    }
+
+//    private void writeOnMouseClickedFunctionTpStartGame(Button startGameButton) {
+//
+//    }
+
+    private void animateButton(Card button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
     }
 
+    private void animateButton(TilePane button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+    private void animateButton(Button button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+    private void animateButton(ImageView button, double scale) {
+        Timeline timeline = new Timeline();
+        KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
+        KeyValue kvY = new KeyValue(button.scaleYProperty(), scale);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
 
     public static void main(String[] args) {
         launch(args);
