@@ -52,6 +52,8 @@ public class PreGameMenuController {
         //TODO: set unit of all cards
         DeckUnit deckUnit = new DeckUnit();
         deckUnit.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
+        DeckUnit deckUnit2 = new DeckUnit();
+        deckUnit2.getCards().addAll(App.getRealmsNorthenFaction().getUnitCards());
         PlayBoard currentPlayBoard = new PlayBoard();
         currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
         currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
@@ -68,11 +70,13 @@ public class PreGameMenuController {
         User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
         User enemy = new User("a", "a", "a", "a");
         enemy.setPlayBoard(next);
-        enemy.getPlayBoard().setDeckUnit(deckUnit);
+        enemy.getPlayBoard().setDeckUnit(deckUnit2);
         Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));
         Game.getCurrentGame().setSpellUnit(new SpellUnit());
         Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
         Game.getCurrentGame().setNextUser(enemy);
+        Game.getCurrentGame().setMe(User.getLoggedInUser());
+        Game.getCurrentGame().setEnemy(enemy);
         //TODO: remove up code and write it correctly
     }
 

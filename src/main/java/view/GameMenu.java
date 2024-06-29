@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -16,6 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class GameMenu extends Application {
@@ -57,6 +60,7 @@ public class GameMenu extends Application {
     public TilePane enemyRangedTile;
     public TilePane enemySiegeTile;
     public TilePane spellTile;
+    public Button pass;
 
     private ObservableList<Card> currentHand;
     private ObservableList<Card> currentClose;
@@ -97,11 +101,58 @@ public class GameMenu extends Application {
             tilePane.getChildren().add(card);
             number++;
         }
+        addPassing();
         addListeners();
+        fillingUnits();
         scrollPane.setContent(new Group(tilePane));
         stage.setTitle("GWENT-GAME");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void fillingUnits() {
+        updateCards(weatherUnit);
+        updateCards(currentHand);
+        updateCards(currentClose);
+        updateCards(currentRanged);
+        updateCards(currentSiege);
+        updateCards(nextClose);
+        updateCards(nextRanged);
+        updateCards(nextSiege);
+    }
+
+    private void updateCards(ObservableList<Card> cards) {
+        ArrayList<Card> historyCards = new ArrayList<>();
+        for (Card card : cards){
+            historyCards.add(card);
+        }
+        cards.clear();
+        for (Card card : historyCards){
+            System.out.println(card.getName());
+        }
+        cards.addAll(historyCards);
+
+    }
+
+    private void addPassing() {
+        pass.setOnMouseClicked(mouseEvent -> {
+            try {
+                this.stop();
+                Game.getCurrentGame().setRoundNumber(Game.getCurrentGame().getRoundNumber()+1);
+                if (Game.getCurrentGame().getRoundNumber() % 2 == 0) {
+                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
+                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
+                } else {
+                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
+                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
+                }
+                GameMenu gameMenu = new GameMenu();
+                gameMenu.start(App.getStage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        });
     }
 
     private void addListeners() {
@@ -209,7 +260,7 @@ public class GameMenu extends Application {
             boolean isSpy = card instanceof Spy;
             boolean isDecoy = card instanceof Decoy;
             boolean isMedic = card instanceof Medic;
-            if (isDecoy){
+            if (isDecoy) {
                 decoy(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
                 decoy(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
                 decoy(card, mouseEvent, currentPlayBoard.getSiegeUnit());
@@ -282,34 +333,34 @@ public class GameMenu extends Application {
     }
 
     private void decoy(Card card, MouseEvent mouseEvent, Unit unit) {
-        for (Card card1 : unit.getCards()){
-            System.out.println(card1.getName() + " " + mouseEvent.getSceneX()+ " " + mouseEvent.getSceneY()
-            + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() +" "+
+        for (Card card1 : unit.getCards()) {
+            System.out.println(card1.getName() + " " + mouseEvent.getSceneX() + " " + mouseEvent.getSceneY()
+                    + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() + " " +
                     card1.localToScene(card1.getBoundsInLocal()).getMinY());
-            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX()+card1.getPrefWidth()
-            && mouseEvent.getSceneX() > card1.localToScene(card1.getBoundsInLocal()).getMinX()
-            && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY()+card1.getPrefHeight()
-            && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()){
+            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX() + card1.getPrefWidth()
+                    && mouseEvent.getSceneX() > card1.localToScene(card1.getBoundsInLocal()).getMinX()
+                    && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY() + card1.getPrefHeight()
+                    && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()) {
                 System.out.println(card1.getName());
                 ((Decoy) card).setCardShouldBeReplaced(card1);
-                controller.putCard(card, unit,true);
+                controller.putCard(card, unit, true);
                 break;
             }
         }
     }
 
-    private void medic(Card card,MouseEvent mouseEvent, Unit unit){
-        for (Card card1 : unit.getCards()){
-            System.out.println(card1.getName() + " " + mouseEvent.getSceneX()+ " " + mouseEvent.getSceneY()
-                    + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() +" "+
+    private void medic(Card card, MouseEvent mouseEvent, Unit unit) {
+        for (Card card1 : unit.getCards()) {
+            System.out.println(card1.getName() + " " + mouseEvent.getSceneX() + " " + mouseEvent.getSceneY()
+                    + " " + card1.localToScene(card1.getBoundsInLocal()).getMinX() + " " +
                     card1.localToScene(card1.getBoundsInLocal()).getMinY());
-            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX()+card1.getPrefWidth()
+            if (mouseEvent.getSceneX() < card1.localToScene(card1.getBoundsInLocal()).getMinX() + card1.getPrefWidth()
                     && mouseEvent.getSceneX() > card1.localToScene(card1.getBoundsInLocal()).getMinX()
-                    && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY()+card1.getPrefHeight()
-                    && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()){
+                    && mouseEvent.getSceneY() < card1.localToScene(card1.getBoundsInLocal()).getMinY() + card1.getPrefHeight()
+                    && mouseEvent.getSceneY() > card1.localToScene(card1.getBoundsInLocal()).getMinY()) {
                 System.out.println(card1.getName());
                 ((Medic) card).setChosenCard(card1);
-                controller.putCard(card, unit,true);
+                controller.putCard(card, unit, true);
                 break;
             }
         }
@@ -345,6 +396,7 @@ public class GameMenu extends Application {
 
 
     private void initializeElements(Scene scene) {
+        pass = (Button) scene.lookup("#pass");
         enemyClosePower = (TextField) scene.lookup("#enemyClosePower");
         enemyRangedPower = (TextField) scene.lookup("#enemyRangedPower");
         enemySiegePower = (TextField) scene.lookup("#enemySiegePower");
