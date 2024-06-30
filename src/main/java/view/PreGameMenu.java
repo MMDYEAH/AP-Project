@@ -226,7 +226,7 @@ public class PreGameMenu extends Application {
 
     private void addLeaderCardsOfSkelligeFactionToScrollPane() {
         App.getSkelligeFaction().getFactionLeaderCards().get(0).setPrefWidth(leaderCard.getPrefWidth());
-        App.getRealmsNorthenFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
+        App.getSkelligeFaction().getFactionLeaderCards().get(0).setPrefHeight(leaderCard.getPrefHeight());
         leaderCard.getChildren().clear();
         leaderCard.getChildren().add(App.getSkelligeFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
@@ -405,6 +405,11 @@ public class PreGameMenu extends Application {
                 pane.getChildren().remove(imageViewOfNorthenRealms);
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
+                totalCardsInDeck.setText("0");
+                numberOfUnitCards.setText("0");
+                numberOfSpecialCards.setText("0");
+                strengthOfCards.setText("0");
+                numberOfHeroCards.setText("0");
             });
             imageViewOfScoiatael.setOnMouseClicked(e3 -> {
                 addUnitCardsOfScoiaTaelFactionToScrollPane();
@@ -416,6 +421,11 @@ public class PreGameMenu extends Application {
                 pane.getChildren().remove(imageViewOfNorthenRealms);
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
+                totalCardsInDeck.setText("0");
+                numberOfUnitCards.setText("0");
+                numberOfSpecialCards.setText("0");
+                strengthOfCards.setText("0");
+                numberOfHeroCards.setText("0");
             });
             imageViewMonstersFaction.setOnMouseClicked(e4 -> {
                 addUnitCardsOfMonstersFactionToScrollPane();
@@ -427,6 +437,11 @@ public class PreGameMenu extends Application {
                 pane.getChildren().remove(imageViewOfNorthenRealms);
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
+                totalCardsInDeck.setText("0");
+                numberOfUnitCards.setText("0");
+                numberOfSpecialCards.setText("0");
+                strengthOfCards.setText("0");
+                numberOfHeroCards.setText("0");
             });
             imageViewOfNilfGaardFaction.setOnMouseClicked(e5 -> {
                 addUnitCardsOfEmpireNilfGaardianFactionToScrollPane();
@@ -438,6 +453,11 @@ public class PreGameMenu extends Application {
                 pane.getChildren().remove(imageViewOfNorthenRealms);
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
+                totalCardsInDeck.setText("0");
+                numberOfUnitCards.setText("0");
+                numberOfSpecialCards.setText("0");
+                strengthOfCards.setText("0");
+                numberOfHeroCards.setText("0");
             });
             imageViewOfNorthenRealms.setOnMouseClicked(e6 -> {
                 addUnitCardsOfNorthernRealmsFactionToScrollPane();
@@ -449,23 +469,15 @@ public class PreGameMenu extends Application {
                 pane.getChildren().remove(imageViewOfNorthenRealms);
                 pane.getChildren().remove(imageViewOfSkellige);
                 pane.getChildren().remove(imageViewOfScoiatael);
+                totalCardsInDeck.setText("0");
+                numberOfUnitCards.setText("0");
+                numberOfSpecialCards.setText("0");
+                strengthOfCards.setText("0");
+                numberOfHeroCards.setText("0");
             });
         });
     }
 
-//    private void createButtonOfStartGame(Pane pane) {
-//        Button startGameButton = new Button("Start game");
-//
-//        startGameButton.setStyle("-fx-background-color: gray; -fx-border-color: white; -fx-border-width: 2px;");
-//        startGameButton.setLayoutX(655);
-//        startGameButton.setLayoutY(736);
-//        pane.getChildren().add(startGameButton);
-//        writeOnMouseClickedFunctionTpStartGame(startGameButton);
-//    }
-
-//    private void writeOnMouseClickedFunctionTpStartGame(Button startGameButton) {
-//
-//    }
 
     private void animateButton(Card button, double scale) {
         Timeline timeline = new Timeline();
