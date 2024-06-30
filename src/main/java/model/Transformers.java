@@ -11,4 +11,9 @@ public class Transformers extends UnitCard {
         if (this.name.equals("Kambi") || this.name.equals("Cow"))
             this.power = 8;
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Transformers>)}";
+    }
 }

@@ -84,4 +84,9 @@ public class PlayBoard {
     public void setDiscardPileUnit(DiscardPileUnit discardPileUnit) {
         this.discardPileUnit = discardPileUnit;
     }
+
+    public String toJson(){
+        return "{playBoard(deckUnit<"+deckUnit.arrayToJson()+">)(handUnit<"+handUnit.arrayToJson()+">)(closeUnit<"+closeCombatUnit.arrayToJson()+
+                rangedCombatUnit.arrayToJson()+">)(siegeUnit<"+siegeUnit.arrayToJson()+">)(discardUnit<"+discardPileUnit.arrayToJson()+">)}";
+    }
 }

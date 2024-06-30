@@ -25,6 +25,8 @@ import model.App;
 import model.Question;
 import model.Result;
 import model.User;
+import network.GameClient;
+import network.GameServer;
 
 
 import java.awt.image.BufferStrategy;
@@ -66,6 +68,16 @@ public class LoginMenu extends Application implements Initializable {
     Button randomPassword;
     static Media loginVideo;
     LoginMenuController controller = new LoginMenuController(this);
+
+    GameClient gameServer;
+
+    public LoginMenu(GameClient gameServer) {
+        this.gameServer = gameServer;
+    }
+
+    public LoginMenu() {
+
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -216,7 +228,7 @@ public class LoginMenu extends Application implements Initializable {
                 passwordConfirm.setStyle(""); // Reset style when not focused
             }
         });
-        
+
         chooseRandomPassword.setOnMouseEntered(e -> animateButton(chooseRandomPassword, 1.1));
         chooseRandomPassword.setOnMouseExited(e -> animateButton(chooseRandomPassword, 1.0));
 
@@ -410,8 +422,6 @@ public class LoginMenu extends Application implements Initializable {
         // Add VBox to root
         root.getChildren().add(vbox);
     }
-
-
 
 
     public void firstQ() {
@@ -734,7 +744,9 @@ public class LoginMenu extends Application implements Initializable {
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
-//            root.getChildren().remove(mediaView);
+            GameClient gameClient = new GameClient();
+            App.setGameClient(gameClient);
+            gameClient.start();
             MainMenu mainMenu = new MainMenu();
             try {
                 mainMenu.start(App.getStage());

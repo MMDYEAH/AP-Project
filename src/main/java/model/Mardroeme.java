@@ -9,4 +9,8 @@ public class Mardroeme extends Card{
     public void apply() {
 
     }
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Mardroeme>)}";
+    }
 }

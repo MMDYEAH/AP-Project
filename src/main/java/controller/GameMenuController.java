@@ -47,7 +47,11 @@ public class GameMenuController {
             Game.getCurrentGame().getSpellUnit().addCardToUnit(card);
             card.setUnit(Game.getCurrentGame().getSpellUnit());
         }
-        card.apply();
+        if (!App.isCardApplyDoing())
+            card.apply();
+        else {
+            App.setCardApplyDoing(false);
+        }
         doRepeatedCards();
         updatePowerText(currentPlayBoard, nextPlayBoard);
     }

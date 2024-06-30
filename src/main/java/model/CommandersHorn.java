@@ -15,4 +15,8 @@ public class CommandersHorn extends Card{
             }
         }
     }
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<CommandersHorn>)}";
+    }
 }

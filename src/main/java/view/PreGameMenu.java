@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameMenuController;
+import com.google.gson.Gson;
 import controller.PreGameMenuController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -103,10 +104,12 @@ public class PreGameMenu extends Application {
                 try {
                     if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
                         this.stop();
+                        System.out.println(Game.getCurrentGame().getCurrentUser().toJson());
+                        App.getGameClient().getOut().writeUTF("start game : "+Game.getCurrentGame().getCurrentUser().toJson());
                         Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
                         Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
-                        PreGameMenu preGameMenu = new PreGameMenu();
-                        preGameMenu.start(App.getStage());
+//                        PreGameMenu preGameMenu = new PreGameMenu();
+//                        preGameMenu.start(App.getStage());
                     } else {
                         this.stop();
                         Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());

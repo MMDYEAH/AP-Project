@@ -12,4 +12,8 @@ public class ClearWeather extends WeatherCard{
     public void unApply(){
 
     }
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<ClearWeather>)}";
+    }
 }

@@ -25,4 +25,9 @@ public class UnitCommandersHorn extends UnitCard{
             }
         }
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<UnitCommandersHorn>)}";
+    }
 }

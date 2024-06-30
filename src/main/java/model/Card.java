@@ -7,10 +7,8 @@ import java.util.ArrayList;
 
 
 public abstract class Card extends Pane {
-    protected String name;
+    protected String name,path;
     protected Unit unit;
-    private int id;
-    ArrayList<Card> cards = new ArrayList<>();
 
     public abstract void apply();
     public Card(String name,String path) {
@@ -19,8 +17,7 @@ public abstract class Card extends Pane {
         this.setBackground(new Background(new BackgroundImage(new Image(path), BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT
         ,BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false))));
         this.name = name;
-        this.id = cards.size();
-        cards.add(this);
+        this.path = path;
     }
 
     public String getName() {
@@ -38,6 +35,11 @@ public abstract class Card extends Pane {
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
-
+    public String toJson(){
+        if (unit == null)
+            return "{card(name<"+name+">)(path<"+path+">)(unit<>)";
+        else
+            return "{card(name<"+name+">)(path<"+path+">)(unit<"+unit.toJson()+">)";
+    }
 
 }

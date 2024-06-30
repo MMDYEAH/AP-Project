@@ -13,4 +13,8 @@ public class Medic extends UnitCard {
     public void setChosenCard(Card chosenCard) {
         this.chosenCard = chosenCard;
     }
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Medic>)}";
+    }
 }

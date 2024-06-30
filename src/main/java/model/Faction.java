@@ -38,4 +38,8 @@ public abstract class Faction {
     public void setUnitCards(ArrayList<Card> unitCards) {
         this.unitCards = unitCards;
     }
+
+    public String toJson(){
+        return "{faction(name<"+name+">)}";
+    }
 }

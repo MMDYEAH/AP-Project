@@ -2,6 +2,7 @@ package model;
 
 import javafx.stage.Stage;
 import javafx.scene.media.MediaPlayer;
+import network.GameClient;
 
 import java.text.Normalizer;
 import java.util.Random;
@@ -9,7 +10,8 @@ import java.util.Random;
 
 public class App {
     private static Stage stage = new Stage();
-
+    private static boolean CardApplyDoing = false;
+    private static GameClient gameClient;
     private static SkelligeFaction skelligeFaction;
     private static RealmsNorthenFaction realmsNorthenFaction;
     private static MonstersFaction monstersFaction;
@@ -90,4 +92,19 @@ public class App {
         return random;
     }
 
+    public static boolean isCardApplyDoing() {
+        return CardApplyDoing;
+    }
+
+    public static void setCardApplyDoing(boolean cardApplyDoing) {
+        CardApplyDoing = cardApplyDoing;
+    }
+
+    public static GameClient getGameClient() {
+        return gameClient;
+    }
+
+    public static void setGameClient(GameClient gameClient) {
+        App.gameClient = gameClient;
+    }
 }
