@@ -50,8 +50,8 @@ public class LoginMenu extends Application implements Initializable {
     private TextField nickname;
     @FXML
     private TextField email;
-    @FXML
-    private TextField questionAnswer;
+    //    @FXML
+//    private TextField questionAnswer;
     @FXML
     private Text yourRandomPassword;
     @FXML
@@ -64,6 +64,10 @@ public class LoginMenu extends Application implements Initializable {
     Button chooseRandomPassword;
     @FXML
     Button randomPassword;
+    @FXML
+    Button forgotPassword;
+    @FXML
+    ImageView logoButton;
     static Media loginVideo;
     LoginMenuController controller = new LoginMenuController(this);
 
@@ -116,7 +120,18 @@ public class LoginMenu extends Application implements Initializable {
         signUp = (Button) scene.lookup("#signUp");
         randomPassword = (Button) scene.lookup("#randomPassword");
         chooseRandomPassword = (Button) scene.lookup("#chooseRandomPassword");
-
+        forgotPassword = (Button) scene.lookup("#forgotPassword");
+        logoButton = (ImageView) scene.lookup("#logoButton");
+        String logoPath = getClass().getResource("/pics/logo.png").toExternalForm();
+        logoButton.setImage(new Image(logoPath));
+//        logoButton.setOnMouseClicked(mouseEvent -> reloadVideo(pane));
+        forgotPassword.setOnMouseClicked(mouseEvent -> {
+            try {
+                forgotPassword(root);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         // Set up a timeline for color animation
         Timeline timelineNickname = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> nickname.setStyle("-fx-text-fill: red;")),
@@ -216,7 +231,10 @@ public class LoginMenu extends Application implements Initializable {
                 passwordConfirm.setStyle(""); // Reset style when not focused
             }
         });
-        
+
+        forgotPassword.setOnMouseEntered(e -> animateButton(forgotPassword, 1.1));
+        forgotPassword.setOnMouseExited(e -> animateButton(forgotPassword, 1.0));
+
         chooseRandomPassword.setOnMouseEntered(e -> animateButton(chooseRandomPassword, 1.1));
         chooseRandomPassword.setOnMouseExited(e -> animateButton(chooseRandomPassword, 1.0));
 
@@ -411,7 +429,105 @@ public class LoginMenu extends Application implements Initializable {
         root.getChildren().add(vbox);
     }
 
+    public void forgotPassword(StackPane root) throws IOException {
+        // Load the image
+        String imagePath = "/pics/forgotPassword.jpg"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
+        TextField usernameOfForgot = new TextField("");
+        usernameOfForgot.setPromptText("enter your username");
+        Button submit = new Button("submit");
+        Button close = new Button("close");
+        submit.setOnMouseEntered(e -> animateButton(submit, 1.1));
+        submit.setOnMouseExited(e -> animateButton(submit, 1.0));
 
+        close.setOnMouseEntered(e -> animateButton(close, 1.1));
+        close.setOnMouseExited(e -> animateButton(close, 1.0));
+        // Create a VBox and add buttons and text field to it
+        VBox vbox = new VBox(30); // VBox with 10px spacing
+        vbox.getChildren().addAll(usernameOfForgot, submit, close);
+        vbox.setAlignment(Pos.CENTER);
+        close.setOnMouseClicked(mouseEvent -> {
+            root.getChildren().removeAll(imageView, vbox);
+        });
+        submit.setOnMouseClicked(mouseEvent -> {
+            if (User.getUserByUsername(usernameOfForgot.getText()) != null) {
+                // Create buttons and text field
+                Button chosenQuestion = new Button(User.getUserByUsername(username.getText()).getQuestion().getQuestion());
+                TextField questionAnswer = new TextField("");
+                Button viewPassword = new Button("view password");
+                viewPassword.setOnMouseEntered(e -> animateButton(viewPassword, 1.1));
+                viewPassword.setOnMouseExited(e -> animateButton(viewPassword, 1.0));
+                chosenQuestion.setOnMouseEntered(e -> animateButton(chosenQuestion, 1.1));
+                chosenQuestion.setOnMouseExited(e -> animateButton(chosenQuestion, 1.0));
+
+                // Create a VBox and add buttons and text field to it
+                vbox.getChildren().removeAll(usernameOfForgot, submit);
+                vbox.getChildren().addAll(chosenQuestion, questionAnswer, viewPassword);
+                vbox.setAlignment(Pos.CENTER);
+                // Set up a timeline for color animation
+                Timeline timeline = new Timeline(
+                        new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
+                        new KeyFrame(Duration.millis(250), e -> questionAnswer.setStyle("-fx-text-fill: orange;")),
+                        new KeyFrame(Duration.millis(500), e -> questionAnswer.setStyle("-fx-text-fill: yellow;")),
+                        new KeyFrame(Duration.millis(750), e -> questionAnswer.setStyle("-fx-text-fill: green;")),
+                        new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
+                );
+                timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+                // Add listener to start/stop animation based on focus
+                questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal) {
+                        timeline.play();
+                    } else {
+                        timeline.stop();
+                        questionAnswer.setStyle(""); // Reset style when not focused
+                    }
+                });
+                viewPassword.setOnMouseClicked(mouseEvent1 -> {
+                    if (questionAnswer.getText().equals(User.getUserByUsername(username.getText()).getQuestion().getAnswer())) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("your password");
+                        alert.setContentText(User.getUserByUsername(username.getText()).getPassword());
+                        alert.show();
+                        root.getChildren().removeAll(imageView, vbox);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("wrong security answer");
+                        alert.setContentText("your answer is wrong!");
+                        alert.show();
+                    }
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("this user doesn't exist");
+                alert.setContentText("the username you wrote doesn't belong to user!");
+                alert.show();
+            }
+        });
+        // Set up a timeline for color animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> usernameOfForgot.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> usernameOfForgot.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> usernameOfForgot.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> usernameOfForgot.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> usernameOfForgot.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        usernameOfForgot.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline.play();
+            } else {
+                timeline.stop();
+                usernameOfForgot.setStyle(""); // Reset style when not focused
+            }
+        });
+        // Add VBox to root
+        root.getChildren().add(vbox);
+    }
 
 
     public void firstQ() {
@@ -443,24 +559,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(600);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(600);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("Empty Field");
-//        videoStage.show();
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -473,19 +576,7 @@ public class LoginMenu extends Application implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
 
-        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 900, 600); // Set the width and height as needed
-//        videoStage.setMinWidth(900);
-//        videoStage.setMinHeight(600);
-//        videoStage.setMaxWidth(900);
-//        videoStage.setMaxHeight(600);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("there Is Exist User With this Username");
-//        videoStage.show();
-
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(5));
@@ -502,25 +593,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 600, 400); // Set the width and height as needed
-//        videoStage.setMinWidth(600);
-//        videoStage.setMinHeight(400);
-//        videoStage.setMaxWidth(600);
-//        videoStage.setMaxHeight(400);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("user Created Successfully");
-//        videoStage.show();
-//
-//        // Play the video
+        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -532,25 +609,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(500);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(500);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("weak Password");
-//        videoStage.show();
-
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -562,25 +625,10 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(600);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(600);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("wrong Email Format");
-//        videoStage.show();
-//
-//        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -592,25 +640,10 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(500);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(500);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("wrong Password");
-//        videoStage.show();
-//
-//        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -622,25 +655,10 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(600);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(600);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("wrong Password Format");
-//        videoStage.show();
-//
-//        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -652,25 +670,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 600); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(600);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(600);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("wrong Username Format");
-//        videoStage.show();
-
         // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -682,25 +686,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(500);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(500);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("confirm Password Failed");
-//        videoStage.show();
-//
-//        // Play the video
+        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -713,7 +703,7 @@ public class LoginMenu extends Application implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
 
-//        // Create a new stage (window) for the video
+        // Create a new stage (window) for the video
         Stage videoStage = new Stage();
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
         // Set the logo image as the window icon
@@ -734,7 +724,6 @@ public class LoginMenu extends Application implements Initializable {
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
-//            root.getChildren().remove(mediaView);
             MainMenu mainMenu = new MainMenu();
             try {
                 mainMenu.start(App.getStage());
@@ -752,25 +741,11 @@ public class LoginMenu extends Application implements Initializable {
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-//        // Create a new stage (window) for the video
-//        Stage videoStage = new Stage();
-//        StackPane root = new StackPane();
         root.getChildren().add(mediaView);
-//        Scene scene = new Scene(root, 800, 500); // Set the width and height as needed
-//        videoStage.setMinWidth(800);
-//        videoStage.setMinHeight(500);
-//        videoStage.setMaxWidth(800);
-//        videoStage.setMaxHeight(500);
-//        videoStage.setScene(scene);
-//        videoStage.setTitle("no Such User Exist");
-//        videoStage.show();
-//
-//        // Play the video
+        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
@@ -790,4 +765,22 @@ public class LoginMenu extends Application implements Initializable {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/witcherMenu.mp4")).toExternalForm();
         loginVideo = new Media(videoPath);
     }
+
+//    public void reloadVideo(Pane pane) {
+//        // Set up the background video
+//        MediaPlayer mediaPlayer = new MediaPlayer(loginVideo);
+//        MediaView mediaView = new MediaView();
+//        mediaView.setMediaPlayer(mediaPlayer);
+//        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//        mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue == MediaPlayer.Status.READY) {
+//                // The media is ready to be played
+//                mediaPlayer.play();
+//            }
+//        });
+//        mediaView.setFitWidth(App.getStage().getWidth());
+//        mediaView.setFitHeight(App.getStage().getHeight());
+//        pane.getChildren().add(0, mediaView);
+//
+//    }
 }

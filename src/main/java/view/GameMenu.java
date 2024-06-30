@@ -17,7 +17,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -72,7 +71,6 @@ public class GameMenu extends Application {
 
     private ObservableList<Card> weatherUnit;
 
-    Card chosenCard;
     GameMenuController controller = new GameMenuController(this);
 
     @Override
@@ -82,27 +80,12 @@ public class GameMenu extends Application {
         Scene scene = new Scene(pane);
         initializeElements(scene);
         transparentTextFields();
-        Faction rn = App.getRealmsNorthenFaction();
-        System.out.println(rn.getUnitCards().size());
         scrollPane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
         tilePane.setHgap(10);
         tilePane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
-        Collections.shuffle(rn.getUnitCards());
-        for (Card card : rn.getUnitCards()) {
-            card.setPrefWidth(50);
-            card.setPrefHeight(90);
-            setCardOnMouseClicked(card);
-        }
-        int number = 0;
-        for (Card card : rn.getUnitCards()) {
-            setCardOnMouseClicked(card);
-            chosenCard = card;
-            if (number > 30) break;
-            tilePane.getChildren().add(card);
-            number++;
-        }
-        addPassing();
         addListeners();
+        startingOfGame();
+        addPassing();
         fillingUnits();
         scrollPane.setContent(new Group(tilePane));
         stage.setTitle("GWENT-GAME");
@@ -110,9 +93,40 @@ public class GameMenu extends Application {
         stage.show();
     }
 
+    private void startingOfGame() {
+        PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
+        PlayBoard nextPlayBoard = Game.getCurrentGame().getNextUser().getPlayBoard();
+        for (Card card : currentPlayBoard.getDeckUnit().getCards()) {
+            card.setPrefWidth(50);
+            card.setPrefHeight(90);
+            setCardOnMouseClicked(card);
+        }
+        for (Card card : nextPlayBoard.getDeckUnit().getCards()) {
+            card.setPrefWidth(50);
+            card.setPrefHeight(90);
+            setCardOnMouseClicked(card);
+        }
+        Collections.shuffle(currentPlayBoard.getDeckUnit().getCards());
+        Collections.shuffle(nextPlayBoard.getDeckUnit().getCards());
+        int number = 0;
+        if (Game.getCurrentGame().getTurnNumber() == 0){
+            for (Card card : currentPlayBoard.getDeckUnit().getCards()){
+                if (number == 10) break;
+                currentPlayBoard.getHandUnit().addCardToUnit(card);
+                number++;
+            }
+            number = 0;
+            for (Card card : nextPlayBoard.getDeckUnit().getCards()){
+                if (number == 10) break;
+                nextPlayBoard.getHandUnit().addCardToUnit(card);
+                number++;
+            }
+        }
+    }
+
     private void fillingUnits() {
-        updateCards(weatherUnit);
         updateCards(currentHand);
+        updateCards(weatherUnit);
         updateCards(currentClose);
         updateCards(currentRanged);
         updateCards(currentSiege);
@@ -131,15 +145,14 @@ public class GameMenu extends Application {
             System.out.println(card.getName());
         }
         cards.addAll(historyCards);
-
     }
 
     private void addPassing() {
         pass.setOnMouseClicked(mouseEvent -> {
             try {
                 this.stop();
-                Game.getCurrentGame().setRoundNumber(Game.getCurrentGame().getRoundNumber()+1);
-                if (Game.getCurrentGame().getRoundNumber() % 2 == 0) {
+                Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber()+1);
+                if (Game.getCurrentGame().getTurnNumber() % 2 == 0) {
                     Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
                     Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
                 } else {

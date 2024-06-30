@@ -1,5 +1,6 @@
 package view;
 
+import controller.GameMenuController;
 import controller.PreGameMenuController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class PreGameMenu extends Application {
+    public Text nameOfUser;
     @FXML
     private Text numberOfSpecialCards;
     @FXML
@@ -84,27 +86,38 @@ public class PreGameMenu extends Application {
         startGame.setOnMouseEntered(e -> animateButton(startGame, 1.1));
         startGame.setOnMouseExited(e -> animateButton(startGame, 1.0));
         startGame.setOnMouseClicked(mouseEvent -> {
-                int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
-                if (User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().size() < 22) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setContentText("Your deck must have at least 22 unit cards");
-                    alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                    alert.show();
-                } else if (parsedIntNumberOfSpecialCards > 10) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setContentText("Your deck most have no more than 10 special cards");
-                    alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                    alert.show();
-                } else {
-                    try {
+            int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
+            if (Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().size() < 22) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("Your deck must have at least 22 unit cards");
+                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
+                alert.show();
+            } else if (parsedIntNumberOfSpecialCards > 10) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("Your deck most have no more than 10 special cards");
+                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
+                alert.show();
+            } else {
+                try {
+                    if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
+                        this.stop();
+                        Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
+                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
+                        PreGameMenu preGameMenu = new PreGameMenu();
+                        preGameMenu.start(App.getStage());
+                    } else {
+                        this.stop();
+                        Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
+                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
                         goToGame();
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
                     }
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
-            });
+            }
+        });
 
         try {
             String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/preGameMenu.css")).toExternalForm();
@@ -116,6 +129,7 @@ public class PreGameMenu extends Application {
         stage.setScene(scene);
         controller.initialize();
         initializeComponents(scene, pane);
+        nameOfUser.setText("user: " + Game.getCurrentGame().getCurrentUser().getNickname());
         stage.setFullScreen(true);
         mediaView.setFitWidth(1920);
         mediaView.setFitHeight(1080);
@@ -146,21 +160,21 @@ public class PreGameMenu extends Application {
         buttonOfChangeLeaderCardToNext = (ImageView) scene.lookup("#buttonOfChangeLeaderCardToNext");
         buttonOfChangeLeaderCardToPrevious = (ImageView) scene.lookup("#buttonOfChangeLeaderCardToPrevious");
         numberOfSpecialCards = (Text) scene.lookup("#numberOfSpecialCards");
-
+        nameOfUser = (Text) scene.lookup("#nameOfUser");
         addUnitCardsOfNorthernRealmsFactionToScrollPane();
         addLeaderCardsOfNorthernRealmsFactionToScrollPane();
         addButtonOfChangeLeaderCard();
         writeOnMouseClickedFunctionsForFactionCards(pane, App.getRealmsNorthenFaction());
         writeOnMouseClickedFunctionToChangeLeaderCard();
         writeOnMouseClickedFunctionsToChangeFaction(pane);
-        User.getLoggedInUser().setFaction(App.getRealmsNorthenFaction());
+        Game.getCurrentGame().getCurrentUser().setFaction(App.getRealmsNorthenFaction());
     }
 
 
     private void addUnitCardsOfNorthernRealmsFactionToScrollPane() {
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
+        Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().clear();
         for (Card card : App.getRealmsNorthenFaction().getUnitCards()) {
             tilePaneOfCardCollection.getChildren().add(card);
             card.setOnMouseEntered(e -> animateButton(card, 1.1));
@@ -170,7 +184,7 @@ public class PreGameMenu extends Application {
     }
 
     private void addUnitCardsOfMonstersFactionToScrollPane() {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
+        Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getMonstersFaction().getUnitCards()) {
@@ -182,7 +196,7 @@ public class PreGameMenu extends Application {
     }
 
     private void addUnitCardsOfScoiaTaelFactionToScrollPane() {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
+        Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getScoiataelFaction().getUnitCards()) {
@@ -193,7 +207,7 @@ public class PreGameMenu extends Application {
     }
 
     private void addUnitCardsOfSkelligeFactionToScrollPane() {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
+        Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getSkelligeFaction().getUnitCards()) {
@@ -204,7 +218,7 @@ public class PreGameMenu extends Application {
     }
 
     private void addUnitCardsOfEmpireNilfGaardianFactionToScrollPane() {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().getCards().clear();
+        Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().clear();
         tilePaneOfCardCollection.getChildren().clear();
         tilePaneOfCardsInDeck.getChildren().clear();
         for (Card card : App.getEmpireNilfgaardianFaction().getUnitCards()) {
@@ -221,7 +235,7 @@ public class PreGameMenu extends Application {
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
         leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
-        User.getLoggedInUser().setFactionLeaderCard(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
+        Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfSkelligeFactionToScrollPane() {
@@ -231,7 +245,7 @@ public class PreGameMenu extends Application {
         leaderCard.getChildren().add(App.getSkelligeFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
         leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
-        User.getLoggedInUser().setFactionLeaderCard(App.getSkelligeFaction().getFactionLeaderCards().get(0));
+        Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(App.getSkelligeFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfEmpireNilfGaardianFactionToScrollPane() {
@@ -241,7 +255,7 @@ public class PreGameMenu extends Application {
         leaderCard.getChildren().add(App.getRealmsNorthenFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
         leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
-        User.getLoggedInUser().setFactionLeaderCard(App.getEmpireNilfgaardianFaction().getFactionLeaderCards().get(0));
+        Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(App.getEmpireNilfgaardianFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfScoiataelFactionToScrollPane() {
@@ -251,7 +265,7 @@ public class PreGameMenu extends Application {
         leaderCard.getChildren().add(App.getScoiataelFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
         leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
-        User.getLoggedInUser().setFactionLeaderCard(App.getScoiataelFaction().getFactionLeaderCards().get(0));
+        Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(App.getScoiataelFaction().getFactionLeaderCards().get(0));
     }
 
     private void addLeaderCardsOfMonstersFactionToScrollPane() {
@@ -261,7 +275,7 @@ public class PreGameMenu extends Application {
         leaderCard.getChildren().add(App.getMonstersFaction().getFactionLeaderCards().get(0));
         leaderCard.setOnMouseEntered(e -> animateButton(leaderCard, 1.1));
         leaderCard.setOnMouseExited(e -> animateButton(leaderCard, 1.0));
-        User.getLoggedInUser().setFactionLeaderCard(App.getMonstersFaction().getFactionLeaderCards().get(0));
+        Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(App.getMonstersFaction().getFactionLeaderCards().get(0));
     }
 
     private void addButtonOfChangeLeaderCard() {
@@ -273,20 +287,20 @@ public class PreGameMenu extends Application {
 
     private void writeOnMouseClickedFunctionToChangeLeaderCard() {
         buttonOfChangeLeaderCardToNext.setOnMouseClicked(e -> {
-            Faction currentFaction = User.getLoggedInUser().getFaction();
-            Card currentLeaderCard = User.getLoggedInUser().getFactionLeaderCard();
+            Faction currentFaction = Game.getCurrentGame().getCurrentUser().getFaction();
+            Card currentLeaderCard = Game.getCurrentGame().getCurrentUser().getFactionLeaderCard();
             int index = currentFaction.getFactionLeaderCards().indexOf(currentLeaderCard);
             if (index == currentFaction.getFactionLeaderCards().size() - 1) index = 0;
             else index++;
             leaderCard.getChildren().clear();
-            User.getLoggedInUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
+            Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
             currentFaction.getFactionLeaderCards().get(index).setPrefWidth(leaderCard.getPrefWidth());
             currentFaction.getFactionLeaderCards().get(index).setPrefHeight(leaderCard.getPrefHeight());
             leaderCard.getChildren().add(currentFaction.getFactionLeaderCards().get(index));
         });
         buttonOfChangeLeaderCardToPrevious.setOnMouseClicked(e -> {
-            Faction currentFaction = User.getLoggedInUser().getFaction();
-            Card currentLeaderCard = User.getLoggedInUser().getFactionLeaderCard();
+            Faction currentFaction = Game.getCurrentGame().getCurrentUser().getFaction();
+            Card currentLeaderCard = Game.getCurrentGame().getCurrentUser().getFactionLeaderCard();
             int index = currentFaction.getFactionLeaderCards().indexOf(currentLeaderCard);
             if (index == 0) index = currentFaction.getFactionLeaderCards().size() - 1;
             else index--;
@@ -294,7 +308,7 @@ public class PreGameMenu extends Application {
             currentFaction.getFactionLeaderCards().get(index).setPrefWidth(leaderCard.getPrefWidth());
             currentFaction.getFactionLeaderCards().get(index).setPrefHeight(leaderCard.getPrefHeight());
             leaderCard.getChildren().add(currentFaction.getFactionLeaderCards().get(index));
-            User.getLoggedInUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
+            Game.getCurrentGame().getCurrentUser().setFactionLeaderCard(currentFaction.getFactionLeaderCards().get(index));
         });
     }
 
@@ -313,11 +327,10 @@ public class PreGameMenu extends Application {
     }
 
     private void doFunctionsForCardCollection(Card card, Pane pane) {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().addCardToUnit(card);
+        PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
+        currentPlayBoard.getDeckUnit().addCardToUnit(card);
         tilePaneOfCardsInDeck.getChildren().add(card);
-        int numberOfTotalCards = Integer.parseInt(totalCardsInDeck.getText());
-        numberOfTotalCards += 1;
-        totalCardsInDeck.setText(String.valueOf(numberOfTotalCards));
+        totalCardsInDeck.setText(String.valueOf(currentPlayBoard.getDeckUnit().getCards().size()));
         if ((card instanceof UnitCard)) {
             int parsedIntNumberOfUnitCards = Integer.parseInt(numberOfUnitCards.getText());
             parsedIntNumberOfUnitCards += 1;
@@ -336,11 +349,10 @@ public class PreGameMenu extends Application {
     }
 
     private void doFunctionsForCardsInDeck(Card card, Pane pane) {
-        User.getLoggedInUser().getPlayBoard().getDeckUnit().removeCardFromUnit(card);
+        PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
+        currentPlayBoard.getDeckUnit().removeCardFromUnit(card);
         tilePaneOfCardCollection.getChildren().add(card);
-        int numberOfTotalCards = Integer.parseInt(totalCardsInDeck.getText());
-        numberOfTotalCards -= 1;
-        totalCardsInDeck.setText(String.valueOf(numberOfTotalCards));
+        totalCardsInDeck.setText(String.valueOf(currentPlayBoard.getDeckUnit().getCards().size()));
         if ((card instanceof UnitCard)) {
             int parsedIntNumberOfUnitCards = Integer.parseInt(numberOfUnitCards.getText());
             parsedIntNumberOfUnitCards -= 1;
@@ -399,7 +411,7 @@ public class PreGameMenu extends Application {
                 addUnitCardsOfSkelligeFactionToScrollPane();
                 addLeaderCardsOfSkelligeFactionToScrollPane();
                 writeOnMouseClickedFunctionsForFactionCards(pane, App.getSkelligeFaction());
-                User.getLoggedInUser().setFaction(App.getSkelligeFaction());
+                Game.getCurrentGame().getCurrentUser().setFaction(App.getSkelligeFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
                 pane.getChildren().remove(imageViewOfNorthenRealms);
@@ -415,7 +427,7 @@ public class PreGameMenu extends Application {
                 addUnitCardsOfScoiaTaelFactionToScrollPane();
                 addLeaderCardsOfScoiataelFactionToScrollPane();
                 writeOnMouseClickedFunctionsForFactionCards(pane, App.getScoiataelFaction());
-                User.getLoggedInUser().setFaction(App.getScoiataelFaction());
+                Game.getCurrentGame().getCurrentUser().setFaction(App.getScoiataelFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
                 pane.getChildren().remove(imageViewOfNorthenRealms);
@@ -431,7 +443,7 @@ public class PreGameMenu extends Application {
                 addUnitCardsOfMonstersFactionToScrollPane();
                 addLeaderCardsOfMonstersFactionToScrollPane();
                 writeOnMouseClickedFunctionsForFactionCards(pane, App.getMonstersFaction());
-                User.getLoggedInUser().setFaction(App.getMonstersFaction());
+                Game.getCurrentGame().getCurrentUser().setFaction(App.getMonstersFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
                 pane.getChildren().remove(imageViewOfNorthenRealms);
@@ -447,7 +459,7 @@ public class PreGameMenu extends Application {
                 addUnitCardsOfEmpireNilfGaardianFactionToScrollPane();
                 addLeaderCardsOfEmpireNilfGaardianFactionToScrollPane();
                 writeOnMouseClickedFunctionsForFactionCards(pane, App.getEmpireNilfgaardianFaction());
-                User.getLoggedInUser().setFaction(App.getEmpireNilfgaardianFaction());
+                Game.getCurrentGame().getCurrentUser().setFaction(App.getEmpireNilfgaardianFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
                 pane.getChildren().remove(imageViewOfNorthenRealms);
@@ -463,7 +475,7 @@ public class PreGameMenu extends Application {
                 addUnitCardsOfNorthernRealmsFactionToScrollPane();
                 addLeaderCardsOfNorthernRealmsFactionToScrollPane();
                 writeOnMouseClickedFunctionsForFactionCards(pane, App.getRealmsNorthenFaction());
-                User.getLoggedInUser().setFaction(App.getRealmsNorthenFaction());
+                Game.getCurrentGame().getCurrentUser().setFaction(App.getRealmsNorthenFaction());
                 pane.getChildren().remove(imageViewMonstersFaction);
                 pane.getChildren().remove(imageViewOfNilfGaardFaction);
                 pane.getChildren().remove(imageViewOfNorthenRealms);
@@ -496,6 +508,7 @@ public class PreGameMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     private void animateButton(Button button, double scale) {
         Timeline timeline = new Timeline();
         KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
@@ -504,6 +517,7 @@ public class PreGameMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     private void animateButton(ImageView button, double scale) {
         Timeline timeline = new Timeline();
         KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
