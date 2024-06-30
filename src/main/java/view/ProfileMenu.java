@@ -207,7 +207,7 @@ public class ProfileMenu extends Application {
         username.setText(User.getLoggedInUser().getUsername());
         nickname.setText(User.getLoggedInUser().getNickname());
         email.setText(User.getLoggedInUser().getEmail());
-        password.setText("Enter New Password");
+        password.setPromptText("Enter New Password");
 
         backToMainMenu.setOnMouseEntered(e -> animateButton(backToMainMenu, 1.1));
         backToMainMenu.setOnMouseExited(e -> animateButton(backToMainMenu, 1.0));

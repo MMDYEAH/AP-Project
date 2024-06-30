@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <Pane fx:id="pane" prefHeight="810" prefWidth="1440" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GameMenu">
     <ImageView fx:id="img" fitHeight="810" fitWidth="1440" preserveRatio="true">
@@ -69,4 +70,9 @@
     <TextField fx:id="myRangedPower" layoutX="389.0" layoutY="456.0" prefHeight="25.0" prefWidth="27.0" />
     <TextField fx:id="mySiegePower" layoutX="389.0" layoutY="560.0" prefHeight="25.0" prefWidth="27.0" />
     <TextField fx:id="myTotalPower" layoutX="327.0" layoutY="538.0" prefHeight="25.0" prefWidth="27.0" />
+   <Button layoutX="250.0" layoutY="665.0" fx:id="pass" mnemonicParsing="false" text="PASS" textFill="#f78b6e">
+      <font>
+         <Font name="Arial Bold" size="12.0" />
+      </font>
+   </Button>
 </Pane>

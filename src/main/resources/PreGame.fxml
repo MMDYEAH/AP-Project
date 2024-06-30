@@ -18,10 +18,10 @@
             </content></ScrollPane>
         <Text fx:id="totalCardsInDeck" layoutX="796.0" layoutY="433.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" />
         <Text layoutX="691.0" layoutY="476.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Unit Cards" textAlignment="CENTER" />
-        <Text fx:id="numberOfUnitCards" layoutX="775.0" layoutY="516.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-        <Text fx:id="slashAnd22" layoutX="789.0" layoutY="515.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/22" />
+        <Text fx:id="numberOfUnitCards" layoutX="770.0" layoutY="516.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text fx:id="slashAnd22" layoutX="793.0" layoutY="516.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/22" />
         <Text layoutX="731.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Cards" textAlignment="CENTER" />
-        <Text fx:id="numberOfSpecialCards" layoutX="780.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+        <Text fx:id="numberOfSpecialCards" layoutX="775.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
         <Text layoutX="794.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/10" />
         <Text layoutX="683.0" layoutY="648.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Unit Card Strength" textAlignment="CENTER" />
         <Text fx:id="strengthOfCards" layoutX="797.0" layoutY="690.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
@@ -38,5 +38,6 @@
         <ImageView fx:id="buttonOfChangeLeaderCardToNext" fitHeight="25.0" fitWidth="26.0" layoutX="880.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fx:id="buttonOfChangeLeaderCardToPrevious" fitHeight="25.0" fitWidth="26.0" layoutX="705.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="startGame" layoutX="731.0" layoutY="810.0" mnemonicParsing="false" text="start game" />
+      <Text fx:id="nameOfUser" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
     </children>
 </AnchorPane>
