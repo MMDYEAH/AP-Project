@@ -4,6 +4,7 @@ import controller.GameMenuController;
 import controller.PreGameMenuController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -81,24 +82,15 @@ public class PreGameMenu extends Application {
         });
         pane.getChildren().add(0, mediaView);
         Scene scene = new Scene(pane);
-
         startGame = (Button) scene.lookup("#startGame");
         startGame.setOnMouseEntered(e -> animateButton(startGame, 1.1));
         startGame.setOnMouseExited(e -> animateButton(startGame, 1.0));
         startGame.setOnMouseClicked(mouseEvent -> {
             int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
             if (Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().size() < 22) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("Your deck must have at least 22 unit cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                alert.show();
+                deckLimitVideoPlay(pane);
             } else if (parsedIntNumberOfSpecialCards > 10) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("Your deck most have no more than 10 special cards");
-                alert.getDialogPane().getStylesheets().add(PreGameMenu.class.getResource("/styles/AlertStyle.css").toExternalForm());
-                alert.show();
+                specialCardVideoPlay(pane);
             } else {
                 try {
                     if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
@@ -500,6 +492,38 @@ public class PreGameMenu extends Application {
         KeyFrame kf = new KeyFrame(Duration.millis(300), kvX, kvY);
         timeline.getKeyFrames().add(kf);
         timeline.play();
+    }
+
+    public void deckLimitVideoPlay(Pane root) {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/deckLimit.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        root.getChildren().add(mediaView);
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+        pauseTransition.setOnFinished(actionEvent -> {
+            root.getChildren().remove(mediaView);
+        });
+        pauseTransition.play();
+    }
+
+    public void specialCardVideoPlay(Pane root) {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/specialCard.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        root.getChildren().add(mediaView);
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+        pauseTransition.setOnFinished(actionEvent -> {
+            root.getChildren().remove(mediaView);
+        });
+        pauseTransition.play();
     }
 
     public static void main(String[] args) {

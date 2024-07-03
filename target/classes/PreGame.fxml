@@ -37,7 +37,7 @@
         <Text fx:id="changeFaction" layoutX="712.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Faction" textAlignment="CENTER" />
         <ImageView fx:id="buttonOfChangeLeaderCardToNext" fitHeight="25.0" fitWidth="26.0" layoutX="880.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fx:id="buttonOfChangeLeaderCardToPrevious" fitHeight="25.0" fitWidth="26.0" layoutX="705.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="startGame" layoutX="731.0" layoutY="810.0" mnemonicParsing="false" text="start game" />
+      <Button fx:id="startGame" layoutX="749.0" layoutY="786.0" mnemonicParsing="false" text="start game" />
       <Text fx:id="nameOfUser" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
     </children>
 </AnchorPane>
