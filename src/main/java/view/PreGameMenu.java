@@ -81,8 +81,12 @@ public class PreGameMenu extends Application {
                 mediaPlayer.play();
             }
         });
-        pane.getChildren().add(0, mediaView);
-        Scene scene = new Scene(pane);
+//        pane.getChildren().add(0, mediaView);
+        StackPane root = new StackPane();
+        root.getChildren().add(mediaView);
+        root.getChildren().add(pane);
+        root.setCenterShape(true);
+        Scene scene = new Scene(root);
         startGame = (Button) scene.lookup("#startGame");
         startGame.setOnMouseEntered(e -> animateButton(startGame, 1.1));
         startGame.setOnMouseExited(e -> animateButton(startGame, 1.0));
