@@ -7,7 +7,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenu">
    <children>
-      <Button fx:id="start" layoutX="269.0" layoutY="553.0" mnemonicParsing="false" prefHeight="123.0" prefWidth="253.0" text="start the game">
+      <Button fx:id="start" layoutX="269.0" layoutY="530.0" mnemonicParsing="false" prefHeight="123.0" prefWidth="253.0" text="start the game">
          <font>
             <Font size="25.0" />
          </font>
@@ -17,12 +17,12 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <ImageView fitHeight="125.0" fitWidth="200.0" layoutX="1416.0" layoutY="802.0">
+      <ImageView fitHeight="195.0" fitWidth="319.0" layoutX="716.0" layoutY="713.0">
          <image>
             <Image url="@pics/logo.png" />
          </image>
       </ImageView>
-      <Button fx:id="pointChart" layoutX="299.0" layoutY="744.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="point chart">
+      <Button fx:id="pointChart" layoutX="299.0" layoutY="708.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="point chart">
          <font>
             <Font size="20.0" />
          </font>

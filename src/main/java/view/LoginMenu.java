@@ -474,17 +474,11 @@ public class LoginMenu extends Application implements Initializable {
                         alert.show();
                         root.getChildren().removeAll(imageView, vbox);
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("wrong security answer");
-                        alert.setContentText("your answer is wrong!");
-                        alert.show();
+                        wrongAnswerVideoPlay(root);
                     }
                 });
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("this user doesn't exist");
-                alert.setContentText("the username you wrote doesn't belong to user!");
-                alert.show();
+                noUserWithThisUsernameVideoPlay(root);
             }
         });
         // Set up a timeline for color animation
@@ -724,6 +718,36 @@ public class LoginMenu extends Application implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/witcherMenu.mp4")).toExternalForm();
         loginVideo = new Media(videoPath);
+    }
+    public void noUserWithThisUsernameVideoPlay(StackPane root) {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/userDoesNotExist.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        root.getChildren().add(mediaView);
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+        pauseTransition.setOnFinished(actionEvent -> {
+            root.getChildren().remove(mediaView);
+        });
+        pauseTransition.play();
+    }
+    public void wrongAnswerVideoPlay(StackPane root) {
+        // Path to your video file
+        String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongAnswer.mp4").toExternalForm());
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        root.getChildren().add(mediaView);
+        // Play the video
+        mediaPlayer.play();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+        pauseTransition.setOnFinished(actionEvent -> {
+            root.getChildren().remove(mediaView);
+        });
+        pauseTransition.play();
     }
 
 }
