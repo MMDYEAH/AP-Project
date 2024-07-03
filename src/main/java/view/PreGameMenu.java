@@ -105,7 +105,7 @@ public class PreGameMenu extends Application {
                     if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
                         this.stop();
                         System.out.println(Game.getCurrentGame().getCurrentUser().toJson());
-                        App.getGameClient().getOut().writeUTF("start game : "+Game.getCurrentGame().getCurrentUser().toJson());
+//                        App.getGameClient().sendMessage("start game : "+Game.getCurrentGame().getCurrentUser().toJson());
                         Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
                         Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
 //                        PreGameMenu preGameMenu = new PreGameMenu();

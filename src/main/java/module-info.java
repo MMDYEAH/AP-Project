@@ -8,6 +8,7 @@ module GWENT {
     requires com.google.gson;
 
     exports view;
+    exports network;
     opens view to javafx.fxml, com.google.gson;
     opens model to com.google.gson;
     opens network to com.google.gson;

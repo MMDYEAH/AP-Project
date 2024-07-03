@@ -3,6 +3,7 @@ package model;
 import javafx.stage.Stage;
 import javafx.scene.media.MediaPlayer;
 import network.GameClient;
+import view.LoginMenu;
 
 import java.text.Normalizer;
 import java.util.Random;
@@ -11,6 +12,8 @@ import java.util.Random;
 public class App {
     private static Stage stage = new Stage();
     private static boolean CardApplyDoing = false;
+    private static Boolean singupSuccessful =false;
+    private static LoginMenu loginMenu;
     private static GameClient gameClient;
     private static SkelligeFaction skelligeFaction;
     private static RealmsNorthenFaction realmsNorthenFaction;
@@ -104,7 +107,24 @@ public class App {
         return gameClient;
     }
 
-    public static void setGameClient(GameClient gameClient) {
+    public static void
+    setGameClient(GameClient gameClient) {
         App.gameClient = gameClient;
+    }
+
+    public static LoginMenu getLoginMenu() {
+        return loginMenu;
+    }
+
+    public static void setLoginMenu(LoginMenu loginMenu) {
+        App.loginMenu = loginMenu;
+    }
+
+    public static Boolean isSingupSuccessful() {
+        return singupSuccessful;
+    }
+
+    public static void setSingupSuccessful(boolean singupSuccessful) {
+        App.singupSuccessful = singupSuccessful;
     }
 }

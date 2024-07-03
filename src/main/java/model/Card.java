@@ -37,9 +37,13 @@ public abstract class Card extends Pane {
     }
     public String toJson(){
         if (unit == null)
-            return "{card(name<"+name+">)(path<"+path+">)(unit<>)";
-        else
-            return "{card(name<"+name+">)(path<"+path+">)(unit<"+unit.toJson()+">)";
+            return "{card(name<"+name+">)(path<"+path+">)(unit<>)(power<-1>)(hero<false>)}";
+        else if (this instanceof UnitCard)
+            return "{card(name<"+name+">)(path<"+path+">)(unit<"+unit.toJson()+">)(power<"+
+                    ((UnitCard)this).power+">)(hero<"+((UnitCard)this).isLegendary+">)}";
+        else {
+            return "{card(name<"+name+">)(path<"+path+">)(unit<"+unit.toJson()+">)(power<-1>)(hero<false>)}";
+        }
     }
 
 }
