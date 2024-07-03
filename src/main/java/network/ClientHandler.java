@@ -2,6 +2,8 @@ package network;
 
 import controller.LoginMenuController;
 import enums.LoginMenuCommands;
+import enums.MainMenuCommands;
+import model.ClearWeather;
 import model.Question;
 import model.Result;
 import model.User;
@@ -39,8 +41,8 @@ public class ClientHandler implements Runnable {
                     handleRegister(matcher);
                 } else if ((matcher = LoginMenuCommands.LOGIN.getMatcher(message)) != null) {
                     handleLogin(matcher);
-                } else if (message.startsWith("request game")) {
-                    handleGameRequest(message);
+                } else if ((matcher = MainMenuCommands.PLAY_REQUEST.getMatcher(message)) != null) {
+                    handleGameRequest(matcher);
                 } else if (message.startsWith("accept")) {
                     handleGameAcceptance(message);
                 } else if (message.startsWith("put card")) {
@@ -69,6 +71,7 @@ public class ClientHandler implements Runnable {
         String question = matcher.group("text");
         String answer = matcher.group("answer");
         Result result = controller.register(username, password, confirm, nickname, email, new Question(question,answer));
+        this.user = User.getUserByUsername(username);
         System.out.println(result);
         sendMessage(result.toString());
     }
@@ -82,18 +85,11 @@ public class ClientHandler implements Runnable {
         sendMessage(result.toString());
     }
 
-    private void handleGameRequest(String message) {
-        String[] parts = message.split(" ");
-        String opponentUsername = parts[2];
-
-        synchronized (server.getClients()) {
-            Optional<ClientHandler> opponentHandler = server.getClients().stream()
-                    .filter(ch -> ch.getUser() != null && ch.getUser().getUsername().equals(opponentUsername))
-                    .findFirst();
-            if (opponentHandler.isPresent()) {
-                opponentHandler.get().sendMessage("Game request from " + user.getUsername());
-            } else {
-                sendMessage("Game request failed: user not found or not online");
+    private void handleGameRequest(Matcher matcher) {
+        String username = matcher.group("username");
+        for (ClientHandler clientHandler : server.getClients()){
+            if (clientHandler.getUser().getUsername().equals(username)){
+                clientHandler.sendMessage("");
             }
         }
     }

@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum MainMenuCommands {
+    PLAY_REQUEST("\\{request game\\(username<(?<username>[^<>]*)>\\)\\}")
     ;
 
     private final String pattern;

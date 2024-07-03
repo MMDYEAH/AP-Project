@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -47,6 +48,8 @@ public class MainMenu extends Application {
     Button profile;
     @FXML
     Button pointChart;
+
+    StackPane root;
 //    MainMenuController controller = new MainMenuController(this);
 
     @Override
@@ -69,7 +72,7 @@ public class MainMenu extends Application {
         });
 
         // Add the video to a StackPane
-        StackPane root = new StackPane();
+        root = new StackPane();
         root.getChildren().add(mediaView);
         root.getChildren().add(pane);
         Scene scene = new Scene(root);
@@ -137,14 +140,28 @@ public class MainMenu extends Application {
     }
 
     public void toGame(Stage stage) {
+        TextField chosenUsername = new TextField("write enemy username");
+        chosenUsername.setAlignment(Pos.CENTER);
+        chosenUsername.setOnMouseClicked(mouseEvent -> {
+            if (chosenUsername.getText().equals("write enemy username"))
+                chosenUsername.setText("");
+        });
+        Button button = new Button("let's go");
+        VBox vBox = new VBox(chosenUsername, button);
+        vBox.setMaxWidth(500);
+        vBox.setAlignment(Pos.CENTER);
+        root.getChildren().add(vBox);
         initialize();
-        PreGameMenu preGameMenu = new PreGameMenu();
-        try {
-            preGameMenu.start(App.getStage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        stage.setFullScreen(true);
+        button.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("{request game(username<"+chosenUsername.getText()+">)}");
+//            PreGameMenu preGameMenu = new PreGameMenu();
+//            try {
+//                preGameMenu.start(App.getStage());
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//            stage.setFullScreen(true);
+        });
     }
 
     private void initialize() {
@@ -162,6 +179,8 @@ public class MainMenu extends Application {
         next.setRangedCombatUnit(new RangedCombatUnit());
         next.setSiegeUnit(new SiegeUnit());
         next.setHandUnit(new HandUnit());
+        User my = new User("a", "a", "a", "a"); //TODO: change it
+        User.setLoggedInUser(my);
         User.getLoggedInUser().setPlayBoard(currentPlayBoard);
         User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
         User enemy = new User("a", "a", "a", "a"); //TODO: change it
