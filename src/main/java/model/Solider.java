@@ -9,4 +9,9 @@ public class Solider extends UnitCard{
     public void apply() {
 
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Solider>)}";
+    }
 }

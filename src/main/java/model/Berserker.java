@@ -9,4 +9,9 @@ public class Berserker extends UnitCard{
     public void apply() {
 
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Berserker>)}";
+    }
 }

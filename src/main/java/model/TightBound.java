@@ -22,4 +22,9 @@ public class TightBound extends UnitCard{
          this.setPower(this.getPower()*(numberOfSimilarCards+1));
          for (Card card : similars) ((UnitCard)card).setPower(((UnitCard)card).getFirstPower()*(numberOfSimilarCards+1));
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<TightBound>)}";
+    }
 }

@@ -33,4 +33,9 @@ public class TorrentialRain extends WeatherCard{
         }
         //TODO: apply somethings like commanders horn
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<TorrentialRain>)}";
+    }
 }

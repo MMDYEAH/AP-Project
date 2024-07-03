@@ -45,4 +45,8 @@ public class Question {
         this.question = question;
         this.answer = answer;
     }
+
+    public String toJson() {
+        return "{question(text<"+question+">)(answer<"+answer+">)}";
+    }
 }

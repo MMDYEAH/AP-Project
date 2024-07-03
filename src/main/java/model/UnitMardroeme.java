@@ -10,4 +10,9 @@ public class UnitMardroeme extends UnitCard{
     public void apply() {
 
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<UnitMardroeme>)}";
+    }
 }

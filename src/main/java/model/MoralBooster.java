@@ -12,4 +12,9 @@ public class MoralBooster extends UnitCard {
             if (!unitCard.isLegendary && !unitCard.equals(this)) unitCard.setPower(unitCard.getPower() + 1);
         }
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<MoralBooster>)}";
+    }
 }

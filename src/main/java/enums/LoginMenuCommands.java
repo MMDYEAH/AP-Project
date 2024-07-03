@@ -4,7 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum LoginMenuCommands {
-    ;
+    SIGN_UP("\\{register\\(username<(?<username>[^<>]*)>\\)\\(password<(?<password>[^<>]*)>\\)\\(confirm<(?<confirm>[^<>]*)>\\)\\(nickname<(?<nickname>[^<>]*)>\\)\\(email<(?<email>[^<>]*)>\\)\\{question\\(text<(?<text>[^<>]*)>\\)\\(answer<(?<answer>[^<>]*)>\\)\\}\\}"),
+    LOGIN("\\{login\\(username<(?<username>[^<>]*)>\\)\\(password<(?<password>[^<>]*)>\\)\\}");
 
     private final String pattern;
 

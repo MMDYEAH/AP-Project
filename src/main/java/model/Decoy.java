@@ -13,4 +13,8 @@ public class Decoy extends Card{
        cardShouldBeReplaced.unit.removeCardFromUnit(cardShouldBeReplaced);
        Game.currentGame.currentUser.getPlayBoard().getHandUnit().addCardToUnit(cardShouldBeReplaced);
     }
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Decoy>)}";
+    }
 }

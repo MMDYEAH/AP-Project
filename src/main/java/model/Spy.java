@@ -22,4 +22,9 @@ public class Spy extends UnitCard {
             card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getHandUnit());
         }
     }
+
+    @Override
+    public String toJson() {
+        return super.toJson()+"(type<Spy>)}";
+    }
 }

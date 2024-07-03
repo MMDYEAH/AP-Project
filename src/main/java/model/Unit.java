@@ -21,4 +21,7 @@ public abstract class Unit {
     public void setCards(ObservableList<Card> cards) {
         this.cards = cards;
     }
+    public abstract String toJson();
+
+    public abstract String arrayToJson();
 }

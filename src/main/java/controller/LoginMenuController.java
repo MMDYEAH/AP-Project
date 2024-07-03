@@ -18,6 +18,9 @@ public class LoginMenuController {
         this.loginMenu = loginMenu;
     }
 
+    public LoginMenuController() {
+    }
+
     public void initialize() {
 //        LoginMenu.questionCombo.setValue("...");
         Question.getQuestions().add(new Question("What's the name of your favorite high school teacher?", ""));
@@ -48,15 +51,15 @@ public class LoginMenuController {
         specialCharacters.add("$");
         specialCharacters.add("#");
         specialCharacters.add("@");
-        String randomSpecialCharacter = specialCharacters.get(App.getRandom().nextInt(0,4));
+        String randomSpecialCharacter = specialCharacters.get(App.getRandom().nextInt(0, 4));
         ArrayList<Integer> integers = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            integers.add(App.getRandom().nextInt(0,9));
+            integers.add(App.getRandom().nextInt(0, 9));
         }
         StringBuilder password = new StringBuilder();
         password.append(randomSpecialCharacter);
-        password.append((char)('A' + bigChar));
-        password.append((char)('a' + smallChar));
+        password.append((char) ('A' + bigChar));
+        password.append((char) ('a' + smallChar));
         for (int i = 0; i < 5; i++) {
             password.append(integers.get(i));
         }
@@ -74,8 +77,6 @@ public class LoginMenuController {
                 || nickname.equals("")
                 || email.equals("")) {
             return new Result(false, "empty field");
-        } else if (User.getUserByUsername(username) != null) {
-            return new Result(false, "there is exist an user with this username");
         } else if (!ErrorController.isNameFormatTrue(username)) {
             return new Result(false, "wrong username format");
         } else if (!ErrorController.isEmailFormatTrue(email)) {
@@ -87,6 +88,9 @@ public class LoginMenuController {
         } else if (!ErrorController.AreStringsEqual(password, passwordConfirm)) {
             return new Result(false, "confirm password failed");
         } else {
+            for (User user : User.getUsers()){
+                if (user.getUsername().equals(username)) return new Result(false,"there is exist an user with this username");
+            }
             if (password.equals("random")) {
                 while (true) {
                     String randomPassword = makeRandomPassword();
@@ -110,17 +114,17 @@ public class LoginMenuController {
         }
     }
 
-    public Result login(String username, String password) throws Exception {
+    public Result login(String username, String password) {
         User user = User.getUserByUsername(username);
         if (user == null) return new Result(false, "no such user exist");
         else {
             if (!ErrorController.AreStringsEqual(password, user.getPassword())) {
-                return new Result(false, "wrong password");
+                return new Result(false, "wrong password in login");
             } else {
-                loginMenu.stop();
+//                loginMenu.stop();
                 User.setLoggedInUser(user);
-                MainMenu mainMenu = new MainMenu();
-                mainMenu.start(App.getStage());
+//                MainMenu mainMenu = new MainMenu();
+//                mainMenu.start(App.getStage());
                 return new Result(true, "login successfully");
             }
         }

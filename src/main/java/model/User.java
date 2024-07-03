@@ -15,6 +15,13 @@ public class User {
     private PlayBoard playBoard;
     private final ArrayList<Game> gamesPlayed = new ArrayList<>();
 
+    public String toJson() {
+        return "{user(name<" + username + ">)(password<" + password + ">)(nickname<" + nickname + ">)(email<" + email +
+                ">)(factionChosen<" + faction.toJson() + ">)(factionLeader<" + factionLeaderCard.toJson() + ">)(board<" + playBoard.toJson() +
+                ">)(score<" + score + ">)(wins<" + numOfWins + ">)(losts<" + numOfLosts + ">)(draws<" + numOfDraws + ">)(questionChosen<" + question.toJson() +
+                ">)}";
+    }
+
     public User(String username, String password, String nickname, String email) {
         this.username = username;
         this.password = password;

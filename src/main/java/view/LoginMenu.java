@@ -3,7 +3,6 @@ package view;
 import controller.LoginMenuController;
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,16 +17,15 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.App;
 import model.Question;
 import model.Result;
 import model.User;
+import network.GameClient;
 
 
-import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -70,9 +68,22 @@ public class LoginMenu extends Application implements Initializable {
     ImageView logoButton;
     static Media loginVideo;
     LoginMenuController controller = new LoginMenuController(this);
+    StackPane root;
+    GameClient gameClient;
+
+    public LoginMenu(GameClient gameServer) {
+        this.gameClient = gameServer;
+    }
+
+    public LoginMenu() {
+
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
+        //network:
+        App.setGameClient(gameClient);
+        //
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
         // Set the logo image as the window icon
         stage.getIcons().add(logo);
@@ -95,7 +106,7 @@ public class LoginMenu extends Application implements Initializable {
         });
 
         // Add the video to a StackPane
-        StackPane root = new StackPane();
+        root = new StackPane();
         root.getChildren().add(mediaView);
         root.getChildren().add(pane); // Add the FXML content on top of the video
 
@@ -257,7 +268,7 @@ public class LoginMenu extends Application implements Initializable {
 
         login.setOnMouseClicked(mouseEvent -> {
             try {
-                login(root);
+                login();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -284,44 +295,12 @@ public class LoginMenu extends Application implements Initializable {
         launch(args);
     }
 
-    public void login(StackPane root) throws Exception {
-        Result result = controller.login(username.getText(), password.getText());
-        if (result.isSuccessful()) {
-            User.setLoggedInUser(User.registeringUser);
-            loggedInSuccessfullyVideoPlay();
-        } else if (result.toString().equals("wrong password")) {
-            wrongPasswordVideoPlay(root);
-        } else if (result.toString().equals("no such user exist")) {
-            noSuchUserExistVideoPlay(root);
-        } else {
-            System.out.println(result);
-        }
+    public void login() {
+        App.getGameClient().sendMessage("{login(username<" + username.getText() + ">)(password<" + password.getText() + ">)}");
     }
 
     public void signUp(StackPane root) throws IOException {
-        Result result = controller.register(username.getText(), password.getText(), passwordConfirm.getText(), nickname.getText(), email.getText(), null);
-        System.out.println(result);
-        if (result.isSuccessful()) {
-            securityQuestion(root);
-        } else if (result.toString().equals("empty field")) {
-            emptyFieldVideoPlay(root);
-        } else if (result.toString().equals("there is exist an user with this username")) {
-            thereIsExistUserWithUsernameVideoPlay(root);
-        } else if (result.toString().equals("wrong username format")) {
-            wrongUsernameFormatVideoPlay(root);
-        } else if (result.toString().equals("wrong email format")) {
-            wrongEmailFormatVideoPlay(root);
-        } else if (result.toString().equals("wrong password format")) {
-            wrongPasswordFormatVideoPlay(root);
-        } else if (result.toString().equals("weak password")) {
-            weakPasswordVideoPlay(root);
-        } else if (result.toString().equals("user created successfully")) {
-            userCreatedSuccessfullyVideoPlay(root);
-        } else if (result.toString().equals("wrong password")) {
-            wrongPasswordVideoPlay(root);
-        } else if (result.toString().equals("confirm password failed")) {
-            confirmPasswordFailedVideoPlay(root);
-        }
+        securityQuestion(root);
     }
 
     public void randomPasswordSet() {
@@ -400,6 +379,7 @@ public class LoginMenu extends Application implements Initializable {
 
         // Apply button action
         apply.setOnAction(event -> {
+
             String answer = questionAnswer.getText();
             int selectedQuestionIndex = -1;
 
@@ -413,14 +393,15 @@ public class LoginMenu extends Application implements Initializable {
 
             if (selectedQuestionIndex != -1) {
                 Question registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
-                User.registeringUser.setQuestion(registeringUserQuestion);
+                App.getGameClient().sendMessage("{register(username<" + username.getText() + ">)(password<" + password.getText() + ">)(confirm<" + passwordConfirm.getText() + ">)(nickname<" + nickname.getText() + ">)(email<" + email.getText() + ">)" + registeringUserQuestion.toJson() + "}");
+//                User.registeringUser.setQuestion(registeringUserQuestion);
 
                 // Remove components from root
                 root.getChildren().removeAll(imageView, vbox);
 
                 // Additional action (optional)
-                System.out.println(User.registeringUser.getQuestion().getQuestion());
-                System.out.println(User.registeringUser.getQuestion().getAnswer());
+//                System.out.println(User.registeringUser.getQuestion().getQuestion());
+//                System.out.println(User.registeringUser.getQuestion().getAnswer());
                 App.getStage().setFullScreen(true); // Set full screen
             }
         });
@@ -547,14 +528,12 @@ public class LoginMenu extends Application implements Initializable {
         return null; // delete this and write code
     }
 
-    public void emptyFieldVideoPlay(StackPane root) {
-        // Path to your video file
+    public void emptyFieldVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/emptyField.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -563,32 +542,27 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void thereIsExistUserWithUsernameVideoPlay(StackPane root) {
-        // Path to your video file
+    public void thereIsExistUserWithUsernameVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/thereIsExistUserWithUsername.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(5));
         pauseTransition.setOnFinished(actionEvent -> {
-//            videoStage.close();
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
     }
 
-    public void userCreatedSuccessfullyVideoPlay(StackPane root) {
+    public void userCreatedSuccessfullyVideoPlay() {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/userCreatedSuccessfully.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -597,14 +571,12 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void weakPasswordVideoPlay(StackPane root) {
-        // Path to your video file
+    public void weakPasswordVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/weakPassword.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -613,7 +585,7 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void wrongEmailFormatVideoPlay(StackPane root) {
+    public void wrongEmailFormatVideoPlay() {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongEmailFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -628,8 +600,7 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void wrongPasswordVideoPlay(StackPane root) {
-        // Path to your video file
+    public void wrongPasswordVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPassword.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -643,8 +614,7 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void wrongPasswordFormatVideoPlay(StackPane root) {
-        // Path to your video file
+    public void wrongPasswordFormatVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPasswordFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -658,14 +628,12 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void wrongUsernameFormatVideoPlay(StackPane root) {
-        // Path to your video file
+    public void wrongUsernameFormatVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongUsernameFormat.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -674,14 +642,12 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void confirmPasswordFailedVideoPlay(StackPane root) {
-        // Path to your video file
+    public void confirmPasswordFailedVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/confirmPasswordFailed.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         root.getChildren().add(mediaView);
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(6));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -690,17 +656,13 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void loggedInSuccessfullyVideoPlay() throws Exception {
-        // Path to your video file
+    public void loggedInSuccessfullyVideoPlay() {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
-
-        // Create a new stage (window) for the video
         Stage videoStage = new Stage();
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
-        // Set the logo image as the window icon
         videoStage.getIcons().add(logo);
         StackPane root = new StackPane();
         root.getChildren().add(mediaView);
@@ -712,8 +674,6 @@ public class LoginMenu extends Application implements Initializable {
         videoStage.setScene(scene);
         videoStage.setTitle("logged In Successfully");
         videoStage.show();
-
-        // Play the video
         mediaPlayer.play();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
@@ -729,7 +689,7 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-    public void noSuchUserExistVideoPlay(StackPane root) {
+    public void noSuchUserExistVideoPlay() {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/noSuchUserExist.mp4").toExternalForm());
         Media media = new Media(videoPath);
@@ -790,21 +750,5 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
-//    public void reloadVideo(Pane pane) {
-//        // Set up the background video
-//        MediaPlayer mediaPlayer = new MediaPlayer(loginVideo);
-//        MediaView mediaView = new MediaView();
-//        mediaView.setMediaPlayer(mediaPlayer);
-//        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-//        mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue == MediaPlayer.Status.READY) {
-//                // The media is ready to be played
-//                mediaPlayer.play();
-//            }
-//        });
-//        mediaView.setFitWidth(App.getStage().getWidth());
-//        mediaView.setFitHeight(App.getStage().getHeight());
-//        pane.getChildren().add(0, mediaView);
-//
-//    }
 }
+

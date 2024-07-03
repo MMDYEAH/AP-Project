@@ -193,4 +193,8 @@ public class FactionLeaderCard extends Card {
             }
         }
     }
+    @Override
+    public String toJson() {
+        return "{leader(name<"+name+">)(path<"+path+">)}";
+    }
 }
