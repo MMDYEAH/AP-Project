@@ -1,14 +1,12 @@
 package view;
 
 import controller.GameMenuController;
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -18,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.*;
 
 import java.util.ArrayList;
@@ -82,6 +79,7 @@ public class GameMenu extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(GameMenu.class.getResource("/game.fxml"));
         Pane pane = fxmlLoader.load();
         Scene scene = new Scene(pane);
+        Game.getCurrentGame().setTurnNumber(0);
         initializeElements(scene);
         transparentTextFields();
         scrollPane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
@@ -119,31 +117,31 @@ public class GameMenu extends Application {
                 currentPlayBoard.getHandUnit().addCardToUnit(card);
                 number++;
             }
-            number = 0;
-            for (Card card : nextPlayBoard.getDeckUnit().getCards()) {
-                if (number == 10) break;
-                nextPlayBoard.getHandUnit().addCardToUnit(card);
-                number++;
-            }
+//            number = 0;
+//            for (Card card : nextPlayBoard.getDeckUnit().getCards()) {
+//                if (number == 10) break;
+//                nextPlayBoard.getHandUnit().addCardToUnit(card);
+//                number++;
+//            }
         }
         FactionLeaderCard myFactionLead = Game.getCurrentGame().getCurrentUser().getFactionLeaderCard();
         myFactionLead.setPrefHeight(myLeader.getPrefHeight());
         myFactionLead.setPrefWidth(myLeader.getPrefWidth());
-        FactionLeaderCard enemyFactionLead = Game.getCurrentGame().getNextUser().getFactionLeaderCard();
-        enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
-        enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
+//        FactionLeaderCard enemyFactionLead = Game.getCurrentGame().getNextUser().getFactionLeaderCard();
+//        enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
+//        enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
         myLeader.getChildren().add(myFactionLead);
-        enemyLeader.getChildren().add(enemyFactionLead);
+//        enemyLeader.getChildren().add(enemyFactionLead);
         myLeader.setOnMouseClicked(mouseEvent -> {
             myFactionLead.apply();
-            goNextRound();
+            goNextTurn();
         });
-        enemyLeader.setOnMouseClicked(mouseEvent -> {
-            myFactionLead.apply();
-            goNextRound();
-        });
+//        enemyLeader.setOnMouseClicked(mouseEvent -> {
+//            myFactionLead.apply();
+//            goNextRound();
+//        });
         setDeckImage(Game.getCurrentGame().getCurrentUser().getFaction(), myDeck);
-        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
+//        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
     }
 
     private void setDeckImage(Faction faction, AnchorPane pane) {
@@ -169,7 +167,7 @@ public class GameMenu extends Application {
         pane.getChildren().add(imageView);
     }
 
-    private void fillingUnits() {
+    public void fillingUnits() {
         updateCards(currentHand);
         updateCards(weatherUnit);
         updateCards(currentClose);
@@ -181,25 +179,39 @@ public class GameMenu extends Application {
     }
 
     private void updateCards(ObservableList<Card> cards) {
+        if (cards.size() == 0) return;
         ArrayList<Card> historyCards = new ArrayList<>();
         for (Card card : cards) {
             historyCards.add(card);
         }
-        cards.clear();
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            cards.remove(cards.get(i));
+        }
         for (Card card : historyCards) {
             System.out.println(card.getName());
         }
-        cards.addAll(historyCards);
+        System.out.println(historyCards);
+        for (Card card : historyCards) {
+            cards.add(card);
+        }
+    }
+
+    public void updatePowerText() {
+        PlayBoard enemyPlayboard = Game.getCurrentGame().getNextUser().getPlayBoard();
+        enemyClosePower.setText(Integer.toString(enemyPlayboard.getCloseCombatUnit().getUnitPower()));
+        enemyRangedPower.setText(Integer.toString(enemyPlayboard.getRangedCombatUnit().getUnitPower()));
+        enemySiegePower.setText(Integer.toString(enemyPlayboard.getSiegeUnit().getUnitPower()));
+        enemyTotalPower.setText(Integer.toString(Integer.parseInt(enemyClosePower.getText()) +
+                Integer.parseInt(enemyRangedPower.getText()) + Integer.parseInt(enemySiegePower.getText())));
     }
 
     private void addPassing() {
         pass.setOnMouseClicked(mouseEvent -> {
-            goNextRound();
-
+            goNextTurn();
         });
     }
 
-    private void addListeners() {
+    public void addListeners() {
         PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
         PlayBoard nextPlayBoard = Game.getCurrentGame().getNextUser().getPlayBoard();
         weatherUnit = Game.getCurrentGame().getSpellUnit().getCards();
@@ -213,77 +225,138 @@ public class GameMenu extends Application {
         currentHand.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    tilePane.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!tilePane.getChildren().contains(card)) {
+                            tilePane.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     tilePane.getChildren().removeAll(change.getRemoved());
                 }
             }
         });
         currentClose.addListener((ListChangeListener.Change<? extends Card> change) -> {
+            System.out.println("======");
             while (change.next()) {
                 if (change.wasAdded()) {
-                    myCloseTile.getChildren().addAll(change.getAddedSubList());
+                    System.out.println("->" + change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!myCloseTile.getChildren().contains(card)) {
+                            myCloseTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     myCloseTile.getChildren().removeAll(change.getRemoved());
                 }
                 myClosePower.setText(Integer.toString(currentPlayBoard.getCloseCombatUnit().getUnitPower()));
             }
+            System.out.println("======");
         });
         currentRanged.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    myRangedTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!myRangedTile.getChildren().contains(card)) {
+                            myRangedTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     myRangedTile.getChildren().removeAll(change.getRemoved());
                 }
-                myRangedPower.setText(Integer.toString(currentPlayBoard.getRangedCombatUnit().getUnitPower()));
             }
         });
         currentSiege.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    mySiegeTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!mySiegeTile.getChildren().contains(card)) {
+                            mySiegeTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     mySiegeTile.getChildren().removeAll(change.getRemoved());
                 }
-                mySiegePower.setText(Integer.toString(currentPlayBoard.getSiegeUnit().getUnitPower()));
             }
         });
         nextClose.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    enemyCloseTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!enemyCloseTile.getChildren().contains(card)) {
+                            enemyCloseTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     enemyCloseTile.getChildren().removeAll(change.getRemoved());
                 }
-                enemyClosePower.setText(Integer.toString(nextPlayBoard.getCloseCombatUnit().getUnitPower()));
             }
-
         });
         nextRanged.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    enemyRangedTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!enemyRangedTile.getChildren().contains(card)) {
+                            enemyRangedTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     enemyRangedTile.getChildren().removeAll(change.getRemoved());
                 }
-                enemyRangedPower.setText(Integer.toString(nextPlayBoard.getRangedCombatUnit().getUnitPower()));
             }
         });
         nextSiege.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    enemySiegeTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!enemySiegeTile.getChildren().contains(card)) {
+                            enemySiegeTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     enemySiegeTile.getChildren().removeAll(change.getRemoved());
                 }
-                enemySiegePower.setText(Integer.toString(nextPlayBoard.getSiegeUnit().getUnitPower()));
             }
         });
         weatherUnit.addListener((ListChangeListener.Change<? extends Card> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
-                    spellTile.getChildren().addAll(change.getAddedSubList());
+                    for (Card card : change.getAddedSubList()) {
+                        // Debugging to check instances
+                        System.out.println("Adding card: " + card + " with hashCode: " + card.hashCode());
+                        if (!spellTile.getChildren().contains(card)) {
+                            spellTile.getChildren().add(card);
+                        } else {
+                            System.out.println("Duplicate card not added: " + card);
+                        }
+                    }
                 } else if (change.wasRemoved()) {
                     spellTile.getChildren().removeAll(change.getRemoved());
                 }
@@ -296,118 +369,134 @@ public class GameMenu extends Application {
         PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
         PlayBoard nextPlayBoard = Game.getCurrentGame().getNextUser().getPlayBoard();
         card.setOnMouseReleased(mouseEvent -> {
-            System.out.println(mouseEvent.getSceneX());
-            System.out.println(mouseEvent.getSceneY());
-            String type = card.getName().substring(card.getName().indexOf("<"));
-            type = type.substring(1, type.length() - 1);
-            System.out.println(type);
-            boolean isSpy = card instanceof Spy;
-            boolean isDecoy = card instanceof Decoy;
-            boolean isMedic = card instanceof Medic;
-            if (isDecoy) {
-                decoy(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
-                decoy(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
-                decoy(card, mouseEvent, currentPlayBoard.getSiegeUnit());
-            } else if (isMedic) {
-                medic(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
-                medic(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
-                medic(card, mouseEvent, currentPlayBoard.getSiegeUnit());
-            } else if (!isSpy) {
-                if (type.equals("close")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
-                        controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
-                        goNextRound();
-                    }
-                } else if (type.equals("ranged")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
-                        controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
-                        goNextRound();
-                    }
-                } else if (type.equals("siege")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 510 && mouseEvent.getSceneY() < 590) {
-                        controller.putCard(card, currentPlayBoard.getSiegeUnit(), true);
-                        goNextRound();
-                    }
-                } else if (type.equals("agile")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
-                        controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
-                        goNextRound();
-                    } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
-                        controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
-                        goNextRound();
-                    }
-                } else if (type.equals("weather")) {
-                    if (mouseEvent.getSceneX() > 110 && mouseEvent.getSceneX() < 310
-                            && mouseEvent.getSceneY() > 340 && mouseEvent.getSceneY() < 430) {
-                        tilePane.getChildren().remove(card);
-                        if (spellTile.getChildren().size() == 3) {
-                            spellTile.getChildren().remove(0);
+            if (card.getUnit() != null && !(card.getUnit() instanceof WarUnit)
+                    && Game.getCurrentGame().getTurnNumber() % 2 == 0 && !Game.getCurrentGame().isMePassRound()) {
+                System.out.println(mouseEvent.getSceneX());
+                System.out.println(mouseEvent.getSceneY());
+                String type = card.getName().substring(card.getName().indexOf("<"));
+                type = type.substring(1, type.length() - 1);
+                System.out.println(type);
+                boolean isSpy = card instanceof Spy;
+                boolean isDecoy = card instanceof Decoy;
+                boolean isMedic = card instanceof Medic;
+                if (isDecoy) {
+                    decoy(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
+                    decoy(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
+                    decoy(card, mouseEvent, currentPlayBoard.getSiegeUnit());
+                } else if (isMedic) {
+                    medic(card, mouseEvent, currentPlayBoard.getCloseCombatUnit());
+                    medic(card, mouseEvent, currentPlayBoard.getRangedCombatUnit());
+                    medic(card, mouseEvent, currentPlayBoard.getSiegeUnit());
+                } else if (!isSpy) {
+                    if (type.equals("close")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
+                            controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
                         }
-                        controller.putCard(card, Game.getCurrentGame().getSpellUnit(), true);
-                        goNextRound();
+                    } else if (type.equals("ranged")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
+                            controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("siege")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 510 && mouseEvent.getSceneY() < 590) {
+                            controller.putCard(card, currentPlayBoard.getSiegeUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("agile")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 330 && mouseEvent.getSceneY() < 410) {
+                            controller.putCard(card, currentPlayBoard.getCloseCombatUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 420 && mouseEvent.getSceneY() < 500) {
+                            controller.putCard(card, currentPlayBoard.getRangedCombatUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("weather")) {
+                        if (mouseEvent.getSceneX() > 110 && mouseEvent.getSceneX() < 310
+                                && mouseEvent.getSceneY() > 340 && mouseEvent.getSceneY() < 430) {
+                            tilePane.getChildren().remove(card);
+                            if (spellTile.getChildren().size() == 3) {
+                                spellTile.getChildren().remove(0);
+                            }
+                            controller.putCard(card, Game.getCurrentGame().getSpellUnit(), true);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
                     }
-                }
-            } else {
-                if (type.equals("close")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
-                        controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
-                        goNextRound();
-                    }
-                } else if (type.equals("ranged")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
-                        controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
-                        goNextRound();
-                    }
-                } else if (type.equals("siege")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 40 && mouseEvent.getSceneY() < 120) {
-                        controller.putCard(card, nextPlayBoard.getSiegeUnit(), false);
-                        goNextRound();
-                    }
-                } else if (type.equals("agile")) {
-                    if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
-                        controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
-                        goNextRound();
-                    } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
-                            && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
-                        controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
-                        goNextRound();
+                } else {
+                    if (type.equals("close")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
+                            controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("ranged")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
+                            controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("siege")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 40 && mouseEvent.getSceneY() < 120) {
+                            controller.putCard(card, nextPlayBoard.getSiegeUnit(), false);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
+                    } else if (type.equals("agile")) {
+                        if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 220 && mouseEvent.getSceneY() < 300) {
+                            controller.putCard(card, nextPlayBoard.getCloseCombatUnit(), false);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        } else if (mouseEvent.getSceneX() > 530 && mouseEvent.getSceneX() < 1130
+                                && mouseEvent.getSceneY() > 130 && mouseEvent.getSceneY() < 210) {
+                            controller.putCard(card, nextPlayBoard.getRangedCombatUnit(), false);
+                            if (!Game.getCurrentGame().isEnemyPassRound())
+                                goNextTurn();
+                        }
                     }
                 }
             }
         });
     }
 
-    private void goNextRound() {
+    private void goNextTurn() {
         //TODO: if one of player pss round
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText("please give the game to the next user{ Dont look at next hand :)}");
-        alert.setOnCloseRequest(dialogEvent -> {
-            try {
-                this.stop();
-                Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
-                if (Game.getCurrentGame().getTurnNumber() % 2 == 0) {
-                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
-                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
-                } else {
-                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
-                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
-                }
-                GameMenu gameMenu = new GameMenu();
-                gameMenu.start(App.getStage());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        alert.show();
+        App.getGameClient().sendMessage("ready for game:" + User.getLoggedInUser().toJson());
+        Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
+//        Alert alert = new Alert(Alert.AlertType.WARNING);
+//        alert.setContentText("please give the game to the next user{ Dont look at next hand :)}");
+//        alert.setOnCloseRequest(dialogEvent -> {
+//            try {
+//                this.stop();
+//                Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
+//                if (Game.getCurrentGame().getTurnNumber() % 2 == 0) {
+//                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
+//                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
+//                } else {
+//                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
+//                    Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
+//                }
+//                GameMenu gameMenu = new GameMenu();
+//                gameMenu.start(App.getStage());
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//        alert.show();
     }
 
     private void decoy(Card card, MouseEvent mouseEvent, Unit unit) {

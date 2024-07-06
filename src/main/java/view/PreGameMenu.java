@@ -65,6 +65,9 @@ public class PreGameMenu extends Application {
 
     PreGameMenuController controller = new PreGameMenuController(this);
 
+    GameMenu gameMenu;
+
+
     @Override
     public void start(Stage stage) throws IOException {
         App.setStage(stage);
@@ -94,20 +97,24 @@ public class PreGameMenu extends Application {
                 specialCardVideoPlay(pane);
             } else {
                 try {
-                    if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
-                        this.stop();
-                        System.out.println(Game.getCurrentGame().getCurrentUser().toJson());
-//                        App.getGameClient().sendMessage("start game : "+Game.getCurrentGame().getCurrentUser().toJson());
-                        Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
-                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
-//                        PreGameMenu preGameMenu = new PreGameMenu();
-//                        preGameMenu.start(App.getStage());
-                    } else {
-                        this.stop();
-                        Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
-                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
-                        goToGame();
+//                    if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
+//                        this.stop();
+//                        System.out.println(Game.getCurrentGame().getCurrentUser().toJson());
+////                        App.getGameClient().sendMessage("start game : "+Game.getCurrentGame().getCurrentUser().toJson());
+//                        Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getEnemy());
+//                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getMe());
+////                        PreGameMenu preGameMenu = new PreGameMenu();
+////                        preGameMenu.start(App.getStage());
+//                    } else {
+//                        this.stop();
+                    for (Card card : Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards()){
+                        card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit());
                     }
+                    App.getGameClient().sendMessage("ready for game:"+User.getLoggedInUser().toJson());
+                    Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
+//                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
+                    goToGame();
+//                    }
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -559,8 +566,12 @@ public class PreGameMenu extends Application {
     }
 
     public void goToGame() throws Exception {
-        GameMenu gameMenu = new GameMenu();
+        gameMenu = new GameMenu();
         this.stop();
         gameMenu.start(App.getStage());
+    }
+
+    public GameMenu getGameMenu() {
+        return gameMenu;
     }
 }

@@ -3,10 +3,7 @@ package network;
 import controller.LoginMenuController;
 import enums.LoginMenuCommands;
 import enums.MainMenuCommands;
-import model.ClearWeather;
-import model.Question;
-import model.Result;
-import model.User;
+import model.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,6 +16,10 @@ public class ClientHandler implements Runnable {
     private DataInputStream in;
     private DataOutputStream out;
     private User user;
+
+    ClientHandler requester;
+    GameSession gameSession;
+
 
     private LoginMenuController controller = new LoginMenuController();
 
@@ -43,15 +44,25 @@ public class ClientHandler implements Runnable {
                     handleLogin(matcher);
                 } else if ((matcher = MainMenuCommands.PLAY_REQUEST.getMatcher(message)) != null) {
                     handleGameRequest(matcher);
-                } else if (message.startsWith("accept")) {
+                } else if (message.equals("accept")) {
                     handleGameAcceptance(message);
-                } else if (message.startsWith("put card")) {
-                    handleGameAction(message);
+                } else if (message.equals("reject")) {
+                    handleGameRejectance(message);
+                } else if (message.startsWith("ready for game:")) {
+                    sendGameReady(message);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendGameReady(String message) {
+        requester.sendMessage(message);
+    }
+
+    private void handleGameRejectance(String message) {
+        requester.sendMessage(message);
     }
 
     private void handleRegister(Matcher matcher) {
@@ -87,28 +98,29 @@ public class ClientHandler implements Runnable {
 
     private void handleGameRequest(Matcher matcher) {
         String username = matcher.group("username");
+        ClientHandler enemy = null;
         for (ClientHandler clientHandler : server.getClients()){
-            if (clientHandler.getUser().getUsername().equals(username)){
-                clientHandler.sendMessage("");
+            if (clientHandler.getUser().getUsername().equals(username) && clientHandler.getUser() != this.user){
+                enemy = clientHandler;
             }
+        }
+        if (enemy == null) sendMessage("user not online or not exist");
+        else {
+            enemy.requester = this;
+            this.requester = enemy;
+            enemy.sendRequest(user.getUsername());
         }
     }
 
-    private void handleGameAcceptance(String message) {
-        String[] parts = message.split(" ");
-        String requesterUsername = parts[1];
+    private void sendRequest(String user) {
+        sendMessage(user+" request game to you");
+    }
 
-        synchronized (server.getClients()) {
-            Optional<ClientHandler> requesterHandler = server.getClients().stream()
-                    .filter(ch -> ch.getUser() != null && ch.getUser().getUsername().equals(requesterUsername))
-                    .findFirst();
-            if (requesterHandler.isPresent()) {
-                GameSession gameSession = new GameSession(requesterHandler.get(), this);
-                server.getExecutorService().submit(gameSession);
-            } else {
-                sendMessage("Game acceptance failed: requester not found or not online");
-            }
-        }
+    private void handleGameAcceptance(String message) {
+        requester.sendMessage(message);
+        gameSession = new GameSession(requester,this);
+        requester.gameSession = gameSession;
+        gameSession.run();
     }
 
     private void handleGameAction(String message) {

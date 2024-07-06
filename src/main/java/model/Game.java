@@ -2,20 +2,21 @@ package model;
 
 import controller.GameMenuController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class Game {
     protected User me, enemy,Winner,currentUser,nextUser;
-    protected Date date;
+    protected LocalDateTime date;
     protected int myFinalScore,enemyFinalScore, turnNumber;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
     protected SpellUnit spellUnit;
     private GameMenuController controller;
     protected boolean mePassRound, enemyPassRound;
 
-    public Game(User me, User enemy, Date date) {
+    public Game(User me, User enemy, LocalDateTime date) {
         this.me = me;
         this.enemy = enemy;
         this.date = date;
@@ -99,11 +100,11 @@ public class Game {
         this.currentUser = currentUser;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

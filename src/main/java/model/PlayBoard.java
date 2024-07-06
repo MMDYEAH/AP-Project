@@ -87,6 +87,6 @@ public class PlayBoard {
 
     public String toJson(){
         return "{playBoard(deckUnit<"+deckUnit.arrayToJson()+">)(handUnit<"+handUnit.arrayToJson()+">)(closeUnit<"+closeCombatUnit.arrayToJson()+
-                rangedCombatUnit.arrayToJson()+">)(siegeUnit<"+siegeUnit.arrayToJson()+">)(discardUnit<"+discardPileUnit.arrayToJson()+">)}";
+                ">)(rangedUnit<"+rangedCombatUnit.arrayToJson()+">)(siegeUnit<"+siegeUnit.arrayToJson()+">)(discardUnit<"+discardPileUnit.arrayToJson()+">)}";
     }
 }

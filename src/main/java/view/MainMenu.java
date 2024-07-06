@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -24,11 +21,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
@@ -50,6 +50,10 @@ public class MainMenu extends Application {
     Button pointChart;
 
     StackPane root;
+
+    PreGameMenu preGameMenu;
+
+    Game onlineGame;
 //    MainMenuController controller = new MainMenuController(this);
 
     @Override
@@ -179,19 +183,18 @@ public class MainMenu extends Application {
         next.setRangedCombatUnit(new RangedCombatUnit());
         next.setSiegeUnit(new SiegeUnit());
         next.setHandUnit(new HandUnit());
-        User my = new User("a", "a", "a", "a"); //TODO: change it
-        User.setLoggedInUser(my);
         User.getLoggedInUser().setPlayBoard(currentPlayBoard);
         User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
         User enemy = new User("a", "a", "a", "a"); //TODO: change it
         enemy.setPlayBoard(next);
         enemy.getPlayBoard().setDeckUnit(deckUnit2);
-        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, new Date()));//TODO: change date
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, LocalDateTime.now()));//TODO: change date
         Game.getCurrentGame().setSpellUnit(new SpellUnit());
         Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
         Game.getCurrentGame().setNextUser(enemy);
         Game.getCurrentGame().setMe(User.getLoggedInUser());
         Game.getCurrentGame().setEnemy(enemy);
+        onlineGame = Game.getCurrentGame();
     }
 
     public void pointChart(StackPane root) throws IOException {
@@ -287,5 +290,62 @@ public class MainMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+    public void showNotAccept() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("user not online or not exist");
+        alert.show();
+    }
 
+    public void alertRequest(String message) {
+        Button reject = new Button("reject");
+        Button accept = new Button("accept");
+        Text text = new Text(message);
+        text.setFill(Color.GOLD);
+        VBox vBox = new VBox(text, accept, reject);
+        vBox.setMaxWidth(500);
+        vBox.setAlignment(Pos.CENTER);
+        root.getChildren().add(vBox);
+        reject.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("reject");
+            root.getChildren().remove(vBox);
+        });
+        accept.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("accept");
+            root.getChildren().remove(vBox);
+            preGameMenu = new PreGameMenu();
+            try {
+                this.stop();
+                initialize();
+                preGameMenu.start(App.getStage());
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+    public void alertReject() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("reject");
+        alert.show();
+    }
+
+    public void acceptGame() {
+        preGameMenu = new PreGameMenu();
+        try {
+            this.stop();
+            initialize();
+            preGameMenu.start(App.getStage());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public PreGameMenu getPreGameMenu() {
+        return preGameMenu;
+    }
+
+    public Game getOnlineGame() {
+        return onlineGame;
+    }
 }

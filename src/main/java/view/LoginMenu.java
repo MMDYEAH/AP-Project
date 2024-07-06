@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 public class LoginMenu extends Application implements Initializable {
     @FXML
@@ -70,6 +71,9 @@ public class LoginMenu extends Application implements Initializable {
     LoginMenuController controller = new LoginMenuController(this);
     StackPane root;
     GameClient gameClient;
+
+    MainMenu mainMenu;
+    Question registeringUserQuestion;
 
     public LoginMenu(GameClient gameServer) {
         this.gameClient = gameServer;
@@ -392,7 +396,7 @@ public class LoginMenu extends Application implements Initializable {
             }
 
             if (selectedQuestionIndex != -1) {
-                Question registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
+                registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
                 App.getGameClient().sendMessage("{register(username<" + username.getText() + ">)(password<" + password.getText() + ">)(confirm<" + passwordConfirm.getText() + ">)(nickname<" + nickname.getText() + ">)(email<" + email.getText() + ">)" + registeringUserQuestion.toJson() + "}");
 //                User.registeringUser.setQuestion(registeringUserQuestion);
 
@@ -657,6 +661,9 @@ public class LoginMenu extends Application implements Initializable {
     }
 
     public void loggedInSuccessfullyVideoPlay() {
+        User user = new User(username.getText(),password.getText(),nickname.getText(),email.getText());
+        user.setQuestion(registeringUserQuestion);
+        User.setLoggedInUser(user);
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -678,7 +685,7 @@ public class LoginMenu extends Application implements Initializable {
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(4));
         pauseTransition.setOnFinished(actionEvent -> {
             videoStage.close();
-            MainMenu mainMenu = new MainMenu();
+            mainMenu = new MainMenu();
             try {
                 mainMenu.start(App.getStage());
                 App.getStage().setFullScreen(true);
@@ -719,6 +726,7 @@ public class LoginMenu extends Application implements Initializable {
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/witcherMenu.mp4")).toExternalForm();
         loginVideo = new Media(videoPath);
     }
+
     public void noUserWithThisUsernameVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/userDoesNotExist.mp4").toExternalForm());
@@ -734,6 +742,7 @@ public class LoginMenu extends Application implements Initializable {
         });
         pauseTransition.play();
     }
+
     public void wrongAnswerVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongAnswer.mp4").toExternalForm());
@@ -750,5 +759,8 @@ public class LoginMenu extends Application implements Initializable {
         pauseTransition.play();
     }
 
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
 }
 
