@@ -4,8 +4,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import view.FinishGameMenu;
+import view.GameMenu;
 import view.LoginMenu;
 
 import java.io.DataInputStream;
@@ -73,10 +76,60 @@ public class GameClient extends Application {
                 } else if (message.startsWith("ready for game:")){
                     System.out.println("game update");
                     updateGameState(message);
+                } else if (message.equals("pass")) {
+                    handlePassing();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handlePassing() {
+        Game game = loginMenu.getMainMenu().getOnlineGame();
+        GameMenu gameMenu = loginMenu.getMainMenu().getPreGameMenu().getGameMenu();
+        Platform.runLater(()->{
+            game.setEnemyPassRound(true);
+            if (game.isMePassRound()) {
+                if (Game.getCurrentGame().isEnemyPassRound()){
+                    int myPower = Integer.parseInt(gameMenu.myTotalPower.getText());
+                    int enemyPower = Integer.parseInt(gameMenu.enemyTotalPower.getText());
+                    if (myPower > enemyPower){
+                        checkLives(gameMenu.enemyLives);
+                        Game.getCurrentGame().setEnemyLive(game.getEnemyLive()-1);
+                    } else if (enemyPower > myPower){
+                        checkLives(gameMenu.myLives);
+                        Game.getCurrentGame().setMylive(game.getMylive()-1);
+                    }
+                    int size = game.getRoundsScore().size();
+                    ArrayList<Integer> scores = new ArrayList<>();
+                    scores.add(myPower);
+                    scores.add(enemyPower);
+                    game.getRoundsScore().put(size,scores);
+                    if (game.getRoundsScore().size() == 3){
+                        try {
+                            gameMenu.stop();
+                            FinishGameMenu finishGameMenu = new FinishGameMenu();
+                            finishGameMenu.start(App.getStage());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
+    private void checkLives(Text Lives) {
+        int myLive = Integer.parseInt(Lives.getText().substring(7));
+        if (myLive == 2) Lives.setText("lives: 1");
+        else if (myLive == 1) {
+            try {
+                loginMenu.getMainMenu().getPreGameMenu().getGameMenu().stop();
+                FinishGameMenu finishGameMenu = new FinishGameMenu();
+                finishGameMenu.start(App.getStage());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

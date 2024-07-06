@@ -50,6 +50,8 @@ public class ClientHandler implements Runnable {
                     handleGameRejectance(message);
                 } else if (message.startsWith("ready for game:")) {
                     sendGameReady(message);
+                } else if (message.equals("pass")) {
+                    requester.sendMessage("pass");
                 }
             }
         } catch (IOException e) {

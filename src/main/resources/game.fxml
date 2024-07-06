@@ -70,9 +70,19 @@
     <TextField fx:id="myRangedPower" layoutX="389.0" layoutY="456.0" prefHeight="25.0" prefWidth="27.0" />
     <TextField fx:id="mySiegePower" layoutX="389.0" layoutY="560.0" prefHeight="25.0" prefWidth="27.0" />
     <TextField fx:id="myTotalPower" layoutX="327.0" layoutY="538.0" prefHeight="25.0" prefWidth="27.0" />
-   <Button layoutX="250.0" layoutY="665.0" fx:id="pass" mnemonicParsing="false" text="PASS" textFill="#f78b6e">
+   <Button fx:id="pass" layoutX="250.0" layoutY="665.0" mnemonicParsing="false" text="PASS" textFill="#f78b6e">
       <font>
          <Font name="Arial Bold" size="12.0" />
       </font>
    </Button>
+   <Text fx:id="myLives" fill="WHITE" layoutX="116.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="lives :">
+      <font>
+         <Font name="Arial" size="20.0" />
+      </font>
+   </Text>
+   <Text fx:id="enemyLives" fill="WHITE" layoutX="116.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="lives :">
+      <font>
+         <Font name="Arial" size="20.0" />
+      </font>
+   </Text>
 </Pane>

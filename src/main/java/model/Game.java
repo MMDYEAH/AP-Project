@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class Game {
     protected User me, enemy,Winner,currentUser,nextUser;
     protected LocalDateTime date;
-    protected int myFinalScore,enemyFinalScore, turnNumber;
+    protected int myFinalScore,enemyFinalScore, turnNumber,mylive,enemyLive;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
     protected SpellUnit spellUnit;
     private GameMenuController controller;
@@ -30,6 +30,22 @@ public class Game {
 
     public void setNextUser(User nextUser) {
         this.nextUser = nextUser;
+    }
+
+    public int getMylive() {
+        return mylive;
+    }
+
+    public void setMylive(int mylive) {
+        this.mylive = mylive;
+    }
+
+    public int getEnemyLive() {
+        return enemyLive;
+    }
+
+    public void setEnemyLive(int enemyLive) {
+        this.enemyLive = enemyLive;
     }
 
     public static Game getCurrentGame() {
