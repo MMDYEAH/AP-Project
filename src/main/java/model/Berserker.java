@@ -7,7 +7,7 @@ public class Berserker extends UnitCard{
 
     @Override
     public void apply() {
-
+        // This method will be left empty as the Berserker's transformation is handled by Mardroeme
     }
 
     @Override
