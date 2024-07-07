@@ -1,7 +1,7 @@
 package view;
 
-import com.fasterxml.jackson.databind.jsontype.impl.AsExternalTypeDeserializer;
 import controller.GameMenuController;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.*;
 
 import java.util.ArrayList;
@@ -211,77 +212,90 @@ public class GameMenu extends Application {
 
     private void addPassing() {
         pass.setOnMouseClicked(mouseEvent -> {
-            Game.getCurrentGame().setMePassRound(true);
-            if (Game.getCurrentGame().isEnemyPassRound()){
-                int myPower = Integer.parseInt(myTotalPower.getText());
-                int enemyPower = Integer.parseInt(enemyTotalPower.getText());
-                if (myPower > enemyPower){
-                    checkLives(enemyLives);
-                    Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive()-1);
-                } else if (enemyPower > myPower){
-                    checkLives(myLives);
-                    Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive()-1);
-                }
-                int size = Game.getCurrentGame().getRoundsScore().size();
-                ArrayList<Integer> scores = new ArrayList<>();
-                scores.add(myPower);
-                scores.add(enemyPower);
-                Game.getCurrentGame().getRoundsScore().put(size,scores);
-                if (Game.getCurrentGame().getRoundsScore().size() == 3){
-                    try {
-                        this.stop();
-                        FinishGameMenu finishGameMenu = new FinishGameMenu();
-                        finishGameMenu.start(App.getStage());
-                    }catch (Exception e){
-                        e.printStackTrace();
+            if (Game.getCurrentGame().getTurnNumber() % 2 == 0) {
+                Game.getCurrentGame().setMePassRound(true);
+                if (Game.getCurrentGame().isEnemyPassRound()) {
+                    int myPower = Integer.parseInt(myTotalPower.getText());
+                    int enemyPower = Integer.parseInt(enemyTotalPower.getText());
+                    if (myPower > enemyPower) {
+                        checkLives(enemyLives);
+                        Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive() - 1);
+                    } else if (enemyPower > myPower) {
+                        checkLives(myLives);
+                        Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive() - 1);
                     }
-                } else {
-                    finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getCloseCombatUnit());
-                    finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getRangedCombatUnit());
-                    finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getSiegeUnit());
-                    finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getCloseCombatUnit());
-                    finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getRangedCombatUnit());
-                    finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getSiegeUnit());
-                    myTotalPower.setText("0");
-                    mySiegePower.setText("0");
-                    myRangedPower.setText("0");
-                    myClosePower.setText("0");
-                    enemyTotalPower.setText("0");
-                    enemySiegePower.setText("0");
-                    enemyRangedPower.setText("0");
-                    enemyClosePower.setText("0");
+                    int size = Game.getCurrentGame().getRoundsScore().size();
+                    ArrayList<Integer> scores = new ArrayList<>();
+                    scores.add(myPower);
+                    scores.add(enemyPower);
+                    Game.getCurrentGame().getRoundsScore().put(size, scores);
+                    if (Game.getCurrentGame().getRoundsScore().size() == 3) {
+                        try {
+                            this.stop();
+                            FinishGameMenu finishGameMenu = new FinishGameMenu();
+                            finishGameMenu.start(App.getStage());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getCloseCombatUnit());
+                        finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getRangedCombatUnit());
+                        finishRoundForMe(Game.getCurrentGame().getCurrentUser().getPlayBoard().getSiegeUnit());
+                        finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getCloseCombatUnit());
+                        finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getRangedCombatUnit());
+                        finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getSiegeUnit());
+                        settingPowersToZero(myTotalPower, mySiegePower, myRangedPower,
+                                myClosePower, enemyTotalPower, enemySiegePower, enemyRangedPower, enemyClosePower);
+                        Game.getCurrentGame().setMePassRound(false);
+                        Game.getCurrentGame().setEnemyPassRound(false);
+                    }
                 }
-            }
-            else {
                 goNextTurn();
+                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+                pauseTransition.setOnFinished(actionEvent -> App.getGameClient().sendMessage("pass"));
+                pauseTransition.play();
             }
-            App.getGameClient().sendMessage("pass");
         });
     }
-    private void finishRoundForMe(Unit unit){
-        for (Card card : unit.getCards()){
+
+    public void settingPowersToZero(TextField myTotalPower, TextField mySiegePower, TextField myRangedPower,
+                                    TextField myClosePower, TextField enemyTotalPower, TextField enemySiegePower,
+                                    TextField enemyRangedPower, TextField enemyClosePower) {
+        myTotalPower.setText("0");
+        mySiegePower.setText("0");
+        myRangedPower.setText("0");
+        myClosePower.setText("0");
+        enemyTotalPower.setText("0");
+        enemySiegePower.setText("0");
+        enemyRangedPower.setText("0");
+        enemyClosePower.setText("0");
+    }
+
+    public void finishRoundForMe(Unit unit) {
+        for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
         }
         unit.getCards().clear();
     }
-    private void finishRoundForEnemy(Unit unit){
-        for (Card card : unit.getCards()){
+
+    public void finishRoundForEnemy(Unit unit) {
+        for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
         }
         unit.getCards().clear();
     }
 
-    private void checkLives(Text Lives) {
-        int myLive = Integer.parseInt(Lives.getText().substring(7));
-        if (myLive == 2) Lives.setText("lives: 1");
-        else if (myLive == 1) {
+    private void checkLives(Text lives) {
+        int live = Integer.parseInt(lives.getText().substring(8));
+        if (live == 2) lives.setText("lives : 1");
+        else if (live == 1) {
             try {
                 this.stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -445,6 +459,10 @@ public class GameMenu extends Application {
         PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
         PlayBoard nextPlayBoard = Game.getCurrentGame().getNextUser().getPlayBoard();
         card.setOnMouseReleased(mouseEvent -> {
+            System.out.println(card.getUnit() != null);
+            System.out.println(!(card.getUnit() instanceof WarUnit));
+            System.out.println(Game.getCurrentGame().getTurnNumber() % 2 == 0);
+            System.out.println(!Game.getCurrentGame().isMePassRound());
             if (card.getUnit() != null && !(card.getUnit() instanceof WarUnit)
                     && Game.getCurrentGame().getTurnNumber() % 2 == 0 && !Game.getCurrentGame().isMePassRound()) {
                 System.out.println(mouseEvent.getSceneX());
@@ -627,14 +645,7 @@ public class GameMenu extends Application {
         myRangedPower.setEditable(false);
         myTotalPower.setEditable(false);
         //TODO : change power
-        enemyClosePower.setText("0");
-        enemyRangedPower.setText("0");
-        enemySiegePower.setText("0");
-        enemyTotalPower.setText("0");
-        myTotalPower.setText("0");
-        myClosePower.setText("0");
-        myRangedPower.setText("0");
-        mySiegePower.setText("0");
+        settingPowersToZero(enemyClosePower, enemyRangedPower, enemySiegePower, enemyTotalPower, myTotalPower, myClosePower, myRangedPower, mySiegePower);
     }
 
 

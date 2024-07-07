@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
@@ -69,11 +70,11 @@ public class GameClient extends Application {
                     notAccept();
                 } else if (message.endsWith("request game to you")) {
                     handleGameRequest(message);
-                } else if (message.equals("reject")){
+                } else if (message.equals("reject")) {
                     handleRejectGame();
-                } else if (message.equals("accept")){
+                } else if (message.equals("accept")) {
                     handleAcceptGame();
-                } else if (message.startsWith("ready for game:")){
+                } else if (message.startsWith("ready for game:")) {
                     System.out.println("game update");
                     updateGameState(message);
                 } else if (message.equals("pass")) {
@@ -88,57 +89,72 @@ public class GameClient extends Application {
     private void handlePassing() {
         Game game = loginMenu.getMainMenu().getOnlineGame();
         GameMenu gameMenu = loginMenu.getMainMenu().getPreGameMenu().getGameMenu();
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             game.setEnemyPassRound(true);
             if (game.isMePassRound()) {
-                if (Game.getCurrentGame().isEnemyPassRound()){
+                if (Game.getCurrentGame().isEnemyPassRound()) {
                     int myPower = Integer.parseInt(gameMenu.myTotalPower.getText());
                     int enemyPower = Integer.parseInt(gameMenu.enemyTotalPower.getText());
-                    if (myPower > enemyPower){
+                    if (myPower > enemyPower) {
                         checkLives(gameMenu.enemyLives);
-                        Game.getCurrentGame().setEnemyLive(game.getEnemyLive()-1);
-                    } else if (enemyPower > myPower){
+                        Game.getCurrentGame().setEnemyLive(game.getEnemyLive() - 1);
+                    } else if (enemyPower > myPower) {
                         checkLives(gameMenu.myLives);
-                        Game.getCurrentGame().setMylive(game.getMylive()-1);
+                        Game.getCurrentGame().setMylive(game.getMylive() - 1);
                     }
                     int size = game.getRoundsScore().size();
                     ArrayList<Integer> scores = new ArrayList<>();
                     scores.add(myPower);
                     scores.add(enemyPower);
-                    game.getRoundsScore().put(size,scores);
-                    if (game.getRoundsScore().size() == 3){
+                    game.getRoundsScore().put(size, scores);
+                    if (game.getRoundsScore().size() == 3) {
+                        System.out.println("finish");
                         try {
                             gameMenu.stop();
                             FinishGameMenu finishGameMenu = new FinishGameMenu();
                             finishGameMenu.start(App.getStage());
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    } else {
+                        gameMenu.finishRoundForMe(game.getCurrentUser().getPlayBoard().getCloseCombatUnit());
+                        gameMenu.finishRoundForMe(game.getCurrentUser().getPlayBoard().getRangedCombatUnit());
+                        gameMenu.finishRoundForMe(game.getCurrentUser().getPlayBoard().getSiegeUnit());
+                        gameMenu.finishRoundForEnemy(game.getNextUser().getPlayBoard().getCloseCombatUnit());
+                        gameMenu.finishRoundForEnemy(game.getNextUser().getPlayBoard().getRangedCombatUnit());
+                        gameMenu.finishRoundForEnemy(game.getNextUser().getPlayBoard().getSiegeUnit());
+                        gameMenu.settingPowersToZero(gameMenu.myTotalPower, gameMenu.mySiegePower, gameMenu.myRangedPower, gameMenu.myClosePower,
+                                gameMenu.enemyTotalPower, gameMenu.enemySiegePower, gameMenu.enemyRangedPower, gameMenu.enemyClosePower);
+                        game.setMePassRound(false);
+                        game.setEnemyPassRound(false);
                     }
                 }
             }
         });
     }
-    private void checkLives(Text Lives) {
-        int myLive = Integer.parseInt(Lives.getText().substring(7));
-        if (myLive == 2) Lives.setText("lives: 1");
-        else if (myLive == 1) {
+
+
+    private void checkLives(Text lives) {
+        int live = Integer.parseInt(lives.getText().substring(8));
+        System.out.println("live: "+live);
+        if (live == 2) lives.setText("lives : 1");
+        else if (live == 1) {
             try {
                 loginMenu.getMainMenu().getPreGameMenu().getGameMenu().stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
     private void handleAcceptGame() {
-        Platform.runLater(()->loginMenu.getMainMenu().acceptGame());
+        Platform.runLater(() -> loginMenu.getMainMenu().acceptGame());
     }
 
     private void handleRejectGame() {
-        Platform.runLater(()->loginMenu.getMainMenu().alertReject());
+        Platform.runLater(() -> loginMenu.getMainMenu().alertReject());
     }
 
     private void notAccept() {
@@ -158,77 +174,78 @@ public class GameClient extends Application {
     }
 
     private void handleGameRequest(String message) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             loginMenu.getMainMenu().alertRequest(message);
         });
     }
 
     private void updateGameState(String gameState) {
-        System.out.println("game state:"+gameState.substring(15));
+        System.out.println("game state:" + gameState.substring(15));
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             Game game = loginMenu.getMainMenu().getOnlineGame();
             User enemy = userExtract(gameState.substring(15));
             User localEnemy = game.getNextUser();
             localEnemy.setFactionLeaderCard(enemy.getFactionLeaderCard());
-            updateLocalCards(enemy.getPlayBoard().getDeckUnit(),localEnemy.getPlayBoard().getDeckUnit());
-            updateLocalCards(enemy.getPlayBoard().getHandUnit(),localEnemy.getPlayBoard().getHandUnit());
-            updateLocalCards(enemy.getPlayBoard().getSiegeUnit(),localEnemy.getPlayBoard().getSiegeUnit());
-            updateLocalCards(enemy.getPlayBoard().getRangedCombatUnit(),localEnemy.getPlayBoard().getRangedCombatUnit());
-            updateLocalCards(enemy.getPlayBoard().getCloseCombatUnit(),localEnemy.getPlayBoard().getCloseCombatUnit());
-            updateOnlineCard(enemy.getPlayBoard().getDeckUnit(),localEnemy.getPlayBoard().getDeckUnit());
-            updateOnlineCard(enemy.getPlayBoard().getHandUnit(),localEnemy.getPlayBoard().getHandUnit());
-            updateOnlineCard(enemy.getPlayBoard().getSiegeUnit(),localEnemy.getPlayBoard().getSiegeUnit());
-            updateOnlineCard(enemy.getPlayBoard().getRangedCombatUnit(),localEnemy.getPlayBoard().getRangedCombatUnit());
-            updateOnlineCard(enemy.getPlayBoard().getCloseCombatUnit(),localEnemy.getPlayBoard().getCloseCombatUnit());
+            updateLocalCards(enemy.getPlayBoard().getDeckUnit(), localEnemy.getPlayBoard().getDeckUnit());
+            updateLocalCards(enemy.getPlayBoard().getHandUnit(), localEnemy.getPlayBoard().getHandUnit());
+            updateLocalCards(enemy.getPlayBoard().getSiegeUnit(), localEnemy.getPlayBoard().getSiegeUnit());
+            updateLocalCards(enemy.getPlayBoard().getRangedCombatUnit(), localEnemy.getPlayBoard().getRangedCombatUnit());
+            updateLocalCards(enemy.getPlayBoard().getCloseCombatUnit(), localEnemy.getPlayBoard().getCloseCombatUnit());
+            updateOnlineCard(enemy.getPlayBoard().getDeckUnit(), localEnemy.getPlayBoard().getDeckUnit());
+            updateOnlineCard(enemy.getPlayBoard().getHandUnit(), localEnemy.getPlayBoard().getHandUnit());
+            updateOnlineCard(enemy.getPlayBoard().getSiegeUnit(), localEnemy.getPlayBoard().getSiegeUnit());
+            updateOnlineCard(enemy.getPlayBoard().getRangedCombatUnit(), localEnemy.getPlayBoard().getRangedCombatUnit());
+            updateOnlineCard(enemy.getPlayBoard().getCloseCombatUnit(), localEnemy.getPlayBoard().getCloseCombatUnit());
             game.setNextUser(enemy);
             game.setEnemy(enemy);
-            if (loginMenu.getMainMenu().getPreGameMenu().getGameMenu() != null){
+            if (loginMenu.getMainMenu().getPreGameMenu().getGameMenu() != null) {
                 loginMenu.getMainMenu().getPreGameMenu().getGameMenu().addListeners();
                 loginMenu.getMainMenu().getPreGameMenu().getGameMenu().fillingUnits();
                 loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updatePowerText();
             }
-            game.setTurnNumber(game.getTurnNumber()+1);
+            game.setTurnNumber(game.getTurnNumber() + 1);
         });
     }
 
     private void updateOnlineCard(Unit online, Unit local) {
         System.out.println("update online");
-        for (Card onlineCard : online.getCards()){
+        for (Card onlineCard : online.getCards()) {
             if (onlineCard == null) continue;
             Card isExistCard = null;
-            for (Card offlineCard : local.getCards()){
+            for (Card offlineCard : local.getCards()) {
                 if (offlineCard.getName().equals(onlineCard.getName())) isExistCard = offlineCard;
             }
-            if(isExistCard == null){
+            if (isExistCard == null) {
                 local.getCards().add(onlineCard);
-                if (local instanceof WarUnit){
+                if (local instanceof WarUnit) {
                     onlineCard.setUnit(local);
                     onlineCard.apply();
-                    if (onlineCard instanceof UnitCard){
-                        ((UnitCard)onlineCard).setPower(((UnitCard)onlineCard).getPower());
+                    if (onlineCard instanceof UnitCard) {
+                        ((UnitCard) onlineCard).setPower(((UnitCard) onlineCard).getPower());
                     }
                 }
             }
         }
     }
 
-    private void updateLocalCards(Unit online, Unit local){
+    private void updateLocalCards(Unit online, Unit local) {
         System.out.println("update local");
         if (local.getCards().size() == 0) return;
-        for (int i = local.getCards().size()-1; i >= 0; i--){
+        for (int i = local.getCards().size() - 1; i >= 0; i--) {
             Card card = local.getCards().get(i);
             Card isExistCard = null;
-            for (Card onlineCard : online.getCards()){
+            for (Card onlineCard : online.getCards()) {
                 if (onlineCard.getName().equals(card.getName())) isExistCard = onlineCard;
             }
             local.getCards().remove(card);
-            if(isExistCard != null){
+            if (isExistCard != null) {
                 local.getCards().add(isExistCard);
             }
         }
     }
-    private  User userExtract(String userJson) {
+
+    private User userExtract(String userJson) {
         String username = extractField(userJson, "name");
         String password = extractField(userJson, "password");
         String nickname = extractField(userJson, "nickname");
@@ -245,7 +262,7 @@ public class GameClient extends Application {
         ObservableList<Card> rangedUnitCards = extractCards(userJson, "rangedUnit");
         ObservableList<Card> siegeUnitCards = extractCards(userJson, "siegeUnit");
         ObservableList<Card> discardUnitCards = extractCards(userJson, "discardUnit");
-        System.out.println("close:"+closeUnitCards+"ranged:"+rangedUnitCards+"siege"+siegeUnitCards);
+        System.out.println("close:" + closeUnitCards + "ranged:" + rangedUnitCards + "siege" + siegeUnitCards);
         User user = new User(username, password, nickname, email);
         user.setScore(Integer.parseInt(score));
         user.setNumOfWins(Integer.parseInt(wins));
@@ -275,7 +292,8 @@ public class GameClient extends Application {
         user.setPlayBoard(playBoard);
         return user;
     }
-    private  String extractField(String input, String fieldName) {
+
+    private String extractField(String input, String fieldName) {
         String patternString = fieldName + "<(.*?)>";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
@@ -283,11 +301,11 @@ public class GameClient extends Application {
     }
 
     private ObservableList<Card> extractCards(String input, String unitType) {
-        Pattern unitPattern = Pattern.compile("\\("+unitType+"<\\{unit\\(name<"+unitType.replace("Unit","")+">\\)\\(cardsArray<(?<cards>(\\{card\\(name<[a-zA-z0-9<> ]+>\\)\\(path<[a-zA-Z0-9_:./]+>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<[0-9-]+>\\)\\(hero<\\w+>\\)\\(type<\\w+>\\)})*)>\\)}>\\)");
+        Pattern unitPattern = Pattern.compile("\\(" + unitType + "<\\{unit\\(name<" + unitType.replace("Unit", "") + ">\\)\\(cardsArray<(?<cards>(\\{card\\(name<[a-zA-z0-9<> ]+>\\)\\(path<[a-zA-Z0-9_:./]+>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<[0-9-]+>\\)\\(hero<\\w+>\\)\\(type<\\w+>\\)})*)>\\)}>\\)");
         Matcher unitMatcher = unitPattern.matcher(input);
         ObservableList<Card> cards = FXCollections.observableList(new ArrayList<>());
         if (unitMatcher.find()) {
-            System.out.println("---cards"+unitMatcher.group("cards"));
+            System.out.println("---cards" + unitMatcher.group("cards"));
             String cardsArray = unitMatcher.group("cards");
             String cardPatternString = "\\{card\\(name<(?<name>[a-zA-z0-9<> ]+)>\\)\\(path<(?<path>[a-zA-Z0-9_:./]+)>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<(?<power>[0-9-]+)>\\)\\(hero<(?<hero>\\w+)>\\)\\(type<(?<type>\\w+)>\\)}";
             Pattern cardPattern = Pattern.compile(cardPatternString);
@@ -299,7 +317,7 @@ public class GameClient extends Application {
                 String power = cardMatcher.group("power");
                 String hero = cardMatcher.group("hero");
                 String type = cardMatcher.group("type");
-                System.out.println("***"+name+" "+power+" "+hero+" "+type);
+                System.out.println("***" + name + " " + power + " " + hero + " " + type);
                 Card card = null;
                 if (power.equals("-1")) {
                     if (type.equals("BitingFrost")) {
