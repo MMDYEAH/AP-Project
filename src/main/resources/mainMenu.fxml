@@ -27,5 +27,10 @@
             <Font size="20.0" />
          </font>
       </Button>
+      <Button fx:id="logout" layoutX="1307.0" layoutY="723.0" mnemonicParsing="false" prefHeight="105.0" prefWidth="132.0" text="log out">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

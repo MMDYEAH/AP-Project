@@ -6,6 +6,7 @@ module GWENT {
     requires java.desktop;
     requires com.fasterxml.jackson.databind;
     requires com.google.gson;
+    requires java.mail;
 
     exports view;
     exports network;

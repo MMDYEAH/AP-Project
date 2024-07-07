@@ -32,6 +32,13 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
+import java.util.Properties;
+import java.util.Random;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+
 public class LoginMenu extends Application implements Initializable {
     @FXML
     private Button firstQ;
@@ -71,7 +78,7 @@ public class LoginMenu extends Application implements Initializable {
     LoginMenuController controller = new LoginMenuController(this);
     StackPane root;
     GameClient gameClient;
-
+    private String verificationCode;
     MainMenu mainMenu;
     Question registeringUserQuestion;
 
@@ -264,7 +271,9 @@ public class LoginMenu extends Application implements Initializable {
 
         signUp.setOnMouseClicked(mouseEvent -> {
             try {
-                signUp(root);
+                String emailSend = email.getText();
+                String sentCode = EmailVerification.sendVerificationCode(emailSend);
+                signUp(root, sentCode);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -303,8 +312,8 @@ public class LoginMenu extends Application implements Initializable {
         App.getGameClient().sendMessage("{login(username<" + username.getText() + ">)(password<" + password.getText() + ">)}");
     }
 
-    public void signUp(StackPane root) throws IOException {
-        securityQuestion(root);
+    public void signUp(StackPane root, String sentcode) throws IOException {
+        securityQuestion(root, sentcode);
     }
 
     public void randomPasswordSet() {
@@ -317,7 +326,7 @@ public class LoginMenu extends Application implements Initializable {
         passwordConfirm.setText(yourRandomPassword.getText());
     }
 
-    public void securityQuestion(StackPane root) throws IOException {
+    public void securityQuestion(StackPane root, String sentCode) throws IOException {
         // Load the image
         String imagePath = "/pics/security.png"; // Change this to the path of your image file
         Image image = new Image(getClass().getResource(imagePath).toExternalForm());
@@ -330,7 +339,9 @@ public class LoginMenu extends Application implements Initializable {
         Button thirdQ = new Button(Question.getQuestionByNumber(2).getQuestion());
         Button apply = new Button("Apply");
         TextField questionAnswer = new TextField("");
+        TextField verificationEmailedCode = new TextField("");
         questionAnswer.setPromptText("enter your answer");
+        verificationEmailedCode.setPromptText("enter the code which is emailed to you.");
 
         // Set up a timeline for color animation
         Timeline timeline = new Timeline(
@@ -341,7 +352,15 @@ public class LoginMenu extends Application implements Initializable {
                 new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
         );
         timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
-
+// Set up a timeline for color animation
+        Timeline timeline1 = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> verificationEmailedCode.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> verificationEmailedCode.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> verificationEmailedCode.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> verificationEmailedCode.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> verificationEmailedCode.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline1.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
         // Add listener to start/stop animation based on focus
         questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -354,7 +373,7 @@ public class LoginMenu extends Application implements Initializable {
 
         // Create a VBox and add buttons and text field to it
         VBox vbox = new VBox(30); // VBox with 10px spacing
-        vbox.getChildren().addAll(firstQ, secondQ, thirdQ, questionAnswer, apply);
+        vbox.getChildren().addAll(firstQ, secondQ, thirdQ, questionAnswer, verificationEmailedCode, apply);
 
         vbox.setAlignment(Pos.CENTER);
         firstQ.setOnMouseEntered(e -> animateButton(firstQ, 1.1));
@@ -380,34 +399,56 @@ public class LoginMenu extends Application implements Initializable {
         thirdQ.setOnAction(event -> {
             questionAnswer.setPromptText(Question.getQuestionByNumber(2).getQuestion());
         });
-
         // Apply button action
         apply.setOnAction(event -> {
 
-            String answer = questionAnswer.getText();
-            int selectedQuestionIndex = -1;
+            if (sentCode != null) {
+                verificationCode = sentCode;
+                if (verificationEmailedCode.getText().equals(verificationCode)) {
 
-            if (firstQ.getText().equals(questionAnswer.getPromptText())) {
-                selectedQuestionIndex = 0;
-            } else if (secondQ.getText().equals(questionAnswer.getPromptText())) {
-                selectedQuestionIndex = 1;
-            } else if (thirdQ.getText().equals(questionAnswer.getPromptText())) {
-                selectedQuestionIndex = 2;
-            }
+                    String answer = questionAnswer.getText();
+                    int selectedQuestionIndex = -1;
 
-            if (selectedQuestionIndex != -1) {
-                registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
-                App.getGameClient().sendMessage("{register(username<" + username.getText() + ">)(password<" + password.getText() + ">)(confirm<" + passwordConfirm.getText() + ">)(nickname<" + nickname.getText() + ">)(email<" + email.getText() + ">)" + registeringUserQuestion.toJson() + "}");
+                    if (firstQ.getText().equals(questionAnswer.getPromptText())) {
+                        selectedQuestionIndex = 0;
+                    } else if (secondQ.getText().equals(questionAnswer.getPromptText())) {
+                        selectedQuestionIndex = 1;
+                    } else if (thirdQ.getText().equals(questionAnswer.getPromptText())) {
+                        selectedQuestionIndex = 2;
+                    }
+
+                    if (selectedQuestionIndex != -1) {
+                        registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
+                        App.getGameClient().sendMessage("{register(username<" + username.getText() + ">)(password<" + password.getText() + ">)(confirm<" + passwordConfirm.getText() + ">)(nickname<" + nickname.getText() + ">)(email<" + email.getText() + ">)" + registeringUserQuestion.toJson() + "}");
 //                User.registeringUser.setQuestion(registeringUserQuestion);
 
-                // Remove components from root
-                root.getChildren().removeAll(imageView, vbox);
+                        // Remove components from root
+                        root.getChildren().removeAll(imageView, vbox);
 
-                // Additional action (optional)
+                        // Additional action (optional)
 //                System.out.println(User.registeringUser.getQuestion().getQuestion());
 //                System.out.println(User.registeringUser.getQuestion().getAnswer());
-                App.getStage().setFullScreen(true); // Set full screen
+                        App.getStage().setFullScreen(true); // Set full screen
+                    }
+                } else {
+                    String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongVerificationCode.mp4").toExternalForm());
+                    Media media = new Media(videoPath);
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    MediaView mediaView = new MediaView(mediaPlayer);
+                    root.getChildren().add(mediaView);
+                    // Play the video
+                    mediaPlayer.play();
+                    PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+                    pauseTransition.setOnFinished(actionEvent -> {
+                        root.getChildren().remove(mediaView);
+                    });
+                    pauseTransition.play();
+                }
+            } else {
+                // Handle email sending failure
+                System.out.println("Failed to send verification email");
             }
+
         });
         questionAnswer.setPrefWidth(400);
         // Add VBox to root
@@ -661,7 +702,7 @@ public class LoginMenu extends Application implements Initializable {
     }
 
     public void loggedInSuccessfullyVideoPlay() {
-        User user = new User(username.getText(),password.getText(),nickname.getText(),email.getText());
+        User user = new User(username.getText(), password.getText(), nickname.getText(), email.getText());
         user.setQuestion(registeringUserQuestion);
         User.setLoggedInUser(user);
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
@@ -758,6 +799,65 @@ public class LoginMenu extends Application implements Initializable {
         });
         pauseTransition.play();
     }
+
+
+    public class EmailVerification {
+
+        private static final String FROM_EMAIL = "mmdgwentverift@outlook.com";
+        private static final String APP_PASSWORD = "liobggtullouibvp";  // Use the generated app password here
+        static String sentCode;
+
+        public static String sendVerificationCode(String toEmail) {
+            String code = generateVerificationCode();
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");  // Enable TLS
+            props.put("mail.smtp.host", "smtp.office365.com");
+            props.put("mail.smtp.port", "587");  // TLS port
+            props.put("mail.smtp.ssl.trust", "smtp.office365.com");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(FROM_EMAIL, APP_PASSWORD);
+                }
+            });
+
+            session.setDebug(true);  // Enable debugging
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(FROM_EMAIL));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject("Your Verification Code");
+                message.setText("Your verification code is: " + code);
+
+                Transport.send(message);
+
+                System.out.println("Verification code sent successfully to " + toEmail);
+                return code;
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Failed to send verification code: " + e.getMessage());
+                return null;
+            }
+        }
+
+        private static String generateVerificationCode() {
+            Random rnd = new Random();
+            int number = rnd.nextInt(999999);
+            return String.format("%06d", number);
+        }
+
+        public static String getSentCode() {
+            return sentCode;
+        }
+
+        public static void setSentCode(String sentCode) {
+            EmailVerification.sentCode = sentCode;
+        }
+    }
+
 
     public MainMenu getMainMenu() {
         return mainMenu;

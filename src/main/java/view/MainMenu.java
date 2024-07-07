@@ -48,7 +48,8 @@ public class MainMenu extends Application {
     Button profile;
     @FXML
     Button pointChart;
-
+    @FXML
+    Button logout;
     StackPane root;
 
     PreGameMenu preGameMenu;
@@ -97,7 +98,10 @@ public class MainMenu extends Application {
         start = (Button) scene.lookup("#start");
         profile = (Button) scene.lookup("#profile");
         pointChart = (Button) scene.lookup(("#pointChart"));
+        logout = (Button) scene.lookup("#logout");
 
+        logout.setOnMouseEntered(e -> animateButton(logout, 1.1));
+        logout.setOnMouseExited(e -> animateButton(logout, 1.0));
 
         start.setOnMouseEntered(e -> animateButton(start, 1.1));
         start.setOnMouseExited(e -> animateButton(start, 1.0));
@@ -107,6 +111,10 @@ public class MainMenu extends Application {
 
         pointChart.setOnMouseEntered(e -> animateButton(pointChart, 1.1));
         pointChart.setOnMouseExited(e -> animateButton(pointChart, 1.0));
+
+        logout.setOnMouseClicked(event -> {
+            logout(stage);
+        });
 
         start.setOnMouseClicked(mouseEvent -> {
             toGame(stage);
@@ -140,6 +148,17 @@ public class MainMenu extends Application {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        stage.setFullScreen(true);
+    }
+
+    public void logout(Stage stage) {
+        LoginMenu loginMenu = new LoginMenu();
+        try {
+            loginMenu.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        User.setLoggedInUser(null);
         stage.setFullScreen(true);
     }
 

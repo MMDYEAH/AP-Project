@@ -10,59 +10,59 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FinishGameMenu">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="839.0" layoutX="376.0" layoutY="125.0" opacity="0.16" stroke="BLACK" strokeType="INSIDE" width="873.0" />
-      <Text fill="#c04545" layoutX="688.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="first round" textAlignment="CENTER" wrappingWidth="279.4649658203125">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="839.0" layoutX="376.0" layoutY="77.0" opacity="0.16" stroke="BLACK" strokeType="INSIDE" width="873.0" />
+      <Text fill="#c04545" layoutX="688.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="first round" textAlignment="CENTER" wrappingWidth="279.4649658203125">
          <font>
             <Font name="thewitcher" size="35.0" />
          </font>
       </Text>
-      <Text fill="#c04545" layoutX="717.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="second round" textAlignment="CENTER">
+      <Text fill="#c04545" layoutX="717.0" layoutY="461.0" strokeType="OUTSIDE" strokeWidth="0.0" text="second round" textAlignment="CENTER">
          <font>
             <Font name="thewitcher" size="35.0" />
          </font>
       </Text>
-      <Text fill="#c04545" layoutX="722.0" layoutY="730.0" strokeType="OUTSIDE" strokeWidth="0.0" text="third round" textAlignment="CENTER">
+      <Text fill="#c04545" layoutX="722.0" layoutY="682.0" strokeType="OUTSIDE" strokeWidth="0.0" text="third round" textAlignment="CENTER">
          <font>
             <Font name="thewitcher" size="35.0" />
          </font>
       </Text>
-      <Line endX="100.0" layoutX="731.0" layoutY="430.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
-      <Line endX="100.0" layoutX="731.0" layoutY="677.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
-      <Line endX="100.0" layoutX="730.0" layoutY="892.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
-      <Text fx:id="meFirst" fill="#22d0ca" layoutX="690.0" layoutY="394.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" textAlignment="CENTER">
+      <Line endX="100.0" layoutX="731.0" layoutY="382.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
+      <Line endX="100.0" layoutX="731.0" layoutY="629.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
+      <Line endX="100.0" layoutX="730.0" layoutY="844.0" startX="100.0" startY="-129.0" stroke="RED" strokeWidth="10.0" />
+      <Text fx:id="meFirst" fill="#22d0ca" layoutX="690.0" layoutY="346.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <Text fx:id="enemyFirst" fill="#22d0ca" layoutX="915.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6" textAlignment="CENTER">
+      <Text fx:id="enemyFirst" fill="#22d0ca" layoutX="915.0" layoutY="345.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <Text fx:id="meSecond" fill="#22d0ca" layoutX="690.0" layoutY="631.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" textAlignment="CENTER">
+      <Text fx:id="meSecond" fill="#22d0ca" layoutX="690.0" layoutY="583.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <Text fx:id="meThird" fill="#22d0ca" layoutX="690.0" layoutY="850.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3" textAlignment="CENTER">
+      <Text fx:id="meThird" fill="#22d0ca" layoutX="690.0" layoutY="802.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <Text fx:id="enemyThird" fill="#22d0ca" layoutX="933.0" layoutY="849.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" textAlignment="CENTER">
+      <Text fx:id="enemyThird" fill="#22d0ca" layoutX="933.0" layoutY="801.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <Text fx:id="enemySecond" fill="#22d0ca" layoutX="929.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5" textAlignment="CENTER">
+      <Text fx:id="enemySecond" fill="#22d0ca" layoutX="929.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5" textAlignment="CENTER">
          <font>
             <Font size="69.0" />
          </font>
       </Text>
-      <ImageView fx:id="victoryDefeatPic" fitHeight="325.0" fitWidth="439.0" layoutX="607.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
-      <Line endX="100.0" layoutX="720.0" layoutY="430.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
-      <Line endX="100.0" layoutX="720.0" layoutY="677.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
-      <Line endX="100.0" layoutX="719.0" layoutY="892.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
-      <Button fx:id="toMainMenu" layoutX="744.0" layoutY="867.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="171.0" text="main menu" />
+      <ImageView fx:id="victoryDefeatPic" fitHeight="325.0" fitWidth="439.0" layoutX="607.0" layoutY="-17.0" pickOnBounds="true" preserveRatio="true" />
+      <Line endX="100.0" layoutX="720.0" layoutY="382.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
+      <Line endX="100.0" layoutX="720.0" layoutY="629.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
+      <Line endX="100.0" layoutX="719.0" layoutY="844.0" startX="100.0" startY="-129.0" stroke="#00ffa7" strokeWidth="10.0" />
+      <Button fx:id="toMainMenu" layoutX="744.0" layoutY="807.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="171.0" text="main menu" />
    </children>
 </AnchorPane>
