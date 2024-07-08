@@ -271,9 +271,9 @@ public class LoginMenu extends Application implements Initializable {
 
         signUp.setOnMouseClicked(mouseEvent -> {
             try {
-                String emailSend = email.getText();
-                String sentCode = EmailVerification.sendVerificationCode(emailSend);
-                signUp(root, sentCode);
+//                String emailSend = email.getText();
+//                String sentCode = EmailVerification.sendVerificationCode(emailSend);
+                signUp(root, "1");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -374,6 +374,7 @@ public class LoginMenu extends Application implements Initializable {
         // Create a VBox and add buttons and text field to it
         VBox vbox = new VBox(30); // VBox with 10px spacing
         vbox.getChildren().addAll(firstQ, secondQ, thirdQ, questionAnswer, verificationEmailedCode, apply);
+        vbox.setMaxWidth(500);
 
         vbox.setAlignment(Pos.CENTER);
         firstQ.setOnMouseEntered(e -> animateButton(firstQ, 1.1));
@@ -472,6 +473,7 @@ public class LoginMenu extends Application implements Initializable {
         close.setOnMouseExited(e -> animateButton(close, 1.0));
         // Create a VBox and add buttons and text field to it
         VBox vbox = new VBox(30); // VBox with 10px spacing
+        vbox.setMaxWidth(500);
         vbox.getChildren().addAll(usernameOfForgot, submit, close);
         vbox.setAlignment(Pos.CENTER);
         close.setOnMouseClicked(mouseEvent -> {

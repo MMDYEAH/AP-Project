@@ -326,8 +326,10 @@ public class ProfileMenu extends Application {
         for (String username : User.getLoggedInUser().getFriends()){
             Text text = new Text(username);
             Button sendGameRequest = new Button("send game request");
-            sendGameRequest.setMaxWidth(50);
+            sendGameRequest.setOnMouseEntered(e -> animateButton(sendGameRequest, 1.1));
+            sendGameRequest.setOnMouseExited(e -> animateButton(sendGameRequest, 1.0));
             HBox hBox = new HBox(text,sendGameRequest);
+            hBox.setSpacing(10);
             friendsVbox.getChildren().add(hBox);
             sendGameRequest.setOnMouseClicked(mouseEvent -> {
                 initialize();
@@ -368,9 +370,16 @@ public class ProfileMenu extends Application {
         for (String username : User.getLoggedInUser().getFriendsRequest()){
             Text text = new Text(username);
             Button accept = new Button("accept friend");
+            accept.setOnMouseEntered(e -> animateButton(accept, 1.1));
+            accept.setOnMouseExited(e -> animateButton(accept, 1.0));
             Button reject = new Button("reject friend");
+
+            reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
+            reject.setOnMouseExited(e -> animateButton(reject, 1.0));
             HBox hBox = new HBox(text,accept,reject);
+            hBox.setSpacing(15);
             vBox.getChildren().add(hBox);
+            vBox.setSpacing(50);
             accept.setOnMouseClicked(mouseEvent -> {
                 App.getGameClient().sendMessage("accept friend:"+username);
                 User.getLoggedInUser().getFriends().add(username);
