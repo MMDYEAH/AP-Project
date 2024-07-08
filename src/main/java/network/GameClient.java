@@ -77,6 +77,12 @@ public class GameClient extends Application {
                 } else if (message.startsWith("ready for game:")) {
                     System.out.println("game update");
                     updateGameState(message);
+                } else if (message.startsWith("send user:")) {
+                    handleGettingUser(message);
+                } else if (message.startsWith("friend request:")) {
+                    handleFriendRequest(message);
+                } else if (message.startsWith("accept friend:")) {
+                    handleAcceptFriendRequest(message);
                 } else if (message.equals("pass")) {
                     handlePassing();
                 }
@@ -85,6 +91,29 @@ public class GameClient extends Application {
             e.printStackTrace();
         }
     }
+
+    private void handleFriendRequest(String message) {
+        String username = message.replaceAll("friend request:", "");
+        User.getLoggedInUser().getFriendsRequest().add(username);
+    }
+
+    private void handleGettingUser(String message) {
+        System.out.println("friend: " + message.substring(10));
+        String username = extractField(message, "name");
+        String nickname = extractField(message, "nickname");
+        String score = extractField(message, "score");
+        User userForFriend = new User(username, "", nickname, "");
+        userForFriend.setScore(Integer.parseInt(score));
+        if (!User.getLoggedInUser().getFriends().contains(username)) {
+            Platform.runLater(() -> loginMenu.getMainMenu().getFriendRequestMenu().addUser(userForFriend));
+        }
+    }
+
+    private void handleAcceptFriendRequest(String message) {
+        String username = message.replaceAll("accept friend:", "");
+        User.getLoggedInUser().getFriends().add(username);
+    }
+
 
     private void handlePassing() {
         Game game = loginMenu.getMainMenu().getOnlineGame();
@@ -95,6 +124,12 @@ public class GameClient extends Application {
                 if (Game.getCurrentGame().isEnemyPassRound()) {
                     int myPower = Integer.parseInt(gameMenu.myTotalPower.getText());
                     int enemyPower = Integer.parseInt(gameMenu.enemyTotalPower.getText());
+                    int size = game.getRoundsScore().size();
+                    ArrayList<Integer> scores = new ArrayList<>();
+                    scores.add(myPower);
+                    scores.add(enemyPower);
+                    game.getRoundsScore().put(size, scores);
+                    System.out.println("size:" + size + ",arr:" + scores);
                     if (myPower > enemyPower) {
                         checkLives(gameMenu.enemyLives);
                         Game.getCurrentGame().setEnemyLive(game.getEnemyLive() - 1);
@@ -102,11 +137,6 @@ public class GameClient extends Application {
                         checkLives(gameMenu.myLives);
                         Game.getCurrentGame().setMylive(game.getMylive() - 1);
                     }
-                    int size = game.getRoundsScore().size();
-                    ArrayList<Integer> scores = new ArrayList<>();
-                    scores.add(myPower);
-                    scores.add(enemyPower);
-                    game.getRoundsScore().put(size, scores);
                     if (game.getRoundsScore().size() == 3) {
                         System.out.println("finish");
                         try {
@@ -136,7 +166,7 @@ public class GameClient extends Application {
 
     private void checkLives(Text lives) {
         int live = Integer.parseInt(lives.getText().substring(8));
-        System.out.println("live: "+live);
+        System.out.println("live: " + live);
         if (live == 2) lives.setText("lives : 1");
         else if (live == 1) {
             try {

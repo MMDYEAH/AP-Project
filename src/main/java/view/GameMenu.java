@@ -23,6 +23,7 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class GameMenu extends Application {
     public ImageView img;
@@ -217,18 +218,19 @@ public class GameMenu extends Application {
                 if (Game.getCurrentGame().isEnemyPassRound()) {
                     int myPower = Integer.parseInt(myTotalPower.getText());
                     int enemyPower = Integer.parseInt(enemyTotalPower.getText());
-                    if (myPower > enemyPower) {
-                        checkLives(enemyLives);
-                        Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive() - 1);
-                    } else if (enemyPower > myPower) {
-                        checkLives(myLives);
-                        Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive() - 1);
-                    }
                     int size = Game.getCurrentGame().getRoundsScore().size();
                     ArrayList<Integer> scores = new ArrayList<>();
                     scores.add(myPower);
                     scores.add(enemyPower);
+                    System.out.println("size:"+size+",arr:"+scores);
                     Game.getCurrentGame().getRoundsScore().put(size, scores);
+                    if (myPower > enemyPower) {
+                        Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive() - 1);
+                        checkLives(enemyLives);
+                    } else if (enemyPower > myPower) {
+                        Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive() - 1);
+                        checkLives(myLives);
+                    }
                     if (Game.getCurrentGame().getRoundsScore().size() == 3) {
                         try {
                             this.stop();
@@ -292,6 +294,12 @@ public class GameMenu extends Application {
         if (live == 2) lives.setText("lives : 1");
         else if (live == 1) {
             try {
+                if (Game.getCurrentGame().getRoundsScore().size()==2){
+                    Game.getCurrentGame().getRoundsScore().put(2,new ArrayList<>(List.of(new Integer[]{0, 0})));
+                }
+                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
+                pauseTransition.setOnFinished(actionEvent -> App.getGameClient().sendMessage("pass"));
+                pauseTransition.play();
                 this.stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());

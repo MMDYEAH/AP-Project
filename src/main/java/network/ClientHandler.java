@@ -50,12 +50,49 @@ public class ClientHandler implements Runnable {
                     handleGameRejectance(message);
                 } else if (message.startsWith("ready for game:")) {
                     sendGameReady(message);
+                } else if (message.startsWith("friend request:")) {
+                    handleFriendRequest(message);
+                } else if (message.startsWith("accept friend:")) {
+                    handleAcceptFriendRequest(message);
                 } else if (message.equals("pass")) {
                     requester.sendMessage("pass");
+                } else if (message.equals("get users")) {
+                    handleSendingUsers();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleFriendRequest(String message) {
+        String username = message.replaceAll("friend request:","");
+        String sending = message.replaceAll(username,user.getUsername());
+        for (ClientHandler clientHandler : server.getClients()){
+            if (clientHandler == this) continue;
+            if (clientHandler.getUser().getUsername().equals(username)){
+                clientHandler.sendMessage(sending);
+                break;
+            }
+        }
+        user.getFriendsRequest().add(username);
+    }
+
+    private void handleAcceptFriendRequest(String message) {
+        String username = message.replaceAll("accept friend:","");
+        for (ClientHandler clientHandler : server.getClients()){
+            if (clientHandler == this) continue;
+            if (clientHandler.getUser().getUsername().equals(username)){
+                clientHandler.sendMessage("accept friend:"+user.getUsername());
+                break;
+            }
+        }
+    }
+
+    private void handleSendingUsers() {
+        for (ClientHandler clientHandler : server.getClients()){
+            if (clientHandler == this) continue;
+            sendMessage("send user:"+clientHandler.getUser().simpleToJson());
         }
     }
 
@@ -85,6 +122,7 @@ public class ClientHandler implements Runnable {
         String answer = matcher.group("answer");
         Result result = controller.register(username, password, confirm, nickname, email, new Question(question,answer));
         this.user = User.getUserByUsername(username);
+        user.setClientHandler(this);
         System.out.println(result);
         sendMessage(result.toString());
     }
@@ -102,6 +140,7 @@ public class ClientHandler implements Runnable {
         String username = matcher.group("username");
         ClientHandler enemy = null;
         for (ClientHandler clientHandler : server.getClients()){
+            System.out.println("username-->"+clientHandler.getUser().getUsername());
             if (clientHandler.getUser().getUsername().equals(username) && clientHandler.getUser() != this.user){
                 enemy = clientHandler;
             }

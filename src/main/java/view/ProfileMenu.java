@@ -7,24 +7,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.App;
-import model.Result;
-import model.User;
+import model.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class ProfileMenu extends Application {
 
+    public ScrollPane scrollPane;
+    public VBox vBox;
+    public ScrollPane friendsScrollPane;
+    public VBox friendsVbox;
     @FXML
     private TextField username;
     @FXML
@@ -101,7 +104,12 @@ public class ProfileMenu extends Application {
         changeEmail = (Button) scene.lookup("#changeEmail");
         oldPassword = (TextField) scene.lookup("#oldPassword");
         backToMainMenu = (Button) scene.lookup("#backToMainMenu");
-
+        scrollPane = (ScrollPane) scene.lookup("#scrollPane");
+        vBox = (VBox) scrollPane.getContent().lookup("#vBox");
+        friendsScrollPane = (ScrollPane) scene.lookup("#friendsScrollPane");
+        friendsVbox = (VBox) friendsScrollPane.getContent().lookup("#friendsVbox");
+        initializeFriendRequest();
+        initializeFriends();
         // Set up a timeline for color animation
         Timeline timelineNickname = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> nickname.setStyle("-fx-text-fill: red;")),
@@ -313,6 +321,70 @@ public class ProfileMenu extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void initializeFriends() {
+        for (String username : User.getLoggedInUser().getFriends()){
+            Text text = new Text(username);
+            Button sendGameRequest = new Button("send game request");
+            sendGameRequest.setMaxWidth(50);
+            HBox hBox = new HBox(text,sendGameRequest);
+            friendsVbox.getChildren().add(hBox);
+            sendGameRequest.setOnMouseClicked(mouseEvent -> {
+                initialize();
+                App.getGameClient().sendMessage("{request game(username<" + text.getText() + ">)}");
+            });
+        }
+    }
+
+    private void initialize() {
+        DeckUnit deckUnit = new DeckUnit();
+        DeckUnit deckUnit2 = new DeckUnit();
+        PlayBoard currentPlayBoard = new PlayBoard();
+        currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
+        currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
+        currentPlayBoard.setRangedCombatUnit(new RangedCombatUnit());
+        currentPlayBoard.setSiegeUnit(new SiegeUnit());
+        currentPlayBoard.setHandUnit(new HandUnit());
+        PlayBoard next = new PlayBoard();
+        next.setCloseCombatUnit(new CloseCombatUnit());
+        next.setDiscardPileUnit(new DiscardPileUnit());
+        next.setRangedCombatUnit(new RangedCombatUnit());
+        next.setSiegeUnit(new SiegeUnit());
+        next.setHandUnit(new HandUnit());
+        User.getLoggedInUser().setPlayBoard(currentPlayBoard);
+        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
+        User enemy = new User("a", "a", "a", "a"); //TODO: change it
+        enemy.setPlayBoard(next);
+        enemy.getPlayBoard().setDeckUnit(deckUnit2);
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, LocalDateTime.now()));//TODO: change date
+        Game.getCurrentGame().setSpellUnit(new SpellUnit());
+        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
+        Game.getCurrentGame().setNextUser(enemy);
+        Game.getCurrentGame().setMe(User.getLoggedInUser());
+        Game.getCurrentGame().setEnemy(enemy);
+    }
+
+    private void initializeFriendRequest() {
+        for (String username : User.getLoggedInUser().getFriendsRequest()){
+            Text text = new Text(username);
+            Button accept = new Button("accept friend");
+            Button reject = new Button("reject friend");
+            HBox hBox = new HBox(text,accept,reject);
+            vBox.getChildren().add(hBox);
+            accept.setOnMouseClicked(mouseEvent -> {
+                App.getGameClient().sendMessage("accept friend:"+username);
+                User.getLoggedInUser().getFriends().add(username);
+                User.getLoggedInUser().getFriendsRequest().remove(username);
+                vBox.getChildren().remove(hBox);
+            });
+            reject.setOnMouseClicked(mouseEvent -> {
+                App.getGameClient().sendMessage("reject friend:"+username);
+                User.getLoggedInUser().getFriendsRequest().remove(username);
+                vBox.getChildren().remove(hBox);
+            });
+        }
+    }
+
     public void emptyFieldVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/emptyField.mp4").toExternalForm());

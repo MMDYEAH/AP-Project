@@ -29,13 +29,11 @@ import model.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class MainMenu extends Application {
+    public Button friendRequest;
     //    @FXML
 //    Button exitPointChart;
 //    @FXML
@@ -52,6 +50,7 @@ public class MainMenu extends Application {
     StackPane root;
 
     PreGameMenu preGameMenu;
+    FriendRequestMenu friendRequestMenu;
 
     Game onlineGame;
 //    MainMenuController controller = new MainMenuController(this);
@@ -97,7 +96,7 @@ public class MainMenu extends Application {
         start = (Button) scene.lookup("#start");
         profile = (Button) scene.lookup("#profile");
         pointChart = (Button) scene.lookup(("#pointChart"));
-
+        friendRequest = (Button) scene.lookup("#friendRequest");
 
         start.setOnMouseEntered(e -> animateButton(start, 1.1));
         start.setOnMouseExited(e -> animateButton(start, 1.0));
@@ -107,6 +106,9 @@ public class MainMenu extends Application {
 
         pointChart.setOnMouseEntered(e -> animateButton(pointChart, 1.1));
         pointChart.setOnMouseExited(e -> animateButton(pointChart, 1.0));
+
+        friendRequest.setOnMouseEntered(e -> animateButton(start, 1.1));
+        friendRequest.setOnMouseExited(e -> animateButton(start, 1.0));
 
         start.setOnMouseClicked(mouseEvent -> {
             toGame(stage);
@@ -121,7 +123,15 @@ public class MainMenu extends Application {
                 throw new RuntimeException(e);
             }
         });
-
+        friendRequest.setOnMouseClicked(mouseEvent -> {
+            Stage stage1 = new Stage();
+            friendRequestMenu = new FriendRequestMenu();
+            try {
+                friendRequestMenu.start(stage1);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         mediaView.setFitWidth(stage.getWidth());
         mediaView.setFitHeight(stage.getHeight());
         mediaView.setPreserveRatio(false);
@@ -157,7 +167,7 @@ public class MainMenu extends Application {
         root.getChildren().add(vBox);
         initialize();
         button.setOnMouseClicked(mouseEvent -> {
-            App.getGameClient().sendMessage("{request game(username<"+chosenUsername.getText()+">)}");
+            App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
 //            PreGameMenu preGameMenu = new PreGameMenu();
 //            try {
 //                preGameMenu.start(App.getStage());
@@ -290,6 +300,7 @@ public class MainMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     public void showNotAccept() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText("user not online or not exist");
@@ -317,7 +328,7 @@ public class MainMenu extends Application {
                 this.stop();
                 initialize();
                 preGameMenu.start(App.getStage());
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -336,7 +347,7 @@ public class MainMenu extends Application {
             this.stop();
             initialize();
             preGameMenu.start(App.getStage());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -347,5 +358,9 @@ public class MainMenu extends Application {
 
     public Game getOnlineGame() {
         return onlineGame;
+    }
+
+    public FriendRequestMenu getFriendRequestMenu() {
+        return friendRequestMenu;
     }
 }
