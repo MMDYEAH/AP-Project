@@ -56,6 +56,10 @@ public class ClientHandler implements Runnable {
                     handleAcceptFriendRequest(message);
                 } else if (message.equals("pass")) {
                     requester.sendMessage("pass");
+                } else if (message.equals("random game")) {
+                    handleRandomGame();
+                } else if (message.equals("cancel random game")) {
+                    handleCancelRandomGame();
                 } else if (message.equals("get users")) {
                     handleSendingUsers();
                 }
@@ -65,12 +69,31 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void handleCancelRandomGame() {
+        server.getRandomGames().remove(this);
+    }
+
+    private void handleRandomGame() {
+        if (!(server.getRandomGames().size() == 0)) {
+            ClientHandler clientHandler = server.getRandomGames().get(0);
+            this.requester = clientHandler;
+            clientHandler.requester = this;
+            gameSession = new GameSession(clientHandler, this);
+            requester.gameSession = gameSession;
+            gameSession.run();
+            server.getRandomGames().remove(clientHandler);
+            clientHandler.sendRequest(user.getUsername());
+        } else {
+            server.getRandomGames().add(this);
+        }
+    }
+
     private void handleFriendRequest(String message) {
-        String username = message.replaceAll("friend request:","");
-        String sending = message.replaceAll(username,user.getUsername());
-        for (ClientHandler clientHandler : server.getClients()){
+        String username = message.replaceAll("friend request:", "");
+        String sending = message.replaceAll(username, user.getUsername());
+        for (ClientHandler clientHandler : server.getClients()) {
             if (clientHandler == this) continue;
-            if (clientHandler.getUser().getUsername().equals(username)){
+            if (clientHandler.getUser().getUsername().equals(username)) {
                 clientHandler.sendMessage(sending);
                 break;
             }
@@ -79,20 +102,20 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleAcceptFriendRequest(String message) {
-        String username = message.replaceAll("accept friend:","");
-        for (ClientHandler clientHandler : server.getClients()){
+        String username = message.replaceAll("accept friend:", "");
+        for (ClientHandler clientHandler : server.getClients()) {
             if (clientHandler == this) continue;
-            if (clientHandler.getUser().getUsername().equals(username)){
-                clientHandler.sendMessage("accept friend:"+user.getUsername());
+            if (clientHandler.getUser().getUsername().equals(username)) {
+                clientHandler.sendMessage("accept friend:" + user.getUsername());
                 break;
             }
         }
     }
 
     private void handleSendingUsers() {
-        for (ClientHandler clientHandler : server.getClients()){
+        for (ClientHandler clientHandler : server.getClients()) {
             if (clientHandler == this) continue;
-            sendMessage("send user:"+clientHandler.getUser().simpleToJson());
+            sendMessage("send user:" + clientHandler.getUser().simpleToJson());
         }
     }
 
@@ -120,7 +143,7 @@ public class ClientHandler implements Runnable {
         String email = matcher.group("email");
         String question = matcher.group("text");
         String answer = matcher.group("answer");
-        Result result = controller.register(username, password, confirm, nickname, email, new Question(question,answer));
+        Result result = controller.register(username, password, confirm, nickname, email, new Question(question, answer));
         this.user = User.getUserByUsername(username);
         user.setClientHandler(this);
         System.out.println(result);
@@ -132,16 +155,16 @@ public class ClientHandler implements Runnable {
         System.out.println("Password: " + matcher.group("password"));
         String username = matcher.group("username");
         String password = matcher.group("password");
-        Result result = controller.login(username,password);
+        Result result = controller.login(username, password);
         sendMessage(result.toString());
     }
 
     private void handleGameRequest(Matcher matcher) {
         String username = matcher.group("username");
         ClientHandler enemy = null;
-        for (ClientHandler clientHandler : server.getClients()){
-            System.out.println("username-->"+clientHandler.getUser().getUsername());
-            if (clientHandler.getUser().getUsername().equals(username) && clientHandler.getUser() != this.user){
+        for (ClientHandler clientHandler : server.getClients()) {
+            System.out.println("username-->" + clientHandler.getUser().getUsername());
+            if (clientHandler.getUser().getUsername().equals(username) && clientHandler.getUser() != this.user) {
                 enemy = clientHandler;
             }
         }
@@ -154,12 +177,12 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendRequest(String user) {
-        sendMessage(user+" request game to you");
+        sendMessage(user + " request game to you");
     }
 
     private void handleGameAcceptance(String message) {
         requester.sendMessage(message);
-        gameSession = new GameSession(requester,this);
+        gameSession = new GameSession(requester, this);
         requester.gameSession = gameSession;
         gameSession.run();
     }

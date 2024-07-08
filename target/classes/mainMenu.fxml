@@ -5,43 +5,42 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="view.MainMenu">
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenu">
     <children>
-        <Button fx:id="start" layoutX="269.0" layoutY="530.0" mnemonicParsing="false" prefHeight="123.0"
-                prefWidth="253.0" text="start the game">
+        <Button fx:id="start" layoutX="269.0" layoutY="530.0" mnemonicParsing="false" prefHeight="123.0" prefWidth="253.0" text="start the game">
             <font>
-                <Font size="25.0"/>
+                <Font size="25.0" />
             </font>
         </Button>
-        <Button fx:id="profile" layoutX="1307.0" layoutY="553.0" mnemonicParsing="false" prefHeight="123.0"
-                prefWidth="132.0" text="profile">
+        <Button fx:id="profile" layoutX="1307.0" layoutY="553.0" mnemonicParsing="false" prefHeight="123.0" prefWidth="132.0" text="profile">
             <font>
-                <Font size="20.0"/>
+                <Font size="20.0" />
             </font>
         </Button>
         <ImageView fitHeight="195.0" fitWidth="319.0" layoutX="716.0" layoutY="713.0">
             <image>
-                <Image url="@pics/logo.png"/>
+                <Image url="@pics/logo.png" />
             </image>
         </ImageView>
-        <Button fx:id="pointChart" layoutX="299.0" layoutY="708.0" mnemonicParsing="false" prefHeight="131.0"
-                prefWidth="194.0" text="point chart">
+        <Button fx:id="pointChart" layoutX="299.0" layoutY="708.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="point chart">
             <font>
-                <Font size="20.0"/>
+                <Font size="20.0" />
             </font>
         </Button>
-        <Button fx:id="friendRequest" layoutX="1244.0" layoutY="724.0" mnemonicParsing="false" prefHeight="131.0"
-                prefWidth="194.0" text="friend request">
+        <Button fx:id="friendRequest" layoutX="1244.0" layoutY="724.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="friend request">
             <font>
-                <Font size="20.0"/>
+                <Font size="20.0" />
             </font>
         </Button>
-        <Button fx:id="logout" layoutX="1307.0" layoutY="723.0" mnemonicParsing="false" prefHeight="105.0"
-                prefWidth="132.0" text="log out">
+        <Button fx:id="logout" layoutX="1307.0" layoutY="413.0" mnemonicParsing="false" prefHeight="105.0" prefWidth="132.0" text="log out">
             <font>
-                <Font size="28.0"/>
+                <Font size="28.0" />
             </font>
         </Button>
+      <Button fx:id="randomGame" layoutX="299.0" layoutY="347.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="random game">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

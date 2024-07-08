@@ -34,6 +34,7 @@ import java.util.*;
 
 public class MainMenu extends Application {
     public Button friendRequest;
+    public Button randomGame;
     //    @FXML
 //    Button exitPointChart;
 //    @FXML
@@ -99,6 +100,10 @@ public class MainMenu extends Application {
         pointChart = (Button) scene.lookup(("#pointChart"));
         friendRequest = (Button) scene.lookup("#friendRequest");
         logout = (Button) scene.lookup("#logout");
+        randomGame = (Button) scene.lookup("#randomGame") ;
+
+        randomGame.setOnMouseEntered(e -> animateButton(logout, 1.1));
+        randomGame.setOnMouseExited(e -> animateButton(logout, 1.0));
 
         logout.setOnMouseEntered(e -> animateButton(logout, 1.1));
         logout.setOnMouseExited(e -> animateButton(logout, 1.0));
@@ -140,6 +145,9 @@ public class MainMenu extends Application {
                 throw new RuntimeException(e);
             }
         });
+        randomGame.setOnMouseClicked(mouseEvent -> {
+            waitForRandomGame();
+        });
         mediaView.setFitWidth(stage.getWidth());
         mediaView.setFitHeight(stage.getHeight());
         mediaView.setPreserveRatio(false);
@@ -149,6 +157,26 @@ public class MainMenu extends Application {
         stage.setTitle("Main Menu");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void waitForRandomGame() {
+        App.getGameClient().sendMessage("random game");
+        Stage stage = new Stage();
+        Pane pane = new Pane();
+        Text text = new Text("wait for another player");
+        Button cancel = new Button("cancel");
+        VBox vBox = new VBox(text,cancel);
+        pane.getChildren().add(vBox);
+        cancel.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("cancel random game");
+            stage.close();
+        });
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(2));
+        pauseTransition.setOnFinished(actionEvent -> stage.close());
+        pauseTransition.play();
     }
 
     public void toProfile(Stage stage) {
