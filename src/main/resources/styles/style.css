@@ -146,3 +146,10 @@
     75% { color: green; }
     100% { color: blue; }
 }
+/* General text styling */
+Text {
+    -fx-font-size: 23px;
+    -fx-fill: #9e053a;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-font-weight: bold;
+}

@@ -27,7 +27,7 @@
                 <Font size="20.0" />
             </font>
         </Button>
-        <Button fx:id="friendRequest" layoutX="1244.0" layoutY="724.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="friend request">
+        <Button fx:id="friendRequest" layoutX="779.0" layoutY="475.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="friend request">
             <font>
                 <Font size="20.0" />
             </font>

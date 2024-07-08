@@ -117,8 +117,9 @@ public class MainMenu extends Application {
         pointChart.setOnMouseEntered(e -> animateButton(pointChart, 1.1));
         pointChart.setOnMouseExited(e -> animateButton(pointChart, 1.0));
 
-        friendRequest.setOnMouseEntered(e -> animateButton(start, 1.1));
-        friendRequest.setOnMouseExited(e -> animateButton(start, 1.0));
+        friendRequest.setOnMouseEntered(e -> animateButton(friendRequest, 1.1));
+        friendRequest.setOnMouseExited(e -> animateButton(friendRequest, 1.0));
+
         logout.setOnMouseClicked(event -> {
             logout(stage);
         });
@@ -138,6 +139,8 @@ public class MainMenu extends Application {
         });
         friendRequest.setOnMouseClicked(mouseEvent -> {
             Stage stage1 = new Stage();
+            Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+            stage1.getIcons().add(logo);
             friendRequestMenu = new FriendRequestMenu();
             try {
                 friendRequestMenu.start(stage1);
@@ -208,6 +211,8 @@ public class MainMenu extends Application {
                 chosenUsername.setText("");
         });
         Button button = new Button("let's go");
+        button.setOnMouseEntered(e -> animateButton(button, 1.1));
+        button.setOnMouseExited(e -> animateButton(button, 1.0));
         VBox vBox = new VBox(chosenUsername, button);
         vBox.setMaxWidth(500);
         vBox.setAlignment(Pos.CENTER);
@@ -357,9 +362,14 @@ public class MainMenu extends Application {
     public void alertRequest(String message) {
         Button reject = new Button("reject");
         Button accept = new Button("accept");
+        reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
+        reject.setOnMouseExited(e -> animateButton(reject, 1.0));
+        accept.setOnMouseEntered(e -> animateButton(accept, 1.1));
+        accept.setOnMouseExited(e -> animateButton(accept, 1.0));
         Text text = new Text(message);
         text.setFill(Color.GOLD);
         VBox vBox = new VBox(text, accept, reject);
+        vBox.setSpacing(15);
         vBox.setMaxWidth(500);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
