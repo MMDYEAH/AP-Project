@@ -148,7 +148,7 @@
 }
 /* General text styling */
 Text {
-    -fx-font-size: 23px;
+    -fx-font-size: 28px;
     -fx-fill: #9e053a;
     -fx-font-family: "Arial", sans-serif;
     -fx-font-weight: bold;
