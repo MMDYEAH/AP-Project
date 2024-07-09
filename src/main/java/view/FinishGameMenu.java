@@ -148,6 +148,7 @@ public class FinishGameMenu extends Application {
 
             toMainMenu.setOnMouseClicked(event -> {
                 toMainMenu(stage);
+                App.getStage().setFullScreen(true);
             });
 
 
@@ -165,12 +166,15 @@ public class FinishGameMenu extends Application {
             stage.setResizable(false);
             stage.show();
         }
+        App.getStage().setFullScreen(true);
     }
 
     public void toMainMenu(Stage stage) {
         MainMenu mainMenu = new MainMenu();
         try {
+            stage.setFullScreen(true);
             mainMenu.start(App.getStage());
+            stage.setFullScreen(true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

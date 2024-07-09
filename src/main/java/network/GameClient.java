@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import view.EmailVerificationServer;
 import view.FinishGameMenu;
 import view.GameMenu;
 import view.LoginMenu;
@@ -32,9 +33,12 @@ public class GameClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         try {
             App.setGameClient(this);
             loginMenu = new LoginMenu(this);
+//            EmailVerificationServer.setLoginMenu(loginMenu);
+//            EmailVerificationServer.startServer();
             loginMenu.start(primaryStage);
 
             socket = new Socket(SERVER_IP, SERVER_PORT);
