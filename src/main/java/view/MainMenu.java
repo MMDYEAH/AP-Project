@@ -82,7 +82,7 @@ public class MainMenu extends Application {
         root.getChildren().add(pane);
         Scene scene = new Scene(root);
         try {
-            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/style.css")).toExternalForm();
+            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/mainMenu.css")).toExternalForm();
             root.getStylesheets().add(cssPath); // Adding the CSS file
         } catch (NullPointerException t) {
             System.out.println("CSS file not found.");
@@ -361,6 +361,11 @@ public class MainMenu extends Application {
     }
 
     public void alertRequest(String message) {
+        // Load the image
+        String imagePath = "/pics/verify.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         Button reject = new Button("reject");
         Button accept = new Button("accept");
         reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
@@ -376,11 +381,11 @@ public class MainMenu extends Application {
         root.getChildren().add(vBox);
         reject.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("reject");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox,imageView);
         });
         accept.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("accept");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox,imageView);
             preGameMenu = new PreGameMenu();
             try {
                 this.stop();
