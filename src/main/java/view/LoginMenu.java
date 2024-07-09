@@ -284,6 +284,7 @@ public class LoginMenu extends Application implements Initializable {
 
         signUp.setOnMouseClicked(mouseEvent -> {
             try {
+                //TODO: uncomment his code and change number
 //                String emailSend = email.getText();
 //                EmailVerification.sendVerificationEmail(emailSend);
                 signUp(root);
