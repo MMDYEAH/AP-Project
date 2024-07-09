@@ -27,20 +27,12 @@
                 <Font size="20.0" />
             </font>
         </Button>
-<<<<<<< HEAD
-        <Button fx:id="friendRequest" layoutX="1244.0" layoutY="724.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="friend request">
-=======
         <Button fx:id="friendRequest" layoutX="779.0" layoutY="475.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="194.0" text="friend request">
->>>>>>> 45e2946a97b8d67f730bf466112be0af78b2aeae
             <font>
                 <Font size="20.0" />
             </font>
         </Button>
-<<<<<<< HEAD
         <Button fx:id="logout" layoutX="1307.0" layoutY="413.0" mnemonicParsing="false" prefHeight="105.0" prefWidth="132.0" text="log out">
-=======
-        <Button fx:id="logout" layoutX="1307.0" layoutY="723.0" mnemonicParsing="false" prefHeight="105.0" prefWidth="132.0" text="log out">
->>>>>>> 45e2946a97b8d67f730bf466112be0af78b2aeae
             <font>
                 <Font size="28.0" />
             </font>

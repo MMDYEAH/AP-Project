@@ -806,8 +806,8 @@ public class LoginMenu extends Application implements Initializable {
 
     public class EmailVerification {
 
-        private static final String FROM_EMAIL = "mmdgwentverift@outlook.com";
-        private static final String APP_PASSWORD = "liobggtullouibvp";  // Use the generated app password here
+        private static final String FROM_EMAIL = "gwmmebsr@outlook.com";
+        private static final String APP_PASSWORD = "cegftrnnejnqeprn";  // Use the generated app password here
         static String sentCode;
 
         public static String sendVerificationCode(String toEmail) {

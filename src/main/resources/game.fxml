@@ -11,6 +11,11 @@
             <Image url="@pics/board.jpg" />
         </image>
     </ImageView>
+    <ImageView fx:id="niceImg" fitHeight="50" fitWidth="50" layoutX="366.0" layoutY="680.0" preserveRatio="true">
+        <image>
+            <Image url="@pics/nice.png" />
+        </image>
+    </ImageView>
     <ScrollPane fx:id="scrollPane" layoutX="432.0" layoutY="629.0" prefHeight="97.0" prefWidth="705.0">
         <content>
             <TilePane fx:id="tilePane" prefHeight="90.0" prefWidth="704.0" />
@@ -85,4 +90,22 @@
          <Font name="Arial" size="20.0" />
       </font>
    </Text>
+   <Button fx:id="chatBox" layoutX="14.0" layoutY="379.0" mnemonicParsing="false" text="chat box" textFill="#f78b6e">
+      <font>
+         <Font name="Arial Bold" size="12.0" />
+      </font>
+   </Button>
+   <Text fx:id="nicePlay" fill="WHITE" layoutX="432.0" layoutY="774.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nice play!">
+      <font>
+         <Font name="Arial" size="20.0" />
+      </font></Text>
+   <Text fx:id="notGood" fill="WHITE" layoutX="540.0" layoutY="774.0" strokeType="OUTSIDE" strokeWidth="0.0" text="not good">
+      <font>
+         <Font name="Arial" size="20.0" />
+      </font></Text>
+    <ImageView fx:id="badImg" fitHeight="50" fitWidth="50" layoutX="366.0" layoutY="620.0" preserveRatio="true">
+        <image>
+            <Image url="@pics/bad.png" />
+        </image>
+    </ImageView>
 </Pane>

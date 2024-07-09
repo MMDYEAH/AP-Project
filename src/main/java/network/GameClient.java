@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import view.ChatBoxMenu;
 import view.FinishGameMenu;
 import view.GameMenu;
 import view.LoginMenu;
@@ -79,6 +80,16 @@ public class GameClient extends Application {
                     updateGameState(message);
                 } else if (message.startsWith("send user:")) {
                     handleGettingUser(message);
+                } else if (message.startsWith("chat:")) {
+                    handleChat(message);
+                } else if (message.equals("bad img")) {
+                    Platform.runLater(() -> loginMenu.getMainMenu().getPreGameMenu().getGameMenu().makeEmojiOfBadImg());
+                } else if (message.equals("nice img")) {
+                    Platform.runLater(() -> loginMenu.getMainMenu().getPreGameMenu().getGameMenu().makeEmojiOfNiceImg());
+                } else if (message.equals("nice play")) {
+                    Platform.runLater(() -> loginMenu.getMainMenu().getPreGameMenu().getGameMenu().popUpText(new Text("nice play!")));
+                } else if (message.equals("not good")) {
+                    Platform.runLater(() -> loginMenu.getMainMenu().getPreGameMenu().getGameMenu().popUpText(new Text("not good")));
                 } else if (message.startsWith("friend request:")) {
                     handleFriendRequest(message);
                 } else if (message.startsWith("accept friend:")) {
@@ -90,6 +101,14 @@ public class GameClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleChat(String message) {
+        ChatBoxMenu chatBoxMenu = loginMenu.getMainMenu().getPreGameMenu().getGameMenu().getChatBoxMenu();
+        chatBoxMenu.setGameMenu(loginMenu.getMainMenu().getPreGameMenu().getGameMenu());
+        String clear = message.substring(5);
+        String[] variables = clear.split("&");
+        Platform.runLater(()->chatBoxMenu.addMessage(variables[0] + " : " + variables[1] + " ( " + variables[2] + " )"));
     }
 
     private void handleFriendRequest(String message) {

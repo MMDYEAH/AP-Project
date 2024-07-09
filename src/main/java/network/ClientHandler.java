@@ -54,11 +54,21 @@ public class ClientHandler implements Runnable {
                     handleFriendRequest(message);
                 } else if (message.startsWith("accept friend:")) {
                     handleAcceptFriendRequest(message);
+                } else if (message.startsWith("chat:")) {
+                    handleChat(message);
                 } else if (message.equals("pass")) {
                     requester.sendMessage("pass");
-                } else if (message.equals("random game")) {
+                } else if (message.equals("bad img")) {
+                    requester.sendMessage(message);
+                } else if (message.equals("nice img")) {
+                    requester.sendMessage(message);
+                }  else if (message.equals("nice play")) {
+                    requester.sendMessage(message);
+                }  else if (message.equals("not good")) {
+                    requester.sendMessage(message);
+                }  else if (message.equals("random game")) {
                     handleRandomGame();
-                } else if (message.equals("cancel random game")) {
+                }  else if (message.equals("cancel random game")) {
                     handleCancelRandomGame();
                 } else if (message.equals("get users")) {
                     handleSendingUsers();
@@ -67,6 +77,10 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleChat(String message) {
+        requester.sendMessage(message);
     }
 
     private void handleCancelRandomGame() {

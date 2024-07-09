@@ -193,13 +193,14 @@ public class MainMenu extends Application {
     }
 
     public void logout(Stage stage) {
-        LoginMenu loginMenu = new LoginMenu();
+        User.setLoggedInUser(null);
+        LoginMenu loginMenu = new LoginMenu(App.getGameClient());
         try {
+            this.stop();
             loginMenu.start(App.getStage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        User.setLoggedInUser(null);
         stage.setFullScreen(true);
     }
 
