@@ -9,18 +9,18 @@ public class Scorch extends UnitCard {
 
     @Override
     public void apply() {
-        if (this.name.equals("ClanDimunPirate")) {
+        if (this.name.contains("ClanDimunPirate")) {
             for (Card card : getStrongestCards()) {
                 card.unit.removeCardFromUnit(card);
                 Game.currentGame.enemy.getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
             }
-        } else if (this.name.equals("Schirru") &&
+        } else if (this.name.contains("Schirru") &&
                 isSumOfPowersInThisUnitMoreThanTen(Game.getCurrentGame().enemy.getPlayBoard().siegeUnit))
             killStrongestCardsInThisUnit(Game.getCurrentGame().enemy.getPlayBoard().siegeUnit);
-        else if(this.name.equals("Toad") &&
+        else if(this.name.contains("Toad") &&
         isSumOfPowersInThisUnitMoreThanTen(Game.getCurrentGame().enemy.getPlayBoard().rangedCombatUnit))
             killStrongestCardsInThisUnit(Game.getCurrentGame().enemy.getPlayBoard().rangedCombatUnit);
-        else if(this.name.equals("Villentretenmerth") &&
+        else if(this.name.contains("Villentretenmerth") &&
         isSumOfPowersInThisUnitMoreThanTen(Game.getCurrentGame().enemy.getPlayBoard().closeCombatUnit))
             killStrongestCardsInThisUnit(Game.getCurrentGame().enemy.getPlayBoard().closeCombatUnit);
 

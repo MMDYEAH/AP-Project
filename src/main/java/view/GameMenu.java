@@ -92,6 +92,7 @@ public class GameMenu extends Application {
     ChatBoxMenu chatBoxMenu = new ChatBoxMenu();
 
     ArrayList<String> messages = new ArrayList<>();
+
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(GameMenu.class.getResource("/game.fxml"));
@@ -121,7 +122,7 @@ public class GameMenu extends Application {
             try {
                 chatBoxMenu.setGameMenu(this);
                 chatBoxMenu.start(stage);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -244,7 +245,7 @@ public class GameMenu extends Application {
 //        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
     }
 
-    private void setDeckImage(Faction faction, AnchorPane pane) {
+    public void setDeckImage(Faction faction, AnchorPane pane) {
         ImageView imageView = new ImageView();
         if (faction instanceof MonstersFaction) {
             imageView = new ImageView(new Image(
@@ -342,16 +343,19 @@ public class GameMenu extends Application {
                         finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getSiegeUnit());
                         settingPowersToZero(myTotalPower, mySiegePower, myRangedPower,
                                 myClosePower, enemyTotalPower, enemySiegePower, enemyRangedPower, enemyClosePower);
+                        emptySpell();
                         Game.getCurrentGame().setMePassRound(false);
                         Game.getCurrentGame().setEnemyPassRound(false);
                     }
                 }
                 goNextTurn();
-                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
-                pauseTransition.setOnFinished(actionEvent -> App.getGameClient().sendMessage("pass"));
-                pauseTransition.play();
+                App.getGameClient().sendMessage("pass");
             }
         });
+    }
+
+    private void emptySpell() {
+        Game.getCurrentGame().getSpellUnit().getCards().clear();
     }
 
     public void settingPowersToZero(TextField myTotalPower, TextField mySiegePower, TextField myRangedPower,
@@ -371,6 +375,7 @@ public class GameMenu extends Application {
         for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
+            if (!myDiscard.getChildren().contains(card)) myDiscard.getChildren().add(card);
         }
         unit.getCards().clear();
     }
@@ -379,6 +384,7 @@ public class GameMenu extends Application {
         for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
+            if (!enemyDiscard.getChildren().contains(card)) enemyDiscard.getChildren().add(card);
         }
         unit.getCards().clear();
     }
@@ -391,9 +397,7 @@ public class GameMenu extends Application {
                 if (Game.getCurrentGame().getRoundsScore().size() == 2) {
                     Game.getCurrentGame().getRoundsScore().put(2, new ArrayList<>(List.of(new Integer[]{0, 0})));
                 }
-                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
-                pauseTransition.setOnFinished(actionEvent -> App.getGameClient().sendMessage("pass"));
-                pauseTransition.play();
+                App.getGameClient().sendMessage("pass");
                 this.stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());
@@ -671,7 +675,9 @@ public class GameMenu extends Application {
 
     private void goNextTurn() {
         //TODO: if one of player pss round
-        App.getGameClient().sendMessage("ready for game:" + User.getLoggedInUser().toJson());
+        App.getGameClient().sendMessage("ready for game:" + Game.getCurrentGame().getCurrentUser().toJson());
+        App.getGameClient().sendMessage("enemy update:"+ Game.getCurrentGame().getNextUser().toJson());
+        App.getGameClient().sendMessage("spell update:(spellUnit<"+Game.getCurrentGame().getSpellUnit().arrayToJson()+">)");
         Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
 //        Alert alert = new Alert(Alert.AlertType.WARNING);
 //        alert.setContentText("please give the game to the next user{ Dont look at next hand :)}");
@@ -842,5 +848,13 @@ public class GameMenu extends Application {
 
     public ArrayList<String> getMessages() {
         return messages;
+    }
+
+    public void updateEnemyFaction() {
+        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
+        FactionLeaderCard enemyFactionLead = Game.getCurrentGame().getNextUser().getFactionLeaderCard();
+        enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
+        enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
+        enemyLeader.getChildren().add(enemyFactionLead);
     }
 }

@@ -28,6 +28,7 @@ public class ProfileMenu extends Application {
     public VBox vBox;
     public ScrollPane friendsScrollPane;
     public VBox friendsVbox;
+    public VBox gamesVbox;
     @FXML
     private TextField username;
     @FXML
@@ -91,7 +92,6 @@ public class ProfileMenu extends Application {
         });
 
 
-
         //add text fields
         username = (TextField) scene.lookup("#username");
         // TODO: 6/24/2024 az comment vardar 
@@ -108,6 +108,8 @@ public class ProfileMenu extends Application {
         vBox = (VBox) scrollPane.getContent().lookup("#vBox");
         friendsScrollPane = (ScrollPane) scene.lookup("#friendsScrollPane");
         friendsVbox = (VBox) friendsScrollPane.getContent().lookup("#friendsVbox");
+        gamesVbox = (VBox) scene.lookup("#gamesVbox");
+        initializeGamesPlayed();
         initializeFriendRequest();
         initializeFriends();
         // Set up a timeline for color animation
@@ -244,7 +246,7 @@ public class ProfileMenu extends Application {
 
         changeUsername.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeUsername(username.getText());
-            if(result.toString().equals("it's the same as your current username")){
+            if (result.toString().equals("it's the same as your current username")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("change username alert");
                 alert.setContentText("it's the same as your current username");
@@ -261,7 +263,7 @@ public class ProfileMenu extends Application {
         });
         changeNickname.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeNickname(nickname.getText());
-            if(result.toString().equals("it's the same as your current nickname")){
+            if (result.toString().equals("it's the same as your current nickname")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("same nickname");
                 alert.setContentText("it's the same as your current nickname");
@@ -275,7 +277,7 @@ public class ProfileMenu extends Application {
         });
         changeEmail.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeEmail(email.getText());
-            if(result.toString().equals("empty email")){
+            if (result.toString().equals("empty email")) {
                 emptyFieldVideoPlay(root);
             } else if (result.toString().equals("it's the same as your current email")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -290,12 +292,12 @@ public class ProfileMenu extends Application {
         });
         changePassword.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changePassword(oldPassword.getText(), password.getText());
-            if(result.toString().equals("old password in wrong")){
+            if (result.toString().equals("old password in wrong")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("old password in wrong");
                 alert.setContentText("old password in wrong");
                 alert.show();
-            }else if(result.toString().equals("it's the same as your current password")){
+            } else if (result.toString().equals("it's the same as your current password")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("same password");
                 alert.setContentText("it's the same as your current password");
@@ -322,13 +324,24 @@ public class ProfileMenu extends Application {
         stage.show();
     }
 
+    private void initializeGamesPlayed() {
+        for (Game game : User.getLoggedInUser().getGamesPlayed()) {
+            Text text = new Text("game -> date : " + game.getDate().toString() + " rounds score: " +
+                    game.getRoundsScore().get(0).get(0) + "-" + game.getRoundsScore().get(0).get(1) + " " +
+                    game.getRoundsScore().get(1).get(0) + "-" + game.getRoundsScore().get(1).get(1) + " " +
+                    game.getRoundsScore().get(2).get(0) + "-" + game.getRoundsScore().get(2).get(1) + " winner : " +
+                    game.getWinner().getUsername());
+            gamesVbox.getChildren().add(text);
+        }
+    }
+
     private void initializeFriends() {
-        for (String username : User.getLoggedInUser().getFriends()){
+        for (String username : User.getLoggedInUser().getFriends()) {
             Text text = new Text(username);
             Button sendGameRequest = new Button("send game request");
             sendGameRequest.setOnMouseEntered(e -> animateButton(sendGameRequest, 1.1));
             sendGameRequest.setOnMouseExited(e -> animateButton(sendGameRequest, 1.0));
-            HBox hBox = new HBox(text,sendGameRequest);
+            HBox hBox = new HBox(text, sendGameRequest);
             hBox.setSpacing(10);
             friendsVbox.getChildren().add(hBox);
             sendGameRequest.setOnMouseClicked(mouseEvent -> {
@@ -367,7 +380,7 @@ public class ProfileMenu extends Application {
     }
 
     private void initializeFriendRequest() {
-        for (String username : User.getLoggedInUser().getFriendsRequest()){
+        for (String username : User.getLoggedInUser().getFriendsRequest()) {
             Text text = new Text(username);
             Button accept = new Button("accept friend");
             accept.setOnMouseEntered(e -> animateButton(accept, 1.1));
@@ -376,18 +389,18 @@ public class ProfileMenu extends Application {
 
             reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
             reject.setOnMouseExited(e -> animateButton(reject, 1.0));
-            HBox hBox = new HBox(text,accept,reject);
+            HBox hBox = new HBox(text, accept, reject);
             hBox.setSpacing(15);
             vBox.getChildren().add(hBox);
             vBox.setSpacing(50);
             accept.setOnMouseClicked(mouseEvent -> {
-                App.getGameClient().sendMessage("accept friend:"+username);
+                App.getGameClient().sendMessage("accept friend:" + username);
                 User.getLoggedInUser().getFriends().add(username);
                 User.getLoggedInUser().getFriendsRequest().remove(username);
                 vBox.getChildren().remove(hBox);
             });
             reject.setOnMouseClicked(mouseEvent -> {
-                App.getGameClient().sendMessage("reject friend:"+username);
+                App.getGameClient().sendMessage("reject friend:" + username);
                 User.getLoggedInUser().getFriendsRequest().remove(username);
                 vBox.getChildren().remove(hBox);
             });
@@ -423,6 +436,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void thereIsExistUserWithUsernameVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/thereIsExistUserWithUsername.mp4").toExternalForm());
@@ -452,6 +466,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongUsernameFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongUsernameFormat.mp4").toExternalForm());
@@ -481,6 +496,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void changedSuccessfullyVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/changedSuccessfully.mp4").toExternalForm());
@@ -510,6 +526,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongEmailFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongEmailFormat.mp4").toExternalForm());
@@ -539,6 +556,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongPasswordFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPasswordFormat.mp4").toExternalForm());
@@ -568,6 +586,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void weakPasswordVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/weakPassword.mp4").toExternalForm());
@@ -597,6 +616,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     private void animateButton(Button button, double scale) {
         Timeline timeline = new Timeline();
         KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
@@ -605,6 +625,7 @@ public class ProfileMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     public void changeUsername() {
 
     }
