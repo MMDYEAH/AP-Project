@@ -73,6 +73,7 @@ public class GameMenu extends Application {
     public Text notGood;
     public ImageView badImg;
     public Button chatBox;
+    public Button buttonOfCheatMenu;
 
     private ImageView bad;
 
@@ -799,8 +800,23 @@ public class GameMenu extends Application {
         nicePlay = (Text) scene.lookup("#nicePlay");
         notGood = (Text) scene.lookup("#notGood");
         chatBox = (Button) scene.lookup("#chatBox");
+        buttonOfCheatMenu = (Button) scene.lookup("#buttonOfCheatMenu");
+        writeOnMouseClickedFunctionForButtonOfCheatMenu();
         bad = new ImageView(new Image(GameMenu.class.getResource("/pics/bad.png").toExternalForm()));
         nice = new ImageView(new Image(GameMenu.class.getResource("/pics/nice.png").toExternalForm()));
+    }
+    private void writeOnMouseClickedFunctionForButtonOfCheatMenu(){
+        buttonOfCheatMenu.setOnMouseClicked(e ->{
+            try {
+                goToCheatMenu();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+    private void goToCheatMenu() throws Exception {
+        Stage stage = new Stage();
+        new CheatMenu(this).start(stage);
     }
 
     public TextField getEnemyTotalPower() {
@@ -849,5 +865,9 @@ public class GameMenu extends Application {
         enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
         enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
         enemyLeader.getChildren().add(enemyFactionLead);
+    }
+
+    public GameMenuController getController() {
+        return controller;
     }
 }
