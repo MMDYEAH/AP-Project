@@ -107,7 +107,6 @@ public class LoginMenu extends Application implements Initializable {
     public void start(Stage stage) throws Exception {
         //network:
         App.setGameClient(gameClient);
-        //
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
         // Set the logo image as the window icon
         stage.getIcons().add(logo);
@@ -960,4 +959,3 @@ public class LoginMenu extends Application implements Initializable {
         return mainMenu;
     }
 }
-

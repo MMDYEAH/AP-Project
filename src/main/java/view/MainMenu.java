@@ -1,7 +1,5 @@
 package view;
 
-import controller.LoginMenuController;
-import controller.MainMenuController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -53,14 +51,17 @@ public class MainMenu extends Application {
 
     PreGameMenu preGameMenu;
     FriendRequestMenu friendRequestMenu;
+    TilePane tilePaneRanking;
 
     Game onlineGame;
+
 //    MainMenuController controller = new MainMenuController(this);
 
     @Override
     public void start(Stage stage) throws Exception {
         stage.setFullScreen(true);
         App.setStage(stage);
+        App.getGameClient().getLoginMenu().setMainMenu(this);
         // Load the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/mainMenu.fxml"));
         Pane pane = fxmlLoader.load();
@@ -100,7 +101,7 @@ public class MainMenu extends Application {
         pointChart = (Button) scene.lookup(("#pointChart"));
         friendRequest = (Button) scene.lookup("#friendRequest");
         logout = (Button) scene.lookup("#logout");
-        randomGame = (Button) scene.lookup("#randomGame") ;
+        randomGame = (Button) scene.lookup("#randomGame");
 
         randomGame.setOnMouseEntered(e -> animateButton(logout, 1.1));
         randomGame.setOnMouseExited(e -> animateButton(logout, 1.0));
@@ -131,11 +132,7 @@ public class MainMenu extends Application {
             toProfile(stage);
         });
         pointChart.setOnMouseClicked(mouseEvent -> {
-            try {
-                pointChart(root);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            App.getGameClient().sendMessage("show ranking");
         });
         friendRequest.setOnMouseClicked(mouseEvent -> {
             Stage stage1 = new Stage();
@@ -168,7 +165,7 @@ public class MainMenu extends Application {
         Pane pane = new Pane();
         Text text = new Text("wait for another player");
         Button cancel = new Button("cancel");
-        VBox vBox = new VBox(text,cancel);
+        VBox vBox = new VBox(text, cancel);
         pane.getChildren().add(vBox);
         cancel.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("cancel random game");
@@ -287,14 +284,14 @@ public class MainMenu extends Application {
 
         // TODO: 6/27/2024 sort bar asas point
         int i = 0;
-        for (User user : User.getUsers()) {
+        for (User user : App.getRankedUsers()) {
             VBox userBox = new VBox();
             userBox.getStyleClass().add("user-box");
 
             Label rankLabel = new Label((i + 1) + ". " + user.getUsername());
             rankLabel.getStyleClass().add("rank-label");
 
-            Label scoreLabel = new Label("Score: " + user.getPassword());
+            Label scoreLabel = new Label("Score: " + user.getScore());
             scoreLabel.getStyleClass().add("score-label");
 
             if (i == 0) {
@@ -330,11 +327,11 @@ public class MainMenu extends Application {
         exitPointChart.setOnMouseClicked(mouseEvent -> {
             root.getChildren().remove(imageViewOIP);
             root.getChildren().remove(vbox);
+            App.getRankedUsers().clear();
         });
 
         root.getChildren().add(vbox);
     }
-
 
     private void animateBox(VBox box, double scale) {
         Timeline timeline = new Timeline();
@@ -420,5 +417,9 @@ public class MainMenu extends Application {
 
     public FriendRequestMenu getFriendRequestMenu() {
         return friendRequestMenu;
+    }
+
+    public StackPane getRoot() {
+        return root;
     }
 }

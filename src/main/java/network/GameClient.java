@@ -4,12 +4,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
 import view.ChatBoxMenu;
-import view.EmailVerificationServer;
 import view.FinishGameMenu;
 import view.GameMenu;
 import view.LoginMenu;
@@ -19,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,6 +83,11 @@ public class GameClient extends Application {
                     updateGameState(message);
                 } else if (message.startsWith("send user:")) {
                     handleGettingUser(message);
+                } else if (message.startsWith("forgotQuestion:")) {
+                    handleForgot(message);
+                } else if (message.startsWith("rank user:")) {
+                    System.out.println("rank user");
+                    handleRankUser(message);
                 } else if (message.startsWith("chat:")) {
                     handleChat(message);
                 } else if (message.equals("bad img")) {
@@ -100,6 +104,10 @@ public class GameClient extends Application {
                     handleAcceptFriendRequest(message);
                 } else if (message.equals("pass")) {
                     handlePassing();
+                }  else if (message.equals("send rank finish")) {
+                    handleShowRanks();
+                } else if (message.startsWith("password:")) {
+                    getPassword(message);
                 }
             }
         } catch (IOException e) {
@@ -107,12 +115,45 @@ public class GameClient extends Application {
         }
     }
 
+    private void handleShowRanks() {
+        Platform.runLater(()-> {
+            try {
+                loginMenu.getMainMenu().pointChart(loginMenu.getMainMenu().getRoot());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void handleRankUser(String message) {
+        String json = message.replaceAll("rank user:", "");
+        String username = extractField(json, "name");
+        String nickName = extractField(json, "nickname");
+        String score = extractField(json, "score");
+        User user = new User(username, "", nickName, "");
+        user.setScore(Integer.parseInt(score));
+        System.out.println("user : " + user);
+        App.getRankedUsers().add(user);
+    }
+
+    private void getPassword(String message) {
+        String password = message.replaceAll("password:", "");
+        Platform.runLater(() -> loginMenu.showPassword(password));
+    }
+
+    private void handleForgot(String message) {
+        String question = message.replaceAll("forgotQuestion:", "");
+        String text = extractField(question, "text");
+        String answer = extractField(question, "answer");
+        Platform.runLater(() -> loginMenu.forgotQuestion(text, answer));
+    }
+
     private void handleChat(String message) {
         ChatBoxMenu chatBoxMenu = loginMenu.getMainMenu().getPreGameMenu().getGameMenu().getChatBoxMenu();
         chatBoxMenu.setGameMenu(loginMenu.getMainMenu().getPreGameMenu().getGameMenu());
         String clear = message.substring(5);
         String[] variables = clear.split("&");
-        Platform.runLater(()->chatBoxMenu.addMessage(variables[0] + " : " + variables[1] + " ( " + variables[2] + " )"));
+        Platform.runLater(() -> chatBoxMenu.addMessage(variables[0] + " : " + variables[1] + " ( " + variables[2] + " )"));
     }
 
     private void handleFriendRequest(String message) {
@@ -193,6 +234,9 @@ public class GameClient extends Application {
         if (live == 2) lives.setText("lives : 1");
         else if (live == 1) {
             try {
+                if (loginMenu.getMainMenu().getOnlineGame().getRoundsScore().size() == 2) {
+                    loginMenu.getMainMenu().getOnlineGame().getRoundsScore().put(2, new ArrayList<>(List.of(new Integer[]{0, 0})));
+                }
                 loginMenu.getMainMenu().getPreGameMenu().getGameMenu().stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());
@@ -250,6 +294,7 @@ public class GameClient extends Application {
             updateOnlineCard(enemy.getPlayBoard().getSiegeUnit(), localEnemy.getPlayBoard().getSiegeUnit());
             updateOnlineCard(enemy.getPlayBoard().getRangedCombatUnit(), localEnemy.getPlayBoard().getRangedCombatUnit());
             updateOnlineCard(enemy.getPlayBoard().getCloseCombatUnit(), localEnemy.getPlayBoard().getCloseCombatUnit());
+            updateFaction(enemy,localEnemy);
             game.setNextUser(enemy);
             game.setEnemy(enemy);
             if (loginMenu.getMainMenu().getPreGameMenu().getGameMenu() != null) {
@@ -259,6 +304,22 @@ public class GameClient extends Application {
             }
             game.setTurnNumber(game.getTurnNumber() + 1);
         });
+    }
+
+    private void updateFaction(User enemy,User local) {
+        local.setFactionLeaderCard(enemy.getFactionLeaderCard());
+        if (enemy.getFaction() instanceof RealmsNorthenFaction){
+            local.setFaction(new RealmsNorthenFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (enemy.getFaction() instanceof EmpireNilfgaardianFaction) {
+            local.setFaction(new EmpireNilfgaardianFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (enemy.getFaction() instanceof ScoiataelFaction) {
+            local.setFaction(new SociataelFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (enemy.getFaction() instanceof SkelligeFaction) {
+            local.setFaction(new SkelligeFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (enemy.getFaction() instanceof MonstersFaction) {
+            local.setFaction(new MonstersFaction(new ArrayList<>(),new ArrayList<>()));
+        }
+        Platform.runLater(()->loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updateEnemyFaction());
     }
 
     private void updateOnlineCard(Unit online, Unit local) {
@@ -309,6 +370,15 @@ public class GameClient extends Application {
         String draws = extractField(userJson, "draws");
         String question = extractField(userJson, "text");
         String answer = extractField(userJson, "answer");
+        String faction = extractField(userJson,"factionChosen");
+        String factionName = extractField(faction,"name");
+        Matcher leaderCard = extractFactionLeader(userJson);
+        System.out.println("leader:"+leaderCard);
+        String leaderName = leaderCard.group("name");
+        System.out.println("name:"+leaderName);
+        String leaderPath = leaderCard.group("path");
+        System.out.println("path:"+leaderPath);
+        FactionLeaderCard factionLeaderCard = new FactionLeaderCard(leaderName,leaderPath);
         ObservableList<Card> deckUnitCards = extractCards(userJson, "deckUnit");
         ObservableList<Card> handUnitCards = extractCards(userJson, "handUnit");
         ObservableList<Card> closeUnitCards = extractCards(userJson, "closeUnit");
@@ -317,6 +387,18 @@ public class GameClient extends Application {
         ObservableList<Card> discardUnitCards = extractCards(userJson, "discardUnit");
         System.out.println("close:" + closeUnitCards + "ranged:" + rangedUnitCards + "siege" + siegeUnitCards);
         User user = new User(username, password, nickname, email);
+        if (factionName.equals("RealmsNorthen")){
+            user.setFaction(new RealmsNorthenFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (factionName.equals("EmpireNilfgaardian")) {
+            user.setFaction(new EmpireNilfgaardianFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (factionName.equals("Sociatael")) {
+            user.setFaction(new SociataelFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (factionName.equals("Skellige")) {
+            user.setFaction(new SkelligeFaction(new ArrayList<>(),new ArrayList<>()));
+        } else if (factionName.equals("Monsters")) {
+            user.setFaction(new MonstersFaction(new ArrayList<>(),new ArrayList<>()));
+        }
+        user.setFactionLeaderCard(factionLeaderCard);
         user.setScore(Integer.parseInt(score));
         user.setNumOfWins(Integer.parseInt(wins));
         user.setNumOfLosts(Integer.parseInt(losts));
@@ -346,6 +428,13 @@ public class GameClient extends Application {
         return user;
     }
 
+    private Matcher extractFactionLeader(String userJson) {
+        Pattern pattern = Pattern.compile("\\(factionLeader<\\{leader\\(name<(?<name>[a-zA-Z0-9 ]+)>\\)\\(path<(?<path>[a-zA-Z0-9_:./]+)>\\)}>\\)");
+        Matcher matcher = pattern.matcher(userJson);
+        if (matcher.find()) return matcher;
+        else return null;
+    }
+
     private String extractField(String input, String fieldName) {
         String patternString = fieldName + "<(.*?)>";
         Pattern pattern = Pattern.compile(patternString);
@@ -354,13 +443,13 @@ public class GameClient extends Application {
     }
 
     private ObservableList<Card> extractCards(String input, String unitType) {
-        Pattern unitPattern = Pattern.compile("\\(" + unitType + "<\\{unit\\(name<" + unitType.replace("Unit", "") + ">\\)\\(cardsArray<(?<cards>(\\{card\\(name<[a-zA-z0-9<> ]+>\\)\\(path<[a-zA-Z0-9_:./]+>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<[0-9-]+>\\)\\(hero<\\w+>\\)\\(type<\\w+>\\)})*)>\\)}>\\)");
+        Pattern unitPattern = Pattern.compile("\\(" + unitType + "<\\{unit\\(name<" + unitType.replace("Unit", "") + ">\\)\\(cardsArray<(?<cards>(\\{card\\(name<[a-zA-Z0-9<> ]+>\\)\\(path<[a-zA-Z0-9_:./]+>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<[0-9-]+>\\)\\(hero<\\w+>\\)\\(type<\\w+>\\)})*)>\\)}>\\)");
         Matcher unitMatcher = unitPattern.matcher(input);
         ObservableList<Card> cards = FXCollections.observableList(new ArrayList<>());
         if (unitMatcher.find()) {
             System.out.println("---cards" + unitMatcher.group("cards"));
             String cardsArray = unitMatcher.group("cards");
-            String cardPatternString = "\\{card\\(name<(?<name>[a-zA-z0-9<> ]+)>\\)\\(path<(?<path>[a-zA-Z0-9_:./]+)>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<(?<power>[0-9-]+)>\\)\\(hero<(?<hero>\\w+)>\\)\\(type<(?<type>\\w+)>\\)}";
+            String cardPatternString = "\\{card\\(name<(?<name>[a-zA-Z0-9<> ]+)>\\)\\(path<(?<path>[a-zA-Z0-9_:./]+)>\\)\\(unit<(?<unit>(\\{unit\\(name<\\w+>\\)})*)>\\)\\(power<(?<power>[0-9-]+)>\\)\\(hero<(?<hero>\\w+)>\\)\\(type<(?<type>\\w+)>\\)}";
             Pattern cardPattern = Pattern.compile(cardPatternString);
             Matcher cardMatcher = cardPattern.matcher(cardsArray);
             while (cardMatcher.find()) {
@@ -456,6 +545,14 @@ public class GameClient extends Application {
                 loginMenu.confirmPasswordFailedVideoPlay();
             }
         });
+    }
+
+    public void setLoginMenu(LoginMenu loginMenu) {
+        this.loginMenu = loginMenu;
+    }
+
+    public LoginMenu getLoginMenu() {
+        return loginMenu;
     }
 
     public static void main(String[] args) {

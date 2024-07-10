@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileMenu">
+<AnchorPane prefHeight="862.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileMenu">
     <TextField fx:id="username" layoutX="390.0" layoutY="248.0" prefHeight="53.0" prefWidth="294.0">
         <font>
             <Font size="19.0" />
@@ -51,7 +51,7 @@
         </font>
     </Button>
     <Button fx:id="backToMainMenu" layoutX="545.0" layoutY="784.0" mnemonicParsing="false" prefHeight="77.0" prefWidth="242.0" text="back to main menu" />
-    <ScrollPane fx:id="scrollPane" layoutX="238.0" layoutY="28.0" opacity="0.74" prefHeight="200.0" prefWidth="571.0">
+    <ScrollPane fx:id="scrollPane" layoutX="272.0" layoutY="28.0" opacity="0.74" prefHeight="200.0" prefWidth="571.0">
         <content>
             <VBox fx:id="vBox" opacity="0.78" prefHeight="200.0" prefWidth="558.0" />
         </content>
@@ -67,6 +67,12 @@
       </content>
    </ScrollPane>
    <Text layoutX="44.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="your friends">
+      <font>
+         <Font name="Arial" size="33.0" />
+      </font>
+   </Text>
+   <VBox fx:id="gamesVbox" layoutX="859.0" layoutY="248.0" prefHeight="470.0" prefWidth="330.0" />
+   <Text layoutX="915.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="games played">
       <font>
          <Font name="Arial" size="33.0" />
       </font>

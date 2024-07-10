@@ -4,17 +4,18 @@ import controller.GameMenuController;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class Game {
-    protected User me, enemy,Winner,currentUser,nextUser;
+    protected User me, enemy, winner, currentUser, nextUser;
     protected LocalDateTime date;
-    protected int myFinalScore,enemyFinalScore, turnNumber,mylive,enemyLive;
+    protected int myFinalScore, enemyFinalScore, turnNumber, mylive, enemyLive;
     protected HashMap<Integer, ArrayList<Integer>> roundsScore = new HashMap<>();
     protected SpellUnit spellUnit;
     private GameMenuController controller;
     protected boolean mePassRound, enemyPassRound;
+    protected static Game currentGame;
+
 
     public Game(User me, User enemy, LocalDateTime date) {
         this.me = me;
@@ -22,7 +23,11 @@ public class Game {
         this.date = date;
     }
 
-    protected static Game currentGame;
+    public String toJson() {
+        return "{game(date<" + date.toString() + ">)(firstRound<" + roundsScore.get(0).get(0) + "/" + roundsScore.get(0).get(1) +
+                ">)(secondRound<" + roundsScore.get(1).get(0) + "/" + roundsScore.get(1).get(1) + ">)(thirdRound<" +
+                roundsScore.get(2).get(0) + "/" + roundsScore.get(2).get(1) + ">)(winner<" + winner.getUsername()+">)}";
+    }
 
     public User getNextUser() {
         return nextUser;
@@ -101,11 +106,11 @@ public class Game {
     }
 
     public User getWinner() {
-        return Winner;
+        return winner;
     }
 
     public void setWinner(User winner) {
-        Winner = winner;
+        this.winner = winner;
     }
 
     public User getCurrentUser() {
@@ -145,7 +150,7 @@ public class Game {
     }
 
     public void addToRoundsScore(Integer round, ArrayList<Integer> scores) {
-        this.roundsScore.put(round,scores);
+        this.roundsScore.put(round, scores);
     }
 
     public SpellUnit getSpellUnit() {
