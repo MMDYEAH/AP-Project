@@ -34,14 +34,14 @@ public class FriendRequestMenu extends Application {
     Button close;
     public ScrollPane scrollPane;
     public VBox vBox;
-
+    static StackPane root;
     private Pane pane;
 
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/friendRequest.fxml"));
         pane = fxmlLoader.load();
-        StackPane root = new StackPane();
+        root = new StackPane();
         Scene scene = new Scene(root);
         // Set up the background video
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/defeat.mp4")).toExternalForm();
@@ -90,6 +90,11 @@ public class FriendRequestMenu extends Application {
 
 
         text.setOnMouseClicked(mouseEvent -> {
+            // Load the image
+            String imagePath = "/pics/friendRequest.png"; // Change this to the path of your image file
+            Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+            ImageView imageView = new ImageView(image);
+            root.getChildren().add(imageView);
             Text info = new Text("nick name: "+user.getNickname()+" score: "+user.getScore());
             Button send = new Button("send request");
 
@@ -100,20 +105,21 @@ public class FriendRequestMenu extends Application {
             back.setOnMouseEntered(e -> animateButton(back, 1.1));
             back.setOnMouseExited(e -> animateButton(back, 1.0));
             VBox userInfo = new VBox(info,send,back);
-            userInfo.setLayoutX(600);
-            userInfo.setLayoutY(43);
+            userInfo.setAlignment(Pos.CENTER);
+//            userInfo.setLayoutX(600);
+//            userInfo.setLayoutY(43);
             userInfo.setSpacing(10);
             send.setOnMouseClicked(mouseEvent1 -> {
                 App.getGameClient().sendMessage("friend request:"+user.getUsername());
-                pane.getChildren().remove(userInfo);
+                root.getChildren().removeAll(userInfo,imageView);
             });
             userInfo.setMaxWidth(500);
             back.setOnMouseClicked(mouseEvent1 -> {
-                pane.getChildren().remove(userInfo);
+                root.getChildren().removeAll(userInfo,imageView);
             });
 
             userInfo.setAlignment(Pos.CENTER);
-            pane.getChildren().add(userInfo);
+            root.getChildren().add(userInfo);
         });
         vBox.getChildren().add(text);
     }

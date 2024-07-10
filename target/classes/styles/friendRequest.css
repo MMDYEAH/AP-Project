@@ -35,6 +35,9 @@ Text {
     -fx-fill: #318e8c;
     -fx-font-family: "Arial", sans-serif;
     -fx-font-weight: bold;
+    -fx-stroke: #ffffff; /* Outline color */
+    -fx-stroke-width: 1px; /* Outline width */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 4, 0.5, 2, 2); /* Shadow effect */
     /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 5, 0.0, 2, 2);*/
 }
 

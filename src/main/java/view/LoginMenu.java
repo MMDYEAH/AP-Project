@@ -93,7 +93,14 @@ public class LoginMenu extends Application implements Initializable {
     private String verificationCode;
     MainMenu mainMenu;
     Question registeringUserQuestion;
+
+    TextField usernameOfForgot;
     boolean isVerifiedByEmail = false;
+
+    VBox vBox;
+    Button submit;
+
+    ImageView imageView;
 
     public LoginMenu(GameClient gameServer) {
         this.gameClient = gameServer;
@@ -107,6 +114,8 @@ public class LoginMenu extends Application implements Initializable {
     public void start(Stage stage) throws Exception {
         //network:
         App.setGameClient(gameClient);
+        App.getGameClient().setLoginMenu(this);
+        //
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
         // Set the logo image as the window icon
         stage.getIcons().add(logo);
@@ -518,11 +527,11 @@ public class LoginMenu extends Application implements Initializable {
         // Load the image
         String imagePath = "/pics/forgotPassword.jpg"; // Change this to the path of your image file
         Image image = new Image(getClass().getResource(imagePath).toExternalForm());
-        ImageView imageView = new ImageView(image);
+        imageView = new ImageView(image);
         root.getChildren().add(imageView);
-        TextField usernameOfForgot = new TextField("");
+        usernameOfForgot = new TextField("");
         usernameOfForgot.setPromptText("enter your username");
-        Button submit = new Button("submit");
+        submit = new Button("submit");
         Button close = new Button("close");
         submit.setOnMouseEntered(e -> animateButton(submit, 1.1));
         submit.setOnMouseExited(e -> animateButton(submit, 1.0));
@@ -530,61 +539,15 @@ public class LoginMenu extends Application implements Initializable {
         close.setOnMouseEntered(e -> animateButton(close, 1.1));
         close.setOnMouseExited(e -> animateButton(close, 1.0));
         // Create a VBox and add buttons and text field to it
-        VBox vbox = new VBox(30); // VBox with 10px spacing
-        vbox.setMaxWidth(500);
-        vbox.getChildren().addAll(usernameOfForgot, submit, close);
-        vbox.setAlignment(Pos.CENTER);
+        vBox = new VBox(30); // VBox with 10px spacing
+        vBox.setMaxWidth(500);
+        vBox.getChildren().addAll(usernameOfForgot, submit, close);
+        vBox.setAlignment(Pos.CENTER);
         close.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().removeAll(imageView, vbox);
+            root.getChildren().removeAll(imageView, vBox);
         });
         submit.setOnMouseClicked(mouseEvent -> {
-            if (User.getUserByUsername(usernameOfForgot.getText()) != null) {
-                // Create buttons and text field
-                Button chosenQuestion = new Button(User.getUserByUsername(username.getText()).getQuestion().getQuestion());
-                TextField questionAnswer = new TextField("");
-                Button viewPassword = new Button("view password");
-                viewPassword.setOnMouseEntered(e -> animateButton(viewPassword, 1.1));
-                viewPassword.setOnMouseExited(e -> animateButton(viewPassword, 1.0));
-                chosenQuestion.setOnMouseEntered(e -> animateButton(chosenQuestion, 1.1));
-                chosenQuestion.setOnMouseExited(e -> animateButton(chosenQuestion, 1.0));
-
-                // Create a VBox and add buttons and text field to it
-                vbox.getChildren().removeAll(usernameOfForgot, submit);
-                vbox.getChildren().addAll(chosenQuestion, questionAnswer, viewPassword);
-                vbox.setAlignment(Pos.CENTER);
-                // Set up a timeline for color animation
-                Timeline timeline = new Timeline(
-                        new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
-                        new KeyFrame(Duration.millis(250), e -> questionAnswer.setStyle("-fx-text-fill: orange;")),
-                        new KeyFrame(Duration.millis(500), e -> questionAnswer.setStyle("-fx-text-fill: yellow;")),
-                        new KeyFrame(Duration.millis(750), e -> questionAnswer.setStyle("-fx-text-fill: green;")),
-                        new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
-                );
-                timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
-
-                // Add listener to start/stop animation based on focus
-                questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal) {
-                        timeline.play();
-                    } else {
-                        timeline.stop();
-                        questionAnswer.setStyle(""); // Reset style when not focused
-                    }
-                });
-                viewPassword.setOnMouseClicked(mouseEvent1 -> {
-                    if (questionAnswer.getText().equals(User.getUserByUsername(username.getText()).getQuestion().getAnswer())) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("your password");
-                        alert.setContentText(User.getUserByUsername(username.getText()).getPassword());
-                        alert.show();
-                        root.getChildren().removeAll(imageView, vbox);
-                    } else {
-                        wrongAnswerVideoPlay(root);
-                    }
-                });
-            } else {
-                noUserWithThisUsernameVideoPlay(root);
-            }
+            App.getGameClient().sendMessage("forgot:" + usernameOfForgot.getText());
         });
         // Set up a timeline for color animation
         Timeline timeline = new Timeline(
@@ -606,9 +569,63 @@ public class LoginMenu extends Application implements Initializable {
             }
         });
         // Add VBox to root
-        root.getChildren().add(vbox);
+        root.getChildren().add(vBox);
     }
 
+    public void forgotQuestion(String text,String answer) {
+        Stage stage = new Stage();
+        Pane pane = new Pane();
+        Scene scene = new Scene(pane);
+        // Create buttons and text field
+        Button chosenQuestion = new Button(text);
+        TextField questionAnswer = new TextField("");
+        Button viewPassword = new Button("view password");
+        viewPassword.setOnMouseEntered(e -> animateButton(viewPassword, 1.1));
+        viewPassword.setOnMouseExited(e -> animateButton(viewPassword, 1.0));
+        chosenQuestion.setOnMouseEntered(e -> animateButton(chosenQuestion, 1.1));
+        chosenQuestion.setOnMouseExited(e -> animateButton(chosenQuestion, 1.0));
+        VBox vBox = new VBox(30);
+        // Create a VBox and add buttons and text field to it
+//        vBox.getChildren().removeAll(usernameOfForgot, submit);
+        vBox.getChildren().addAll(chosenQuestion, questionAnswer, viewPassword);
+        vBox.setAlignment(Pos.CENTER);
+        // Set up a timeline for color animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> questionAnswer.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> questionAnswer.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> questionAnswer.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline.play();
+            } else {
+                timeline.stop();
+                questionAnswer.setStyle(""); // Reset style when not focused
+            }
+        });
+        viewPassword.setOnMouseClicked(mouseEvent1 -> {
+            if (questionAnswer.getText().equals(answer)) {
+                App.getGameClient().sendMessage("get password");
+            } else {
+                wrongAnswerVideoPlay(root);
+            }
+        });
+        pane.getChildren().add(vBox);
+        stage.setScene(scene);
+        stage.show();
+    }
+    public void showPassword(String password){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("your password");
+        alert.setContentText(password);
+        alert.show();
+//        root.getChildren().removeAll(imageView, vBox);
+    }
 
     public void firstQ() {
         Question.setQuestionNumberForRegistration(0);
@@ -952,10 +969,15 @@ public class LoginMenu extends Application implements Initializable {
         public static void setSentCode(String sentCode) {
             EmailVerification.sentCode = sentCode;
         }
+
     }
 
+    public void setMainMenu(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
+    }
 
     public MainMenu getMainMenu() {
         return mainMenu;
     }
 }
+

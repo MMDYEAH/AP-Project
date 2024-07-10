@@ -4,6 +4,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import controller.LoginMenuController;
+import controller.MainMenuController;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -83,7 +86,7 @@ public class MainMenu extends Application {
         root.getChildren().add(pane);
         Scene scene = new Scene(root);
         try {
-            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/style.css")).toExternalForm();
+            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/mainMenu.css")).toExternalForm();
             root.getStylesheets().add(cssPath); // Adding the CSS file
         } catch (NullPointerException t) {
             System.out.println("CSS file not found.");
@@ -103,8 +106,8 @@ public class MainMenu extends Application {
         logout = (Button) scene.lookup("#logout");
         randomGame = (Button) scene.lookup("#randomGame");
 
-        randomGame.setOnMouseEntered(e -> animateButton(logout, 1.1));
-        randomGame.setOnMouseExited(e -> animateButton(logout, 1.0));
+        randomGame.setOnMouseEntered(e -> animateButton(randomGame, 1.1));
+        randomGame.setOnMouseExited(e -> animateButton(randomGame, 1.0));
 
         logout.setOnMouseEntered(e -> animateButton(logout, 1.1));
         logout.setOnMouseExited(e -> animateButton(logout, 1.0));
@@ -162,6 +165,8 @@ public class MainMenu extends Application {
     private void waitForRandomGame() {
         App.getGameClient().sendMessage("random game");
         Stage stage = new Stage();
+        Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+        stage.getIcons().add(logo);
         Pane pane = new Pane();
         Text text = new Text("wait for another player");
         Button cancel = new Button("cancel");
@@ -202,21 +207,53 @@ public class MainMenu extends Application {
     }
 
     public void toGame(Stage stage) {
+        // Load the image
+        String imagePath = "/pics/startGame.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         TextField chosenUsername = new TextField("write enemy username");
+        // Set up a timeline for color animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> chosenUsername.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> chosenUsername.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> chosenUsername.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> chosenUsername.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> chosenUsername.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        chosenUsername.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline.play();
+            } else {
+                timeline.stop();
+                chosenUsername.setStyle(""); // Reset style when not focused
+            }
+        });
         chosenUsername.setAlignment(Pos.CENTER);
         chosenUsername.setOnMouseClicked(mouseEvent -> {
             if (chosenUsername.getText().equals("write enemy username"))
                 chosenUsername.setText("");
         });
+        Button backToMainMenu = new Button("back");
+        backToMainMenu.setOnMouseEntered(e -> animateButton(backToMainMenu, 1.1));
+        backToMainMenu.setOnMouseExited(e -> animateButton(backToMainMenu, 1.0));
         Button button = new Button("let's go");
         button.setOnMouseEntered(e -> animateButton(button, 1.1));
         button.setOnMouseExited(e -> animateButton(button, 1.0));
-        VBox vBox = new VBox(chosenUsername, button);
+        VBox vBox = new VBox(chosenUsername, button, backToMainMenu);
+        vBox.setSpacing(15);
         vBox.setMaxWidth(500);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
         initialize();
+        backToMainMenu.setOnMouseClicked(event -> {
+            root.getChildren().removeAll(vBox, imageView);
+        });
         button.setOnMouseClicked(mouseEvent -> {
+            root.getChildren().removeAll(vBox, imageView);
             App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
 //            PreGameMenu preGameMenu = new PreGameMenu();
 //            try {
@@ -358,6 +395,11 @@ public class MainMenu extends Application {
     }
 
     public void alertRequest(String message) {
+        // Load the image
+        String imagePath = "/pics/verify.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         Button reject = new Button("reject");
         Button accept = new Button("accept");
         reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
@@ -373,11 +415,11 @@ public class MainMenu extends Application {
         root.getChildren().add(vBox);
         reject.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("reject");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox, imageView);
         });
         accept.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("accept");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox, imageView);
             preGameMenu = new PreGameMenu();
             try {
                 this.stop();

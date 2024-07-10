@@ -96,9 +96,9 @@ public class PreGameMenu extends Application {
         startGame.setOnMouseClicked(mouseEvent -> {
             int parsedIntNumberOfSpecialCards = Integer.parseInt(numberOfSpecialCards.getText());
             if (Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards().size() < 22) {
-                deckLimitVideoPlay(pane);
+                deckLimitVideoPlay(root);
             } else if (parsedIntNumberOfSpecialCards > 10) {
-                specialCardVideoPlay(pane);
+                specialCardVideoPlay(root);
             } else {
                 try {
 //                    if (Game.getCurrentGame().getCurrentUser().equals(Game.getCurrentGame().getMe())) {
@@ -111,10 +111,10 @@ public class PreGameMenu extends Application {
 ////                        preGameMenu.start(App.getStage());
 //                    } else {
 //                        this.stop();
-                    for (Card card : Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards()){
+                    for (Card card : Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit().getCards()) {
                         card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getDeckUnit());
                     }
-                    App.getGameClient().sendMessage("ready for game:"+User.getLoggedInUser().toJson());
+                    App.getGameClient().sendMessage("ready for game:" + User.getLoggedInUser().toJson());
                     Game.getCurrentGame().setCurrentUser(Game.getCurrentGame().getMe());
 //                        Game.getCurrentGame().setNextUser(Game.getCurrentGame().getEnemy());
                     goToGame();
