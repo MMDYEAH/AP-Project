@@ -22,6 +22,7 @@ public class LoginMenuController {
     }
 
     public void initialize() {
+//        LoginMenu.questionCombo.setValue("...");
         Question.getQuestions().add(new Question("What's the name of your favorite high school teacher?", ""));
         Question.getQuestions().add(new Question("In what city did you have your first ever flight?", ""));
         Question.getQuestions().add(new Question("What was your favorite subject in high school??", ""));
@@ -95,6 +96,7 @@ public class LoginMenuController {
             user.setQuestion(question);
             User.registeringUser = user;
             return new Result(true, "user created successfully");
+
         }
     }
 

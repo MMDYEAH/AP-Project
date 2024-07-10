@@ -53,6 +53,10 @@ public class ClientHandler implements Runnable {
                     handleGameRejectance(message);
                 } else if (message.startsWith("ready for game:")) {
                     sendGameReady(message);
+                } else if (message.startsWith("enemy update:")) {
+                    sendGameReady(message);
+                } else if (message.startsWith("spell update:")) {
+                    sendGameReady(message);
                 } else if (message.startsWith("forgot:")) {
                     handleForgot(message);
                 } else if (message.startsWith("friend request:")) {
@@ -96,7 +100,7 @@ public class ClientHandler implements Runnable {
         server.getUsers().sort(Comparator.comparing(User::getScore).reversed());
         System.out.println("size: " + server.getUsers().size());
         for (User rankingUser : server.getUsers()) {
-            System.out.println("rank user:"+rankingUser.simpleToJson());
+            System.out.println("rank user:" + rankingUser.simpleToJson());
             sendMessage("rank user:" + rankingUser.simpleToJson());
         }
         sendMessage("send rank finish");
@@ -263,9 +267,12 @@ public class ClientHandler implements Runnable {
         String question = matcher.group("text");
         String answer = matcher.group("answer");
         Result result = controller.register(username, password, confirm, nickname, email, new Question(question, answer));
-        if (result.isSuccessful()) server.getUsers().add(User.getUserByUsername(username));
-        this.user = User.getUserByUsername(username);
-        user.setClientHandler(this);
+        System.out.println("result:" + result);
+        if (result.isSuccessful()) {
+            server.getUsers().add(User.getUserByUsername(username));
+            this.user = User.getUserByUsername(username);
+            user.setClientHandler(this);
+        }
         System.out.println(result);
         sendMessage(result.toString());
     }
