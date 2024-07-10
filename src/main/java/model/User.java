@@ -1,5 +1,7 @@
 package model;
 
+import network.ClientHandler;
+
 import java.util.ArrayList;
 
 public class User {
@@ -15,11 +17,21 @@ public class User {
     private PlayBoard playBoard;
     private final ArrayList<Game> gamesPlayed = new ArrayList<>();
 
+    private ArrayList<String> friends = new ArrayList<>();
+
+    private ArrayList<String> friendsRequest = new ArrayList<>();
+
+    ClientHandler clientHandler;
+
     public String toJson() {
         return "{user(name<" + username + ">)(password<" + password + ">)(nickname<" + nickname + ">)(email<" + email +
                 ">)(factionChosen<" + faction.toJson() + ">)(factionLeader<" + factionLeaderCard.toJson() + ">)(board<" + playBoard.toJson() +
                 ">)(score<" + score + ">)(wins<" + numOfWins + ">)(losts<" + numOfLosts + ">)(draws<" + numOfDraws + ">)(questionChosen<" + question.toJson() +
                 ">)}";
+    }
+
+    public String simpleToJson(){
+        return "{user(name<" + username + ">)(nickname<" + nickname + ">)(score<" + score + ">)}";
     }
 
     public User(String username, String password, String nickname, String email) {
@@ -182,5 +194,29 @@ public class User {
 
     public ArrayList<Game> getGamesPlayed() {
         return gamesPlayed;
+    }
+
+    public ClientHandler getClientHandler() {
+        return clientHandler;
+    }
+
+    public void setClientHandler(ClientHandler clientHandler) {
+        this.clientHandler = clientHandler;
+    }
+
+    public ArrayList<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(ArrayList<String> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<String> getFriendsRequest() {
+        return friendsRequest;
+    }
+
+    public void setFriendsRequest(ArrayList<String> friendsRequest) {
+        this.friendsRequest = friendsRequest;
     }
 }

@@ -1,11 +1,12 @@
 package view;
 
-import controller.LoginMenuController;
-import controller.MainMenuController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import controller.LoginMenuController;
+import controller.MainMenuController;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,13 +30,12 @@ import model.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class MainMenu extends Application {
+    public Button friendRequest;
+    public Button randomGame;
     //    @FXML
 //    Button exitPointChart;
 //    @FXML
@@ -48,18 +48,23 @@ public class MainMenu extends Application {
     Button profile;
     @FXML
     Button pointChart;
-
+    @FXML
+    Button logout;
     StackPane root;
 
     PreGameMenu preGameMenu;
+    FriendRequestMenu friendRequestMenu;
+    TilePane tilePaneRanking;
 
     Game onlineGame;
+
 //    MainMenuController controller = new MainMenuController(this);
 
     @Override
     public void start(Stage stage) throws Exception {
         stage.setFullScreen(true);
         App.setStage(stage);
+        App.getGameClient().getLoginMenu().setMainMenu(this);
         // Load the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/mainMenu.fxml"));
         Pane pane = fxmlLoader.load();
@@ -81,7 +86,7 @@ public class MainMenu extends Application {
         root.getChildren().add(pane);
         Scene scene = new Scene(root);
         try {
-            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/style.css")).toExternalForm();
+            String cssPath = Objects.requireNonNull(LoginMenu.class.getResource("/styles/mainMenu.css")).toExternalForm();
             root.getStylesheets().add(cssPath); // Adding the CSS file
         } catch (NullPointerException t) {
             System.out.println("CSS file not found.");
@@ -97,7 +102,15 @@ public class MainMenu extends Application {
         start = (Button) scene.lookup("#start");
         profile = (Button) scene.lookup("#profile");
         pointChart = (Button) scene.lookup(("#pointChart"));
+        friendRequest = (Button) scene.lookup("#friendRequest");
+        logout = (Button) scene.lookup("#logout");
+        randomGame = (Button) scene.lookup("#randomGame");
 
+        randomGame.setOnMouseEntered(e -> animateButton(randomGame, 1.1));
+        randomGame.setOnMouseExited(e -> animateButton(randomGame, 1.0));
+
+        logout.setOnMouseEntered(e -> animateButton(logout, 1.1));
+        logout.setOnMouseExited(e -> animateButton(logout, 1.0));
 
         start.setOnMouseEntered(e -> animateButton(start, 1.1));
         start.setOnMouseExited(e -> animateButton(start, 1.0));
@@ -108,6 +121,13 @@ public class MainMenu extends Application {
         pointChart.setOnMouseEntered(e -> animateButton(pointChart, 1.1));
         pointChart.setOnMouseExited(e -> animateButton(pointChart, 1.0));
 
+        friendRequest.setOnMouseEntered(e -> animateButton(friendRequest, 1.1));
+        friendRequest.setOnMouseExited(e -> animateButton(friendRequest, 1.0));
+
+        logout.setOnMouseClicked(event -> {
+            logout(stage);
+        });
+
         start.setOnMouseClicked(mouseEvent -> {
             toGame(stage);
         });
@@ -115,13 +135,22 @@ public class MainMenu extends Application {
             toProfile(stage);
         });
         pointChart.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("show ranking");
+        });
+        friendRequest.setOnMouseClicked(mouseEvent -> {
+            Stage stage1 = new Stage();
+            Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+            stage1.getIcons().add(logo);
+            friendRequestMenu = new FriendRequestMenu();
             try {
-                pointChart(root);
-            } catch (IOException e) {
+                friendRequestMenu.start(stage1);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
-
+        randomGame.setOnMouseClicked(mouseEvent -> {
+            waitForRandomGame();
+        });
         mediaView.setFitWidth(stage.getWidth());
         mediaView.setFitHeight(stage.getHeight());
         mediaView.setPreserveRatio(false);
@@ -131,6 +160,28 @@ public class MainMenu extends Application {
         stage.setTitle("Main Menu");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void waitForRandomGame() {
+        App.getGameClient().sendMessage("random game");
+        Stage stage = new Stage();
+        Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
+        stage.getIcons().add(logo);
+        Pane pane = new Pane();
+        Text text = new Text("wait for another player");
+        Button cancel = new Button("cancel");
+        VBox vBox = new VBox(text, cancel);
+        pane.getChildren().add(vBox);
+        cancel.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("cancel random game");
+            stage.close();
+        });
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(2));
+        pauseTransition.setOnFinished(actionEvent -> stage.close());
+        pauseTransition.play();
     }
 
     public void toProfile(Stage stage) {
@@ -143,21 +194,67 @@ public class MainMenu extends Application {
         stage.setFullScreen(true);
     }
 
+    public void logout(Stage stage) {
+        User.setLoggedInUser(null);
+        LoginMenu loginMenu = new LoginMenu(App.getGameClient());
+        try {
+            this.stop();
+            loginMenu.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setFullScreen(true);
+    }
+
     public void toGame(Stage stage) {
+        // Load the image
+        String imagePath = "/pics/startGame.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         TextField chosenUsername = new TextField("write enemy username");
+        // Set up a timeline for color animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> chosenUsername.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> chosenUsername.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> chosenUsername.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> chosenUsername.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> chosenUsername.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        chosenUsername.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline.play();
+            } else {
+                timeline.stop();
+                chosenUsername.setStyle(""); // Reset style when not focused
+            }
+        });
         chosenUsername.setAlignment(Pos.CENTER);
         chosenUsername.setOnMouseClicked(mouseEvent -> {
             if (chosenUsername.getText().equals("write enemy username"))
                 chosenUsername.setText("");
         });
+        Button backToMainMenu = new Button("back");
+        backToMainMenu.setOnMouseEntered(e -> animateButton(backToMainMenu, 1.1));
+        backToMainMenu.setOnMouseExited(e -> animateButton(backToMainMenu, 1.0));
         Button button = new Button("let's go");
-        VBox vBox = new VBox(chosenUsername, button);
+        button.setOnMouseEntered(e -> animateButton(button, 1.1));
+        button.setOnMouseExited(e -> animateButton(button, 1.0));
+        VBox vBox = new VBox(chosenUsername, button, backToMainMenu);
+        vBox.setSpacing(15);
         vBox.setMaxWidth(500);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
         initialize();
+        backToMainMenu.setOnMouseClicked(event -> {
+            root.getChildren().removeAll(vBox, imageView);
+        });
         button.setOnMouseClicked(mouseEvent -> {
-            App.getGameClient().sendMessage("{request game(username<"+chosenUsername.getText()+">)}");
+            root.getChildren().removeAll(vBox, imageView);
+            App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
 //            PreGameMenu preGameMenu = new PreGameMenu();
 //            try {
 //                preGameMenu.start(App.getStage());
@@ -224,14 +321,14 @@ public class MainMenu extends Application {
 
         // TODO: 6/27/2024 sort bar asas point
         int i = 0;
-        for (User user : User.getUsers()) {
+        for (User user : App.getRankedUsers()) {
             VBox userBox = new VBox();
             userBox.getStyleClass().add("user-box");
 
             Label rankLabel = new Label((i + 1) + ". " + user.getUsername());
             rankLabel.getStyleClass().add("rank-label");
 
-            Label scoreLabel = new Label("Score: " + user.getPassword());
+            Label scoreLabel = new Label("Score: " + user.getScore());
             scoreLabel.getStyleClass().add("score-label");
 
             if (i == 0) {
@@ -267,11 +364,11 @@ public class MainMenu extends Application {
         exitPointChart.setOnMouseClicked(mouseEvent -> {
             root.getChildren().remove(imageViewOIP);
             root.getChildren().remove(vbox);
+            App.getRankedUsers().clear();
         });
 
         root.getChildren().add(vbox);
     }
-
 
     private void animateBox(VBox box, double scale) {
         Timeline timeline = new Timeline();
@@ -290,6 +387,7 @@ public class MainMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     public void showNotAccept() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText("user not online or not exist");
@@ -297,27 +395,37 @@ public class MainMenu extends Application {
     }
 
     public void alertRequest(String message) {
+        // Load the image
+        String imagePath = "/pics/verify.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
         Button reject = new Button("reject");
         Button accept = new Button("accept");
+        reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
+        reject.setOnMouseExited(e -> animateButton(reject, 1.0));
+        accept.setOnMouseEntered(e -> animateButton(accept, 1.1));
+        accept.setOnMouseExited(e -> animateButton(accept, 1.0));
         Text text = new Text(message);
         text.setFill(Color.GOLD);
         VBox vBox = new VBox(text, accept, reject);
+        vBox.setSpacing(15);
         vBox.setMaxWidth(500);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
         reject.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("reject");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox, imageView);
         });
         accept.setOnMouseClicked(mouseEvent -> {
             App.getGameClient().sendMessage("accept");
-            root.getChildren().remove(vBox);
+            root.getChildren().removeAll(vBox, imageView);
             preGameMenu = new PreGameMenu();
             try {
                 this.stop();
                 initialize();
                 preGameMenu.start(App.getStage());
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -336,7 +444,7 @@ public class MainMenu extends Application {
             this.stop();
             initialize();
             preGameMenu.start(App.getStage());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -347,5 +455,13 @@ public class MainMenu extends Application {
 
     public Game getOnlineGame() {
         return onlineGame;
+    }
+
+    public FriendRequestMenu getFriendRequestMenu() {
+        return friendRequestMenu;
+    }
+
+    public StackPane getRoot() {
+        return root;
     }
 }

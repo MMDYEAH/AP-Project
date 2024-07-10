@@ -22,7 +22,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.App;
 import model.Game;
+import model.User;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class FinishGameMenu extends Application {
@@ -45,6 +47,8 @@ public class FinishGameMenu extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        User.getLoggedInUser().getGamesPlayed().add(Game.getCurrentGame());
+        getPoints();
         if (Game.getCurrentGame().getMylive() == 0) {
             App.setStage(stage);
             FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/finishGame.fxml"));
@@ -148,6 +152,7 @@ public class FinishGameMenu extends Application {
 
             toMainMenu.setOnMouseClicked(event -> {
                 toMainMenu(stage);
+                App.getStage().setFullScreen(true);
             });
 
 
@@ -165,12 +170,29 @@ public class FinishGameMenu extends Application {
             stage.setResizable(false);
             stage.show();
         }
+        App.getStage().setFullScreen(true);
+    }
+
+    private void getPoints() {
+        if (Game.getCurrentGame().getMylive() == 0){
+            User.getLoggedInUser().setScore(User.getLoggedInUser().getScore()-10);
+            User.getLoggedInUser().setNumOfLosts(User.getLoggedInUser().getNumOfLosts()+1);
+            Game.getCurrentGame().setWinner(Game.getCurrentGame().getCurrentUser());
+        } else {
+            User.getLoggedInUser().setScore(User.getLoggedInUser().getScore()+20);
+            User.getLoggedInUser().setNumOfWins(User.getLoggedInUser().getNumOfWins()+1);
+            Game.getCurrentGame().setWinner(Game.getCurrentGame().getNextUser());
+        }
+        App.getGameClient().sendMessage("update user:"+User.getLoggedInUser().toJson());
+        App.getGameClient().sendMessage("update games played:"+Game.getCurrentGame().toJson());
     }
 
     public void toMainMenu(Stage stage) {
         MainMenu mainMenu = new MainMenu();
         try {
+            stage.setFullScreen(true);
             mainMenu.start(App.getStage());
+            stage.setFullScreen(true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

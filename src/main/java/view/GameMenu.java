@@ -2,6 +2,7 @@ package view;
 
 import controller.GameMenuController;
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class GameMenu extends Application {
     public ImageView img;
@@ -66,6 +68,15 @@ public class GameMenu extends Application {
     public Button pass;
     public Text myLives;
     public Text enemyLives;
+    public ImageView niceImg;
+    public Text nicePlay;
+    public Text notGood;
+    public ImageView badImg;
+    public Button chatBox;
+
+    private ImageView bad;
+
+    private ImageView nice;
 
     private ObservableList<Card> currentHand;
     private ObservableList<Card> currentClose;
@@ -78,15 +89,20 @@ public class GameMenu extends Application {
     private ObservableList<Card> weatherUnit;
 
     GameMenuController controller = new GameMenuController(this);
+    ChatBoxMenu chatBoxMenu = new ChatBoxMenu();
+
+    ArrayList<String> messages = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(GameMenu.class.getResource("/game.fxml"));
-        Pane pane = fxmlLoader.load();
+        pane = fxmlLoader.load();
         Scene scene = new Scene(pane);
         Game.getCurrentGame().setTurnNumber(0);
         initializeElements(scene);
         transparentTextFields();
+        setMessagesMouseClick();
+        setChatOnMouseClick();
         scrollPane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
         tilePane.setHgap(10);
         tilePane.setBackground(Background.fill(Color.rgb(89, 45, 6)));
@@ -99,6 +115,86 @@ public class GameMenu extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void setChatOnMouseClick() {
+        chatBox.setOnMouseClicked(mouseEvent -> {
+            Stage stage = new Stage();
+            try {
+                chatBoxMenu.setGameMenu(this);
+                chatBoxMenu.start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void setMessagesMouseClick() {
+        badImg.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("bad img");
+            makeEmojiOfBadImg();
+        });
+        niceImg.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("nice img");
+            makeEmojiOfNiceImg();
+        });
+        nicePlay.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("nice play");
+            popUpText(new Text("nice play!"));
+        });
+        notGood.setOnMouseClicked(mouseEvent -> {
+            App.getGameClient().sendMessage("not good");
+            popUpText(new Text("not good"));
+        });
+    }
+
+    public void makeEmojiOfBadImg() {
+        popUpEmoji(bad);
+    }
+
+    public void makeEmojiOfNiceImg() {
+        popUpEmoji(nice);
+    }
+
+    private void popUpEmoji(ImageView imageView) {
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        imageView.setX((pane.getWidth() - imageView.getFitWidth()) / 2); // Center horizontally
+        imageView.setY(pane.getHeight() - imageView.getFitHeight()); // Position at the bottom
+
+        // Add the ImageView to the Pane
+        pane.getChildren().add(imageView);
+
+        // Create a TranslateTransition to move the ImageView up
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(5), imageView);
+        translateTransition.setFromY(pane.getHeight() - imageView.getFitWidth());
+        translateTransition.setToY(-pane.getHeight());
+        translateTransition.setCycleCount(1);
+        translateTransition.setAutoReverse(false);
+        translateTransition.setOnFinished(actionEvent -> pane.getChildren().remove(imageView));
+        // Start the animation
+        translateTransition.play();
+    }
+
+    public void popUpText(Text text) {
+        text.setWrappingWidth(100);
+        text.setFill(Color.WHITE);
+        text.setX((pane.getWidth() - text.getWrappingWidth()) / 2); // Center horizontally
+        text.setY(pane.getHeight()); // Position at the bottom
+
+        // Add the ImageView to the Pane
+        pane.getChildren().add(text);
+
+        // Create a TranslateTransition to move the ImageView up
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(5), text);
+        translateTransition.setFromY(pane.getHeight() - text.getWrappingWidth());
+        translateTransition.setToY(-pane.getHeight());
+        translateTransition.setCycleCount(1);
+        translateTransition.setAutoReverse(false);
+        translateTransition.setOnFinished(actionEvent -> pane.getChildren().remove(text));
+        // Start the animation
+        translateTransition.play();
+    }
+
 
     private void startingOfGame() {
         PlayBoard currentPlayBoard = Game.getCurrentGame().getCurrentUser().getPlayBoard();
@@ -149,7 +245,7 @@ public class GameMenu extends Application {
 //        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
     }
 
-    private void setDeckImage(Faction faction, AnchorPane pane) {
+    public void setDeckImage(Faction faction, AnchorPane pane) {
         ImageView imageView = new ImageView();
         if (faction instanceof MonstersFaction) {
             imageView = new ImageView(new Image(
@@ -217,18 +313,19 @@ public class GameMenu extends Application {
                 if (Game.getCurrentGame().isEnemyPassRound()) {
                     int myPower = Integer.parseInt(myTotalPower.getText());
                     int enemyPower = Integer.parseInt(enemyTotalPower.getText());
-                    if (myPower > enemyPower) {
-                        checkLives(enemyLives);
-                        Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive() - 1);
-                    } else if (enemyPower > myPower) {
-                        checkLives(myLives);
-                        Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive() - 1);
-                    }
                     int size = Game.getCurrentGame().getRoundsScore().size();
                     ArrayList<Integer> scores = new ArrayList<>();
                     scores.add(myPower);
                     scores.add(enemyPower);
+                    System.out.println("size:" + size + ",arr:" + scores);
                     Game.getCurrentGame().getRoundsScore().put(size, scores);
+                    if (myPower > enemyPower) {
+                        Game.getCurrentGame().setEnemyLive(Game.getCurrentGame().getEnemyLive() - 1);
+                        checkLives(enemyLives);
+                    } else if (enemyPower > myPower) {
+                        Game.getCurrentGame().setMylive(Game.getCurrentGame().getMylive() - 1);
+                        checkLives(myLives);
+                    }
                     if (Game.getCurrentGame().getRoundsScore().size() == 3) {
                         try {
                             this.stop();
@@ -251,9 +348,7 @@ public class GameMenu extends Application {
                     }
                 }
                 goNextTurn();
-                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(3));
-                pauseTransition.setOnFinished(actionEvent -> App.getGameClient().sendMessage("pass"));
-                pauseTransition.play();
+                App.getGameClient().sendMessage("pass");
             }
         });
     }
@@ -275,6 +370,7 @@ public class GameMenu extends Application {
         for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getCurrentUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
+            if (!myDiscard.getChildren().contains(card)) myDiscard.getChildren().add(card);
         }
         unit.getCards().clear();
     }
@@ -283,6 +379,7 @@ public class GameMenu extends Application {
         for (Card card : unit.getCards()) {
             card.setUnit(Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit());
             Game.getCurrentGame().getNextUser().getPlayBoard().getDiscardPileUnit().addCardToUnit(card);
+            if (!enemyDiscard.getChildren().contains(card)) enemyDiscard.getChildren().add(card);
         }
         unit.getCards().clear();
     }
@@ -292,6 +389,10 @@ public class GameMenu extends Application {
         if (live == 2) lives.setText("lives : 1");
         else if (live == 1) {
             try {
+                if (Game.getCurrentGame().getRoundsScore().size() == 2) {
+                    Game.getCurrentGame().getRoundsScore().put(2, new ArrayList<>(List.of(new Integer[]{0, 0})));
+                }
+                App.getGameClient().sendMessage("pass");
                 this.stop();
                 FinishGameMenu finishGameMenu = new FinishGameMenu();
                 finishGameMenu.start(App.getStage());
@@ -693,6 +794,13 @@ public class GameMenu extends Application {
         enemyLives.setText("lives : 2");
         Game.getCurrentGame().setEnemyLive(2);
         Game.getCurrentGame().setMylive(2);
+        niceImg = (ImageView) scene.lookup("#niceImg");
+        badImg = (ImageView) scene.lookup("#badImg");
+        nicePlay = (Text) scene.lookup("#nicePlay");
+        notGood = (Text) scene.lookup("#notGood");
+        chatBox = (Button) scene.lookup("#chatBox");
+        bad = new ImageView(new Image(GameMenu.class.getResource("/pics/bad.png").toExternalForm()));
+        nice = new ImageView(new Image(GameMenu.class.getResource("/pics/nice.png").toExternalForm()));
     }
 
     public TextField getEnemyTotalPower() {
@@ -725,5 +833,21 @@ public class GameMenu extends Application {
 
     public TextField getMyTotalPower() {
         return myTotalPower;
+    }
+
+    public ChatBoxMenu getChatBoxMenu() {
+        return chatBoxMenu;
+    }
+
+    public ArrayList<String> getMessages() {
+        return messages;
+    }
+
+    public void updateEnemyFaction() {
+        setDeckImage(Game.getCurrentGame().getNextUser().getFaction(), enemyDeck);
+        FactionLeaderCard enemyFactionLead = Game.getCurrentGame().getNextUser().getFactionLeaderCard();
+        enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
+        enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
+        enemyLeader.getChildren().add(enemyFactionLead);
     }
 }

@@ -22,7 +22,6 @@ public class LoginMenuController {
     }
 
     public void initialize() {
-//        LoginMenu.questionCombo.setValue("...");
         Question.getQuestions().add(new Question("What's the name of your favorite high school teacher?", ""));
         Question.getQuestions().add(new Question("In what city did you have your first ever flight?", ""));
         Question.getQuestions().add(new Question("What was your favorite subject in high school??", ""));
@@ -88,29 +87,14 @@ public class LoginMenuController {
         } else if (!ErrorController.AreStringsEqual(password, passwordConfirm)) {
             return new Result(false, "confirm password failed");
         } else {
-            for (User user : User.getUsers()){
-                if (user.getUsername().equals(username)) return new Result(false,"there is exist an user with this username");
+            for (User user : User.getUsers()) {
+                if (user.getUsername().equals(username))
+                    return new Result(false, "there is exist an user with this username");
             }
-            if (password.equals("random")) {
-                while (true) {
-                    String randomPassword = makeRandomPassword();
-                    App.setRandomPassword(randomPassword);
-                    String response = loginMenu.acceptRandomPassword(password);
-                    if (response.equals("back")) {
-                        return new Result(false, "back successfully");
-                    } else if (response.equals("accept")) {
-                        User user = new User(username, randomPassword, nickname, email);
-                        user.setQuestion(question);
-                        return new Result(true, "user created successfully");
-                    } else if (response.equals("again")) {
-                    }
-                }
-            } else {
-                User user = new User(username, password, nickname, email);
-                user.setQuestion(question);
-                User.registeringUser = user;
-                return new Result(true, "user created successfully");
-            }
+            User user = new User(username, password, nickname, email);
+            user.setQuestion(question);
+            User.registeringUser = user;
+            return new Result(true, "user created successfully");
         }
     }
 

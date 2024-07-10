@@ -7,24 +7,28 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.App;
-import model.Result;
-import model.User;
+import model.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class ProfileMenu extends Application {
 
+    public ScrollPane scrollPane;
+    public VBox vBox;
+    public ScrollPane friendsScrollPane;
+    public VBox friendsVbox;
+    public VBox gamesVbox;
     @FXML
     private TextField username;
     @FXML
@@ -88,7 +92,6 @@ public class ProfileMenu extends Application {
         });
 
 
-
         //add text fields
         username = (TextField) scene.lookup("#username");
         // TODO: 6/24/2024 az comment vardar 
@@ -101,7 +104,14 @@ public class ProfileMenu extends Application {
         changeEmail = (Button) scene.lookup("#changeEmail");
         oldPassword = (TextField) scene.lookup("#oldPassword");
         backToMainMenu = (Button) scene.lookup("#backToMainMenu");
-
+        scrollPane = (ScrollPane) scene.lookup("#scrollPane");
+        vBox = (VBox) scrollPane.getContent().lookup("#vBox");
+        friendsScrollPane = (ScrollPane) scene.lookup("#friendsScrollPane");
+        friendsVbox = (VBox) friendsScrollPane.getContent().lookup("#friendsVbox");
+        gamesVbox = (VBox) scene.lookup("#gamesVbox");
+        initializeGamesPlayed();
+        initializeFriendRequest();
+        initializeFriends();
         // Set up a timeline for color animation
         Timeline timelineNickname = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> nickname.setStyle("-fx-text-fill: red;")),
@@ -236,7 +246,7 @@ public class ProfileMenu extends Application {
 
         changeUsername.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeUsername(username.getText());
-            if(result.toString().equals("it's the same as your current username")){
+            if (result.toString().equals("it's the same as your current username")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("change username alert");
                 alert.setContentText("it's the same as your current username");
@@ -253,7 +263,7 @@ public class ProfileMenu extends Application {
         });
         changeNickname.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeNickname(nickname.getText());
-            if(result.toString().equals("it's the same as your current nickname")){
+            if (result.toString().equals("it's the same as your current nickname")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("same nickname");
                 alert.setContentText("it's the same as your current nickname");
@@ -267,7 +277,7 @@ public class ProfileMenu extends Application {
         });
         changeEmail.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changeEmail(email.getText());
-            if(result.toString().equals("empty email")){
+            if (result.toString().equals("empty email")) {
                 emptyFieldVideoPlay(root);
             } else if (result.toString().equals("it's the same as your current email")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -282,12 +292,12 @@ public class ProfileMenu extends Application {
         });
         changePassword.setOnMouseClicked(mouseEvent -> {
             Result result = controller.changePassword(oldPassword.getText(), password.getText());
-            if(result.toString().equals("old password in wrong")){
+            if (result.toString().equals("old password in wrong")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("old password in wrong");
                 alert.setContentText("old password in wrong");
                 alert.show();
-            }else if(result.toString().equals("it's the same as your current password")){
+            } else if (result.toString().equals("it's the same as your current password")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("same password");
                 alert.setContentText("it's the same as your current password");
@@ -313,6 +323,90 @@ public class ProfileMenu extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void initializeGamesPlayed() {
+        for (Game game : User.getLoggedInUser().getGamesPlayed()) {
+            Text text = new Text("game -> date : " + game.getDate().toString() + " rounds score: " +
+                    game.getRoundsScore().get(0).get(0) + "-" + game.getRoundsScore().get(0).get(1) + " " +
+                    game.getRoundsScore().get(1).get(0) + "-" + game.getRoundsScore().get(1).get(1) + " " +
+                    game.getRoundsScore().get(2).get(0) + "-" + game.getRoundsScore().get(2).get(1) + " winner : " +
+                    game.getWinner().getUsername());
+            gamesVbox.getChildren().add(text);
+        }
+    }
+
+    private void initializeFriends() {
+        for (String username : User.getLoggedInUser().getFriends()) {
+            Text text = new Text(username);
+            Button sendGameRequest = new Button("send game request");
+            sendGameRequest.setOnMouseEntered(e -> animateButton(sendGameRequest, 1.1));
+            sendGameRequest.setOnMouseExited(e -> animateButton(sendGameRequest, 1.0));
+            HBox hBox = new HBox(text, sendGameRequest);
+            hBox.setSpacing(10);
+            friendsVbox.getChildren().add(hBox);
+            sendGameRequest.setOnMouseClicked(mouseEvent -> {
+                initialize();
+                App.getGameClient().sendMessage("{request game(username<" + text.getText() + ">)}");
+            });
+        }
+    }
+
+    private void initialize() {
+        DeckUnit deckUnit = new DeckUnit();
+        DeckUnit deckUnit2 = new DeckUnit();
+        PlayBoard currentPlayBoard = new PlayBoard();
+        currentPlayBoard.setCloseCombatUnit(new CloseCombatUnit());
+        currentPlayBoard.setDiscardPileUnit(new DiscardPileUnit());
+        currentPlayBoard.setRangedCombatUnit(new RangedCombatUnit());
+        currentPlayBoard.setSiegeUnit(new SiegeUnit());
+        currentPlayBoard.setHandUnit(new HandUnit());
+        PlayBoard next = new PlayBoard();
+        next.setCloseCombatUnit(new CloseCombatUnit());
+        next.setDiscardPileUnit(new DiscardPileUnit());
+        next.setRangedCombatUnit(new RangedCombatUnit());
+        next.setSiegeUnit(new SiegeUnit());
+        next.setHandUnit(new HandUnit());
+        User.getLoggedInUser().setPlayBoard(currentPlayBoard);
+        User.getLoggedInUser().getPlayBoard().setDeckUnit(deckUnit);
+        User enemy = new User("a", "a", "a", "a"); //TODO: change it
+        enemy.setPlayBoard(next);
+        enemy.getPlayBoard().setDeckUnit(deckUnit2);
+        Game.setCurrentGame(new Game(User.getLoggedInUser(), enemy, LocalDateTime.now()));//TODO: change date
+        Game.getCurrentGame().setSpellUnit(new SpellUnit());
+        Game.getCurrentGame().setCurrentUser(User.getLoggedInUser());
+        Game.getCurrentGame().setNextUser(enemy);
+        Game.getCurrentGame().setMe(User.getLoggedInUser());
+        Game.getCurrentGame().setEnemy(enemy);
+    }
+
+    private void initializeFriendRequest() {
+        for (String username : User.getLoggedInUser().getFriendsRequest()) {
+            Text text = new Text(username);
+            Button accept = new Button("accept friend");
+            accept.setOnMouseEntered(e -> animateButton(accept, 1.1));
+            accept.setOnMouseExited(e -> animateButton(accept, 1.0));
+            Button reject = new Button("reject friend");
+
+            reject.setOnMouseEntered(e -> animateButton(reject, 1.1));
+            reject.setOnMouseExited(e -> animateButton(reject, 1.0));
+            HBox hBox = new HBox(text, accept, reject);
+            hBox.setSpacing(15);
+            vBox.getChildren().add(hBox);
+            vBox.setSpacing(50);
+            accept.setOnMouseClicked(mouseEvent -> {
+                App.getGameClient().sendMessage("accept friend:" + username);
+                User.getLoggedInUser().getFriends().add(username);
+                User.getLoggedInUser().getFriendsRequest().remove(username);
+                vBox.getChildren().remove(hBox);
+            });
+            reject.setOnMouseClicked(mouseEvent -> {
+                App.getGameClient().sendMessage("reject friend:" + username);
+                User.getLoggedInUser().getFriendsRequest().remove(username);
+                vBox.getChildren().remove(hBox);
+            });
+        }
+    }
+
     public void emptyFieldVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/emptyField.mp4").toExternalForm());
@@ -342,6 +436,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void thereIsExistUserWithUsernameVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/thereIsExistUserWithUsername.mp4").toExternalForm());
@@ -371,6 +466,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongUsernameFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongUsernameFormat.mp4").toExternalForm());
@@ -400,6 +496,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void changedSuccessfullyVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/changedSuccessfully.mp4").toExternalForm());
@@ -429,6 +526,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongEmailFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongEmailFormat.mp4").toExternalForm());
@@ -458,6 +556,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void wrongPasswordFormatVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongPasswordFormat.mp4").toExternalForm());
@@ -487,6 +586,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     public void weakPasswordVideoPlay(StackPane root) {
         // Path to your video file
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/weakPassword.mp4").toExternalForm());
@@ -516,6 +616,7 @@ public class ProfileMenu extends Application {
         });
         pauseTransition.play();
     }
+
     private void animateButton(Button button, double scale) {
         Timeline timeline = new Timeline();
         KeyValue kvX = new KeyValue(button.scaleXProperty(), scale);
@@ -524,6 +625,7 @@ public class ProfileMenu extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
+
     public void changeUsername() {
 
     }

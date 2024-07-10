@@ -6,6 +6,7 @@ import network.GameClient;
 import view.LoginMenu;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -20,6 +21,8 @@ public class App {
     private static MonstersFaction monstersFaction;
     private static EmpireNilfgaardianFaction empireNilfgaardianFaction;
     private static ScoiataelFaction scoiataelFaction;
+
+    private static ArrayList<User> rankedUsers = new ArrayList<>();
 
     public static SkelligeFaction getSkelligeFaction() {
         return skelligeFaction;
@@ -126,5 +129,9 @@ public class App {
 
     public static void setSingupSuccessful(boolean singupSuccessful) {
         App.singupSuccessful = singupSuccessful;
+    }
+
+    public static ArrayList<User> getRankedUsers() {
+        return rankedUsers;
     }
 }

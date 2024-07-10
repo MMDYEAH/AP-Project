@@ -14,7 +14,11 @@ public class GameServer {
     private static final int PORT = 8080;
     private ServerSocket serverSocket;
     private final List<ClientHandler> clients = new ArrayList<>();
+
+    private ArrayList<ClientHandler> randomGames = new ArrayList<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+
+    private ArrayList<User> users = new ArrayList<>();
 
     public GameServer() {
     }
@@ -46,5 +50,25 @@ public class GameServer {
     public static void main(String[] args) {
         GameServer server = new GameServer();
         server.start();
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public void setServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
+    }
+
+    public ArrayList<ClientHandler> getRandomGames() {
+        return randomGames;
+    }
+
+    public void setRandomGames(ArrayList<ClientHandler> randomGames) {
+        this.randomGames = randomGames;
+    }
+
+    public ArrayList<User> getUsers() {
+        return users;
     }
 }

@@ -25,12 +25,31 @@ import model.Result;
 import model.User;
 import network.GameClient;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Claims;
 
+import java.util.Date;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.Date;
+import java.util.Properties;
+import java.util.Random;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 
 public class LoginMenu extends Application implements Initializable {
     @FXML
@@ -71,9 +90,17 @@ public class LoginMenu extends Application implements Initializable {
     LoginMenuController controller = new LoginMenuController(this);
     StackPane root;
     GameClient gameClient;
-
+    private String verificationCode;
     MainMenu mainMenu;
     Question registeringUserQuestion;
+
+    TextField usernameOfForgot;
+    boolean isVerifiedByEmail = false;
+
+    VBox vBox;
+    Button submit;
+
+    ImageView imageView;
 
     public LoginMenu(GameClient gameServer) {
         this.gameClient = gameServer;
@@ -87,6 +114,7 @@ public class LoginMenu extends Application implements Initializable {
     public void start(Stage stage) throws Exception {
         //network:
         App.setGameClient(gameClient);
+        App.getGameClient().setLoginMenu(this);
         //
         Image logo = new Image(getClass().getResourceAsStream("/pics/logo.png"));
         // Set the logo image as the window icon
@@ -264,6 +292,9 @@ public class LoginMenu extends Application implements Initializable {
 
         signUp.setOnMouseClicked(mouseEvent -> {
             try {
+                //TODO: uncomment his code and change number
+//                String emailSend = email.getText();
+//                EmailVerification.sendVerificationEmail(emailSend);
                 signUp(root);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -271,9 +302,11 @@ public class LoginMenu extends Application implements Initializable {
         });
 
         login.setOnMouseClicked(mouseEvent -> {
+//                String emailSend = email.getText();
+//                String sentCode = EmailVerification.sendVerificationCode(emailSend);
             try {
-                login();
-            } catch (Exception e) {
+                verifyCode(root, "1");
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -293,6 +326,75 @@ public class LoginMenu extends Application implements Initializable {
         stage.setResizable(false);
         stage.setTitle("Login Menu");
         stage.show();
+    }
+
+    public void verifyCode(StackPane root, String sentCode) throws IOException {
+        // Load the image
+        String imagePath = "/pics/verify.png"; // Change this to the path of your image file
+        Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        root.getChildren().add(imageView);
+        TextField verificationEmailedCode = new TextField("");
+        verificationEmailedCode.setPromptText("enter the code which is emailed to you.");
+
+        // Set up a timeline for color animation
+        Timeline timeline1 = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> verificationEmailedCode.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> verificationEmailedCode.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> verificationEmailedCode.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> verificationEmailedCode.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> verificationEmailedCode.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline1.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+        // Add listener to start/stop animation based on focus
+        verificationEmailedCode.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline1.play();
+            } else {
+                timeline1.stop();
+                verificationEmailedCode.setStyle(""); // Reset style when not focused
+            }
+        });
+        Button verify = new Button("verify");
+        Button back = new Button("back to menu");
+        verify.setOnMouseEntered(e -> animateButton(verify, 1.1));
+        verify.setOnMouseExited(e -> animateButton(verify, 1.0));
+        back.setOnMouseEntered(e -> animateButton(back, 1.1));
+        back.setOnMouseExited(e -> animateButton(back, 1.0));
+        VBox vBox = new VBox(verificationEmailedCode, verify, back);
+        vBox.setMaxWidth(500);
+        vBox.setSpacing(15);
+        vBox.setAlignment(Pos.CENTER);
+        root.getChildren().add(vBox);
+        vBox.setAlignment(Pos.CENTER);
+        back.setOnMouseClicked(event -> {
+            root.getChildren().removeAll(imageView, vBox);
+        });
+        verify.setOnMouseClicked(event -> {
+            if (sentCode != null) {
+                verificationCode = sentCode;
+                if (verificationEmailedCode.getText().equals("1")) {
+                    root.getChildren().removeAll(vBox, imageView);
+                    login();
+                } else {
+                    String videoPath = Objects.requireNonNull(getClass().getResource("/videos/wrongVerificationCode.mp4").toExternalForm());
+                    Media media = new Media(videoPath);
+                    MediaPlayer mediaPlayer1 = new MediaPlayer(media);
+                    MediaView mediaView1 = new MediaView(mediaPlayer1);
+                    root.getChildren().add(mediaView1);
+                    // Play the video
+                    mediaPlayer1.play();
+                    PauseTransition pauseTransition1 = new PauseTransition(Duration.seconds(3));
+                    pauseTransition1.setOnFinished(actionEvent -> {
+                        root.getChildren().remove(mediaView1);
+                    });
+                    pauseTransition1.play();
+                }
+            } else {
+                // Handle email sending failure
+                System.out.println("Failed to send verification email");
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -332,6 +434,7 @@ public class LoginMenu extends Application implements Initializable {
         TextField questionAnswer = new TextField("");
         questionAnswer.setPromptText("enter your answer");
 
+
         // Set up a timeline for color animation
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
@@ -341,7 +444,6 @@ public class LoginMenu extends Application implements Initializable {
                 new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
         );
         timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
-
         // Add listener to start/stop animation based on focus
         questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -355,6 +457,7 @@ public class LoginMenu extends Application implements Initializable {
         // Create a VBox and add buttons and text field to it
         VBox vbox = new VBox(30); // VBox with 10px spacing
         vbox.getChildren().addAll(firstQ, secondQ, thirdQ, questionAnswer, apply);
+        vbox.setMaxWidth(500);
 
         vbox.setAlignment(Pos.CENTER);
         firstQ.setOnMouseEntered(e -> animateButton(firstQ, 1.1));
@@ -380,9 +483,10 @@ public class LoginMenu extends Application implements Initializable {
         thirdQ.setOnAction(event -> {
             questionAnswer.setPromptText(Question.getQuestionByNumber(2).getQuestion());
         });
-
         // Apply button action
         apply.setOnAction(event -> {
+//            if(isVerifiedByEmail) {
+
 
             String answer = questionAnswer.getText();
             int selectedQuestionIndex = -1;
@@ -408,6 +512,11 @@ public class LoginMenu extends Application implements Initializable {
 //                System.out.println(User.registeringUser.getQuestion().getAnswer());
                 App.getStage().setFullScreen(true); // Set full screen
             }
+
+//            }else {
+//                wrongPasswordVideoPlay();
+//            }
+
         });
         questionAnswer.setPrefWidth(400);
         // Add VBox to root
@@ -418,11 +527,11 @@ public class LoginMenu extends Application implements Initializable {
         // Load the image
         String imagePath = "/pics/forgotPassword.jpg"; // Change this to the path of your image file
         Image image = new Image(getClass().getResource(imagePath).toExternalForm());
-        ImageView imageView = new ImageView(image);
+        imageView = new ImageView(image);
         root.getChildren().add(imageView);
-        TextField usernameOfForgot = new TextField("");
+        usernameOfForgot = new TextField("");
         usernameOfForgot.setPromptText("enter your username");
-        Button submit = new Button("submit");
+        submit = new Button("submit");
         Button close = new Button("close");
         submit.setOnMouseEntered(e -> animateButton(submit, 1.1));
         submit.setOnMouseExited(e -> animateButton(submit, 1.0));
@@ -430,60 +539,15 @@ public class LoginMenu extends Application implements Initializable {
         close.setOnMouseEntered(e -> animateButton(close, 1.1));
         close.setOnMouseExited(e -> animateButton(close, 1.0));
         // Create a VBox and add buttons and text field to it
-        VBox vbox = new VBox(30); // VBox with 10px spacing
-        vbox.getChildren().addAll(usernameOfForgot, submit, close);
-        vbox.setAlignment(Pos.CENTER);
+        vBox = new VBox(30); // VBox with 10px spacing
+        vBox.setMaxWidth(500);
+        vBox.getChildren().addAll(usernameOfForgot, submit, close);
+        vBox.setAlignment(Pos.CENTER);
         close.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().removeAll(imageView, vbox);
+            root.getChildren().removeAll(imageView, vBox);
         });
         submit.setOnMouseClicked(mouseEvent -> {
-            if (User.getUserByUsername(usernameOfForgot.getText()) != null) {
-                // Create buttons and text field
-                Button chosenQuestion = new Button(User.getUserByUsername(username.getText()).getQuestion().getQuestion());
-                TextField questionAnswer = new TextField("");
-                Button viewPassword = new Button("view password");
-                viewPassword.setOnMouseEntered(e -> animateButton(viewPassword, 1.1));
-                viewPassword.setOnMouseExited(e -> animateButton(viewPassword, 1.0));
-                chosenQuestion.setOnMouseEntered(e -> animateButton(chosenQuestion, 1.1));
-                chosenQuestion.setOnMouseExited(e -> animateButton(chosenQuestion, 1.0));
-
-                // Create a VBox and add buttons and text field to it
-                vbox.getChildren().removeAll(usernameOfForgot, submit);
-                vbox.getChildren().addAll(chosenQuestion, questionAnswer, viewPassword);
-                vbox.setAlignment(Pos.CENTER);
-                // Set up a timeline for color animation
-                Timeline timeline = new Timeline(
-                        new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
-                        new KeyFrame(Duration.millis(250), e -> questionAnswer.setStyle("-fx-text-fill: orange;")),
-                        new KeyFrame(Duration.millis(500), e -> questionAnswer.setStyle("-fx-text-fill: yellow;")),
-                        new KeyFrame(Duration.millis(750), e -> questionAnswer.setStyle("-fx-text-fill: green;")),
-                        new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
-                );
-                timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
-
-                // Add listener to start/stop animation based on focus
-                questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal) {
-                        timeline.play();
-                    } else {
-                        timeline.stop();
-                        questionAnswer.setStyle(""); // Reset style when not focused
-                    }
-                });
-                viewPassword.setOnMouseClicked(mouseEvent1 -> {
-                    if (questionAnswer.getText().equals(User.getUserByUsername(username.getText()).getQuestion().getAnswer())) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("your password");
-                        alert.setContentText(User.getUserByUsername(username.getText()).getPassword());
-                        alert.show();
-                        root.getChildren().removeAll(imageView, vbox);
-                    } else {
-                        wrongAnswerVideoPlay(root);
-                    }
-                });
-            } else {
-                noUserWithThisUsernameVideoPlay(root);
-            }
+            App.getGameClient().sendMessage("forgot:" + usernameOfForgot.getText());
         });
         // Set up a timeline for color animation
         Timeline timeline = new Timeline(
@@ -505,9 +569,63 @@ public class LoginMenu extends Application implements Initializable {
             }
         });
         // Add VBox to root
-        root.getChildren().add(vbox);
+        root.getChildren().add(vBox);
     }
 
+    public void forgotQuestion(String text,String answer) {
+        Stage stage = new Stage();
+        Pane pane = new Pane();
+        Scene scene = new Scene(pane);
+        // Create buttons and text field
+        Button chosenQuestion = new Button(text);
+        TextField questionAnswer = new TextField("");
+        Button viewPassword = new Button("view password");
+        viewPassword.setOnMouseEntered(e -> animateButton(viewPassword, 1.1));
+        viewPassword.setOnMouseExited(e -> animateButton(viewPassword, 1.0));
+        chosenQuestion.setOnMouseEntered(e -> animateButton(chosenQuestion, 1.1));
+        chosenQuestion.setOnMouseExited(e -> animateButton(chosenQuestion, 1.0));
+        VBox vBox = new VBox(30);
+        // Create a VBox and add buttons and text field to it
+//        vBox.getChildren().removeAll(usernameOfForgot, submit);
+        vBox.getChildren().addAll(chosenQuestion, questionAnswer, viewPassword);
+        vBox.setAlignment(Pos.CENTER);
+        // Set up a timeline for color animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> questionAnswer.setStyle("-fx-text-fill: red;")),
+                new KeyFrame(Duration.millis(250), e -> questionAnswer.setStyle("-fx-text-fill: orange;")),
+                new KeyFrame(Duration.millis(500), e -> questionAnswer.setStyle("-fx-text-fill: yellow;")),
+                new KeyFrame(Duration.millis(750), e -> questionAnswer.setStyle("-fx-text-fill: green;")),
+                new KeyFrame(Duration.millis(1000), e -> questionAnswer.setStyle("-fx-text-fill: blue;"))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE); // Repeat indefinitely
+
+        // Add listener to start/stop animation based on focus
+        questionAnswer.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                timeline.play();
+            } else {
+                timeline.stop();
+                questionAnswer.setStyle(""); // Reset style when not focused
+            }
+        });
+        viewPassword.setOnMouseClicked(mouseEvent1 -> {
+            if (questionAnswer.getText().equals(answer)) {
+                App.getGameClient().sendMessage("get password");
+            } else {
+                wrongAnswerVideoPlay(root);
+            }
+        });
+        pane.getChildren().add(vBox);
+        stage.setScene(scene);
+        stage.show();
+    }
+    public void showPassword(String password){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("your password");
+        alert.setContentText(password);
+        alert.show();
+//        root.getChildren().removeAll(imageView, vBox);
+    }
 
     public void firstQ() {
         Question.setQuestionNumberForRegistration(0);
@@ -661,7 +779,7 @@ public class LoginMenu extends Application implements Initializable {
     }
 
     public void loggedInSuccessfullyVideoPlay() {
-        User user = new User(username.getText(),password.getText(),nickname.getText(),email.getText());
+        User user = new User(username.getText(), password.getText(), nickname.getText(), email.getText());
         user.setQuestion(registeringUserQuestion);
         User.setLoggedInUser(user);
         String videoPath = Objects.requireNonNull(getClass().getResource("/videos/loggedInSuccessfully.mp4").toExternalForm());
@@ -757,6 +875,105 @@ public class LoginMenu extends Application implements Initializable {
             root.getChildren().remove(mediaView);
         });
         pauseTransition.play();
+    }
+
+
+    public class EmailVerification {
+        private static final String FROM_EMAIL = "gwmmebsr@outlook.com";
+        private static final String APP_PASSWORD = "cegftrnnejnqeprn";  // Use the generated app password here
+        static String sentCode;
+
+        public static String sendVerificationCode(String toEmail) {
+            String code = generateVerificationCode();
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");  // Enable TLS
+            props.put("mail.smtp.host", "smtp.office365.com");
+            props.put("mail.smtp.port", "587");  // TLS port
+            props.put("mail.smtp.ssl.trust", "smtp.office365.com");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(FROM_EMAIL, APP_PASSWORD);
+                }
+            });
+
+            session.setDebug(true);  // Enable debugging
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(FROM_EMAIL));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject("Your Verification Code");
+                message.setText("Your verification code is: " + code);
+
+                Transport.send(message);
+
+                System.out.println("Verification code sent successfully to " + toEmail);
+                return code;
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Failed to send verification code: " + e.getMessage());
+                return null;
+            }
+        }
+
+
+        public static void sendVerificationEmail(String toEmail) {
+            String token = JwtUtil.generateToken(toEmail);
+            String verificationLink = "http://localhost:4567/verify?token=" + token;
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.office365.com");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.ssl.trust", "smtp.office365.com");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(FROM_EMAIL, APP_PASSWORD);
+                }
+            });
+
+            session.setDebug(true);
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(FROM_EMAIL));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject("Verify Your Email Address");
+                message.setText("Click the link to verify your email: " + verificationLink);
+
+                Transport.send(message);
+
+                System.out.println("Verification email sent successfully to " + toEmail);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Failed to send verification email: " + e.getMessage());
+            }
+        }
+
+
+        private static String generateVerificationCode() {
+            Random rnd = new Random();
+            int number = rnd.nextInt(999999);
+            return String.format("%06d", number);
+        }
+
+        public static String getSentCode() {
+            return sentCode;
+        }
+
+        public static void setSentCode(String sentCode) {
+            EmailVerification.sentCode = sentCode;
+        }
+
+    }
+
+    public void setMainMenu(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
     }
 
     public MainMenu getMainMenu() {
