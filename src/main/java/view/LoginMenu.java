@@ -500,6 +500,7 @@ public class LoginMenu extends Application implements Initializable {
             }
 
             if (selectedQuestionIndex != -1) {
+                System.out.println("send register request");
                 registeringUserQuestion = new Question(Question.getQuestionByNumber(selectedQuestionIndex).getQuestion(), answer);
                 App.getGameClient().sendMessage("{register(username<" + username.getText() + ">)(password<" + password.getText() + ">)(confirm<" + passwordConfirm.getText() + ">)(nickname<" + nickname.getText() + ">)(email<" + email.getText() + ">)" + registeringUserQuestion.toJson() + "}");
 //                User.registeringUser.setQuestion(registeringUserQuestion);

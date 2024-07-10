@@ -66,6 +66,7 @@ public class GameClient extends Application {
                         || message.equals("user created successfully")
                         || message.equals("wrong password")
                         || message.equals("confirm password failed")) {
+                    System.out.println("sign up check");
                     signUp(message);
                 } else if (message.equals("no such user exist") || message.equals("wrong password in login")
                         || message.equals("login successfully")) {
@@ -81,6 +82,12 @@ public class GameClient extends Application {
                 } else if (message.startsWith("ready for game:")) {
                     System.out.println("game update");
                     updateGameState(message);
+                } else if (message.startsWith("enemy update:")) {
+                    System.out.println("game update");
+                    updateEnemyState(message);
+                } else if (message.startsWith("spell update:")) {
+                    System.out.println("game update");
+                    updateSpell(message);
                 } else if (message.startsWith("send user:")) {
                     handleGettingUser(message);
                 } else if (message.startsWith("forgotQuestion:")) {
@@ -113,6 +120,51 @@ public class GameClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateSpell(String message) {
+        String json = message.replaceAll("spell update:","");
+        ObservableList<Card> spells = extractCards(json,"spellUnit");
+        Game game = loginMenu.getMainMenu().getOnlineGame();
+        for (Card card : spells){
+            if (!game.getSpellUnit().getCards().contains(card)){
+                game.getSpellUnit().getCards().add(card);
+                card.apply();
+            }
+        }
+    }
+
+    private void updateEnemyState(String message) {
+
+        Platform.runLater(() -> {
+            Game game = loginMenu.getMainMenu().getOnlineGame();
+            User my = userExtract(message.replaceAll("enemy update:",""));
+            User localMy = game.getCurrentUser();
+            updateLocal(game, my, localMy,false);
+        });
+    }
+
+    private void updateLocal(Game game, User my, User localMy, boolean nextTurn) {
+        localMy.setFactionLeaderCard(my.getFactionLeaderCard());
+        updateLocalCards(my.getPlayBoard().getDeckUnit(), localMy.getPlayBoard().getDeckUnit());
+        updateLocalCards(my.getPlayBoard().getHandUnit(), localMy.getPlayBoard().getHandUnit());
+        updateLocalCards(my.getPlayBoard().getSiegeUnit(), localMy.getPlayBoard().getSiegeUnit());
+        updateLocalCards(my.getPlayBoard().getRangedCombatUnit(), localMy.getPlayBoard().getRangedCombatUnit());
+        updateLocalCards(my.getPlayBoard().getCloseCombatUnit(), localMy.getPlayBoard().getCloseCombatUnit());
+        updateOnlineCard(my.getPlayBoard().getDeckUnit(), localMy.getPlayBoard().getDeckUnit());
+        updateOnlineCard(my.getPlayBoard().getHandUnit(), localMy.getPlayBoard().getHandUnit());
+        updateOnlineCard(my.getPlayBoard().getSiegeUnit(), localMy.getPlayBoard().getSiegeUnit());
+        updateOnlineCard(my.getPlayBoard().getRangedCombatUnit(), localMy.getPlayBoard().getRangedCombatUnit());
+        updateOnlineCard(my.getPlayBoard().getCloseCombatUnit(), localMy.getPlayBoard().getCloseCombatUnit());
+        updateFaction(my,localMy);
+        game.setNextUser(my);
+        game.setEnemy(my);
+        if (loginMenu.getMainMenu().getPreGameMenu().getGameMenu() != null) {
+            loginMenu.getMainMenu().getPreGameMenu().getGameMenu().addListeners();
+            loginMenu.getMainMenu().getPreGameMenu().getGameMenu().fillingUnits();
+            loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updatePowerText();
+        }
+        if (nextTurn) game.setTurnNumber(game.getTurnNumber() + 1);
     }
 
     private void handleShowRanks() {
@@ -219,6 +271,7 @@ public class GameClient extends Application {
                         gameMenu.finishRoundForEnemy(game.getNextUser().getPlayBoard().getSiegeUnit());
                         gameMenu.settingPowersToZero(gameMenu.myTotalPower, gameMenu.mySiegePower, gameMenu.myRangedPower, gameMenu.myClosePower,
                                 gameMenu.enemyTotalPower, gameMenu.enemySiegePower, gameMenu.enemyRangedPower, gameMenu.enemyClosePower);
+                        game.getSpellUnit().getCards().clear();
                         game.setMePassRound(false);
                         game.setEnemyPassRound(false);
                     }
@@ -283,26 +336,7 @@ public class GameClient extends Application {
             Game game = loginMenu.getMainMenu().getOnlineGame();
             User enemy = userExtract(gameState.substring(15));
             User localEnemy = game.getNextUser();
-            localEnemy.setFactionLeaderCard(enemy.getFactionLeaderCard());
-            updateLocalCards(enemy.getPlayBoard().getDeckUnit(), localEnemy.getPlayBoard().getDeckUnit());
-            updateLocalCards(enemy.getPlayBoard().getHandUnit(), localEnemy.getPlayBoard().getHandUnit());
-            updateLocalCards(enemy.getPlayBoard().getSiegeUnit(), localEnemy.getPlayBoard().getSiegeUnit());
-            updateLocalCards(enemy.getPlayBoard().getRangedCombatUnit(), localEnemy.getPlayBoard().getRangedCombatUnit());
-            updateLocalCards(enemy.getPlayBoard().getCloseCombatUnit(), localEnemy.getPlayBoard().getCloseCombatUnit());
-            updateOnlineCard(enemy.getPlayBoard().getDeckUnit(), localEnemy.getPlayBoard().getDeckUnit());
-            updateOnlineCard(enemy.getPlayBoard().getHandUnit(), localEnemy.getPlayBoard().getHandUnit());
-            updateOnlineCard(enemy.getPlayBoard().getSiegeUnit(), localEnemy.getPlayBoard().getSiegeUnit());
-            updateOnlineCard(enemy.getPlayBoard().getRangedCombatUnit(), localEnemy.getPlayBoard().getRangedCombatUnit());
-            updateOnlineCard(enemy.getPlayBoard().getCloseCombatUnit(), localEnemy.getPlayBoard().getCloseCombatUnit());
-            updateFaction(enemy,localEnemy);
-            game.setNextUser(enemy);
-            game.setEnemy(enemy);
-            if (loginMenu.getMainMenu().getPreGameMenu().getGameMenu() != null) {
-                loginMenu.getMainMenu().getPreGameMenu().getGameMenu().addListeners();
-                loginMenu.getMainMenu().getPreGameMenu().getGameMenu().fillingUnits();
-                loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updatePowerText();
-            }
-            game.setTurnNumber(game.getTurnNumber() + 1);
+            updateLocal(game, enemy, localEnemy,true);
         });
     }
 
@@ -319,6 +353,7 @@ public class GameClient extends Application {
         } else if (enemy.getFaction() instanceof MonstersFaction) {
             local.setFaction(new MonstersFaction(new ArrayList<>(),new ArrayList<>()));
         }
+        System.out.println("local faction : "+local.getFaction().toJson());
         Platform.runLater(()->loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updateEnemyFaction());
     }
 
@@ -524,6 +559,7 @@ public class GameClient extends Application {
     }
 
     private void signUp(String message) {
+        System.out.println("get error message");
         Platform.runLater(() -> {
             if (message.equals("empty field")) {
                 loginMenu.emptyFieldVideoPlay();

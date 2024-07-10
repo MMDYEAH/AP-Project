@@ -343,6 +343,7 @@ public class GameMenu extends Application {
                         finishRoundForEnemy(Game.getCurrentGame().getNextUser().getPlayBoard().getSiegeUnit());
                         settingPowersToZero(myTotalPower, mySiegePower, myRangedPower,
                                 myClosePower, enemyTotalPower, enemySiegePower, enemyRangedPower, enemyClosePower);
+                        emptySpell();
                         Game.getCurrentGame().setMePassRound(false);
                         Game.getCurrentGame().setEnemyPassRound(false);
                     }
@@ -351,6 +352,10 @@ public class GameMenu extends Application {
                 App.getGameClient().sendMessage("pass");
             }
         });
+    }
+
+    private void emptySpell() {
+        Game.getCurrentGame().getSpellUnit().getCards().clear();
     }
 
     public void settingPowersToZero(TextField myTotalPower, TextField mySiegePower, TextField myRangedPower,
@@ -670,7 +675,9 @@ public class GameMenu extends Application {
 
     private void goNextTurn() {
         //TODO: if one of player pss round
-        App.getGameClient().sendMessage("ready for game:" + User.getLoggedInUser().toJson());
+        App.getGameClient().sendMessage("ready for game:" + Game.getCurrentGame().getCurrentUser().toJson());
+        App.getGameClient().sendMessage("enemy update:"+ Game.getCurrentGame().getNextUser().toJson());
+        App.getGameClient().sendMessage("spell update:(spellUnit<"+Game.getCurrentGame().getSpellUnit().arrayToJson()+">)");
         Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
 //        Alert alert = new Alert(Alert.AlertType.WARNING);
 //        alert.setContentText("please give the game to the next user{ Dont look at next hand :)}");
