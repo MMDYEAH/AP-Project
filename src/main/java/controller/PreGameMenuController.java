@@ -4,7 +4,6 @@ import model.*;
 import view.PreGameMenu;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class PreGameMenuController {
     PreGameMenu preGameMenu;
@@ -95,6 +94,16 @@ public class PreGameMenuController {
                 , this.getClass().getResource("/pics/scoiatael/Eithne.jpg").toExternalForm()));
         scoiataelUnitCards.add(new MoralBooster("Isengrim Faoiltiarna <close>", 10, true
                 , this.getClass().getResource("/pics/scoiatael/IsengrimFaoiltiarna.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Iorveth <ranged>",10,true,
+                this.getClass().getResource("pics/scoiatael/Iorveth.jpg").toExternalForm()));
+        scoiataelUnitCards.add(new Solider("Filavandrel <agile>",6,false,
+                this.getClass().getResource("pics/scoiatael/Filavandrel.jpg").toExternalForm()));
+        for(int i=0;i<5;i++){
+            scoiataelUnitCards.add(new Solider("Mahakaman Defender <close>",5,false,
+                    this.getClass().getResource("pics/scoiatael/Mahakam"+i+1+".jpg").toExternalForm()));
+        }
+        scoiataelUnitCards.add(new Solider("Barclay Els <agile>",6,false,
+                this.getClass().getResource("pics/scoiatael/Barclay.jpg").toExternalForm()));
     }
 
     private void addScoiataelFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
@@ -154,6 +163,10 @@ public class PreGameMenuController {
                 , this.getClass().getResource("/pics/skellige/DraigBonDhu.jpg").toExternalForm()));
         skelligeUnitCards.add(new MoralBooster("Olaf <agile>", 12, false
                 , this.getClass().getResource("/pics/skellige/Olaf.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Blueboy Lugos <close>",6,false,
+                this.getClass().getResource("pics/skellige/Blueboy.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Holger Blackhand <siege>",4,false,
+                this.getClass().getResource("pics/skellige/Holger.jpg").toExternalForm()));
     }
 
     private void addSkelligeFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
@@ -165,6 +178,74 @@ public class PreGameMenuController {
 
     private void addNilfgaardCard(ArrayList<Card> nilfgaardUnitCards) {
         //TODO:************************************************
+        for (int i = 0; i < 4; i++) {
+            nilfgaardUnitCards.add(new TightBound("Impera Brigade Guard <close>", 3, false,
+                    this.getClass().getResource("pics/nilfgaard/ImperaBrigadeGuard.jpg").toExternalForm()));
+        }
+        nilfgaardUnitCards.add(new Spy("Stefan Skellen <close>", 9, false,
+                this.getClass().getResource("pics/nilfgaard/StefanSkellen.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Spy("Shilard Fitz-Oesterlen <close>", 7, false,
+                this.getClass().getResource("pics/nilfgaard/Shilard.jpg").toExternalForm()));
+        for (int i = 0; i < 2; i++) {
+            nilfgaardUnitCards.add(new TightBound("Young Emissary <clode>", 5, false,
+                    this.getClass().getResource("pics/nilfgaard/YoungEmissary" + i + 1 + ".jpg").toExternalForm()));
+            nilfgaardUnitCards.add(new Solider("Black Infantry Archer <ranged>", 10, false,
+                    this.getClass().getResource("pics/nilfgaard/BlackInfantryArcher" + i + 1 + ".jpg").toExternalForm()));
+            nilfgaardUnitCards.add(new Medic("Etolian Auxiliary Archers <ranged>", 1, false,
+                    this.getClass().getResource("pics/nilfgaard/EtolianAuxiliaryArchers" + i + 1 + ".jpg").toExternalForm()));
+        }
+        nilfgaardUnitCards.add(new Solider("Cahir Mawr Dyffryn aep Ceallach <close>", 6, false,
+                this.getClass().getResource("pics/nilfgaard/CahirMawrDyffrynAepCeallach.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Spy("Vattier de Rideaux <close>", 4, false,
+                this.getClass().getResource("pics/nilfgaard/VattierDeRideaux.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Medic("Menno Coehorn <close>", 10, true,
+                this.getClass().getResource("pics/nilfgaard/MennoCoehorn.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Puttkammer <ranged>", 3, false,
+                this.getClass().getResource("pics/nilfgaard/Puttkammer.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Assire var Anahid <ranged>", 6, false,
+                this.getClass().getResource("pics/nilfgaard/Assire.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Tibor Eggebracht <ranged>", 10, true,
+                this.getClass().getResource("pics/nilfgaard/TiborEggebracht.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Renuald aep Matsen <ranged>", 5, false,
+                this.getClass().getResource("pics/nilfgaard/RenualdAepMatsen.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Fringilla Vigo <ranged>", 6, false,
+                this.getClass().getResource("pics/nilfgaard/FringillaVigo.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Rotten Mangonel <siege>", 3, false,
+                this.getClass().getResource("pics/nilfgaard/RottenMangonel.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Heavy Zerrikanian Fire Scorpion <siege>", 10, false,
+                this.getClass().getResource("pics/nilfgaard/HeavyZerri.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Zerrikanian Fire Scorpion <siege>", 5, false,
+                this.getClass().getResource("pics/nilfgaard/ZerrikanianFireScorpion.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Siege Engineer <siege>", 6, false,
+                this.getClass().getResource("pics/nilfgaard/SiegeEngineer.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Morvran Voorhis <siege>", 10, true,
+                this.getClass().getResource("pics/nilfgaard/MorvranVoorhis.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Albrich <ranged>", 2, false,
+                this.getClass().getResource("pics/nilfgaard/Albrich.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider(" Cynthia <ranged>", 4, false,
+                this.getClass().getResource("pics/nilfgaard/Cynthia.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Letho of Gulet <close>", 10, true,
+                this.getClass().getResource("pics/nilfgaard/Letho.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Morteisen <close>", 3, false,
+                this.getClass().getResource("pics/nilfgaard/Morteisen.jpg").toExternalForm()));
+        for (int i = 0; i < 3; i++) {
+            nilfgaardUnitCards.add(new TightBound("Nausicaa Cavalry Rider <close>", 2, false,
+                    this.getClass().getResource("pics/nilfgaard/NausicaaCavalryRider.jpg").toExternalForm()));
+        }
+        nilfgaardUnitCards.add(new Solider("Rainfarn <close>", 4, false,
+                this.getClass().getResource("pics/nilfgaard/Rainfarn.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Medic("Siege Technician <siege>",0,false,
+                this.getClass().getResource("pics/nilfgaard/SiegeTechnician.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Sweers <ranged>",2,false,
+                this.getClass().getResource("pics/nilfgaard/Sweers.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Vanhemar <ranged>",4,false,
+                this.getClass().getResource("pics/nilfgaard/Vanhemar.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Spy("Vattier de Rideaux <close>",4,false,
+                this.getClass().getResource("pics/nilfgaard/VattierDeRideaux.jpg").toExternalForm()));
+        nilfgaardUnitCards.add(new Solider("Vreemde <close>",2,false,
+                this.getClass().getResource("pics/nilfgaard/Vreemde.jpg").toExternalForm()));
+
+
     }
 
 
@@ -242,6 +323,14 @@ public class PreGameMenuController {
                 , this.getClass().getResource("/pics/monsters/Harpy.jpg").toExternalForm()));
         monstersUnitCards.add(new Solider("Wyvern <ranged>", 2, false
                 , this.getClass().getResource("/pics/monsters/Wyvern.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Imlerith <close>",10,true,
+                this.getClass().getResource("pics/monsters/Imlerith.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Frightener <close>",5,false,
+                this.getClass().getResource("pics/monsters/Frightener.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Celaeno Harpy <agile>",2,false,
+                this.getClass().getResource("pics/monsters/CelaenoHarpy.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Gargoyle <ranged>",2,false,
+                this.getClass().getResource("pics/monsters/Gargoyle.jpg").toExternalForm()));
     }
 
     private void addMonstersFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
@@ -278,6 +367,8 @@ public class PreGameMenuController {
                     , this.getClass().getResource("/pics/northenRealms/RedanianFootSoldier" + (i + 1) + ".jpg").toExternalForm()));
             realmsNorthernUnitCards.add(new TightBound("Catapult <siege>", 8, false
                     , this.getClass().getResource("/pics/northenRealms/Catapult.jpg").toExternalForm()));
+            realmsNorthernUnitCards.add(new Solider("Trebuchet <siege>",6,false,
+                    this.getClass().getResource("pics/northenRealms/Trebuchet"+i+1+".jpg").toExternalForm()));
         }
         for (int i = 0; i < 3; i++) {
             realmsNorthernUnitCards.add(new MoralBooster("Kaedweni Siege Expert <siege>", 1, false
@@ -317,6 +408,17 @@ public class PreGameMenuController {
                 , this.getClass().getResource("/pics/northenRealms/Ves.jpg").toExternalForm()));
         realmsNorthernUnitCards.add(new Solider("Yarpen Zirgrin <close>", 2, false
                 , this.getClass().getResource("/pics/northenRealms/YarpenZirgrin.jpg").toExternalForm()));
+        for(int i=0;i<3;i++) {
+            realmsNorthernUnitCards.add(new TightBound("Blue Stripes Commando <close>", 4, false,
+                    this.getClass().getResource("pics/northenRealms/BlueStripes.jpg").toExternalForm()));
+        }
+        realmsNorthernUnitCards.add(new Solider("Dethmold <ranged>",6,false,
+                this.getClass().getResource("pics/northenRealms/Dethmold.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Keira Metz <ranged>",5,false,
+                this.getClass().getResource("pics/northenRealms/Keira.jpg").toExternalForm()));
+        realmsNorthernUnitCards.add(new Solider("Sheldon Skaggs <ranged>",4,false,
+                this.getClass().getResource("pics/northenRealms/Sheldon.jpg").toExternalForm()));
+
     }
 
     private void addNaturalCards(ArrayList<Card> UnitCards) {
@@ -331,6 +433,12 @@ public class PreGameMenuController {
                     , this.getClass().getResource("/pics/neutral/Decoy.jpg").toExternalForm()));
             UnitCards.add(new Muster("Gaunter O’DImm Darkness <ranged>", 4, false
                     , this.getClass().getResource("/pics/neutral/GaunterO’DImmDarkness.jpg").toExternalForm()));
+            UnitCards.add(new SkelligeStorm("Skellige Storm <weather>",
+                    this.getClass().getResource("pics/neutral/Storm.jpg").toExternalForm()));
+            UnitCards.add(new ClearWeather("Clear Weather <weather>",
+                    this.getClass().getResource("pics/neutral/Clear.jpg").toExternalForm()));
+            UnitCards.add(new SpellScorch("Scorch <spell>",
+                    this.getClass().getResource("pics/neutral/Scorch.jpg").toExternalForm()));
         }
         UnitCards.add(new UnitCommandersHorn("Dandelion <close>", 2, false
                 , this.getClass().getResource("/pics/neutral/Dandelion.jpg").toExternalForm()));
@@ -350,6 +458,12 @@ public class PreGameMenuController {
                 , this.getClass().getResource("/pics/neutral/YenneferOfVengerberg.jpg").toExternalForm()));
         UnitCards.add(new Solider("Zoltan Chivay <close>", 5, false
                 , this.getClass().getResource("/pics/neutral/ZoltanChivay.jpg").toExternalForm()));
+        UnitCards.add(new Transformers("Cow <ranged>",0,false,
+                this.getClass().getResource("pics/neutral/Cow.jpg").toExternalForm()));
+        UnitCards.add(new Solider("Geralt of Rivia <close>",15,true,
+                this.getClass().getResource("pics/neutral/Geralt.jpg").toExternalForm()));
+        UnitCards.add(new Solider("Vesemir <close>",6,false,
+                this.getClass().getResource("pics/neutral/Vesemir.jpg").toExternalForm()));
     }
 
     public void showCards() {
