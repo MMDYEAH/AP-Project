@@ -2,19 +2,20 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CheatMenu">
-   <children>
-      <TextField fx:id="cheatCode" layoutX="84.0" layoutY="91.0" prefHeight="148.0" prefWidth="431.0" promptText="Enter cheat code here">
-         <font>
-            <Font name="B Badkonak" size="40.0" />
-         </font></TextField>
-      <Button layoutX="254.0" layoutY="263.0" mnemonicParsing="false" onMouseClicked="#applyCheatCode" prefHeight="43.0" prefWidth="92.0" text="Apply">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Button fx:id="buttonOfBackToGame" layoutX="280.0" layoutY="360.0" mnemonicParsing="false"  text="Back" />
-   </children>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.CheatMenu"
+            prefHeight="400.0" prefWidth="600.0">
+    <TextField fx:id="cheatCode" layoutX="84.0" layoutY="91.0" prefHeight="148.0" prefWidth="431.0"
+               promptText="Enter cheat code here">
+    </TextField>
+    <Button layoutX="254.0" layoutY="263.0" mnemonicParsing="false" onMouseClicked="#applyCheatCode" prefHeight="43.0"
+            prefWidth="92.0" text="Apply">
+        <font>
+            <Font size="19.0"/>
+        </font>
+    </Button>
+    <Button fx:id="buttonOfBackToGame" layoutX="280.0" layoutY="360.0" mnemonicParsing="false" text="Back"/>
 </AnchorPane>

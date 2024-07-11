@@ -23,6 +23,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -195,6 +196,7 @@ public class MainMenu extends Application {
     }
 
     public void logout(Stage stage) {
+        App.getGameClient().sendMessage("logout");
         User.setLoggedInUser(null);
         LoginMenu loginMenu = new LoginMenu(App.getGameClient());
         try {
@@ -330,7 +332,10 @@ public class MainMenu extends Application {
 
             Label scoreLabel = new Label("Score: " + user.getScore());
             scoreLabel.getStyleClass().add("score-label");
-
+            Circle online = new Circle(5,Color.GREEN);
+            Circle offline = new Circle(5,Color.RED);
+            if (user.isOnline()) userBox.getChildren().add(online);
+            else userBox.getChildren().add(offline);
             if (i == 0) {
                 String imagePath = Objects.requireNonNull(getClass().getResource("/pics/gold.png")).toExternalForm();
                 Image image = new Image(imagePath);
