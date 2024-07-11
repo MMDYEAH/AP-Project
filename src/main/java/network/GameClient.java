@@ -88,6 +88,9 @@ public class GameClient extends Application {
                 } else if (message.startsWith("spell update:")) {
                     System.out.println("game update");
                     updateSpell(message);
+                } else if (message.startsWith("hand cards:")) {
+                    System.out.println("game update");
+                    updateHand(message);
                 } else if (message.startsWith("send user:")) {
                     handleGettingUser(message);
                 } else if (message.startsWith("forgotQuestion:")) {
@@ -122,7 +125,19 @@ public class GameClient extends Application {
         }
     }
 
+    private void updateHand(String message) {
+        String json = message.replaceAll("update cards:","");
+        User user = userExtract(json);
+        System.out.println("hand:"+user.getPlayBoard().getHandUnit().getCards());
+        Platform.runLater(()->{
+            Game game = loginMenu.getMainMenu().getOnlineGame();
+            User localEnemy = game.getNextUser();
+            updateLocal(game, user, localEnemy,false);
+        });
+    }
+
     private void updateSpell(String message) {
+        System.out.println("spell update start ===========");
         String json = message.replaceAll("spell update:","");
         ObservableList<Card> spells = extractCards(json,"spellUnit");
         Game game = loginMenu.getMainMenu().getOnlineGame();
@@ -132,16 +147,18 @@ public class GameClient extends Application {
                 card.apply();
             }
         }
+        System.out.println("spell update finish ===========");
     }
 
     private void updateEnemyState(String message) {
-
+        System.out.println("enemy update start *********");
         Platform.runLater(() -> {
             Game game = loginMenu.getMainMenu().getOnlineGame();
             User my = userExtract(message.replaceAll("enemy update:",""));
             User localMy = game.getCurrentUser();
             updateLocal(game, my, localMy,false);
         });
+        System.out.println("enemy update finish *********");
     }
 
     private void updateLocal(Game game, User my, User localMy, boolean nextTurn) {
@@ -343,15 +360,15 @@ public class GameClient extends Application {
     private void updateFaction(User enemy,User local) {
         local.setFactionLeaderCard(enemy.getFactionLeaderCard());
         if (enemy.getFaction() instanceof RealmsNorthenFaction){
-            local.setFaction(new RealmsNorthenFaction(new ArrayList<>(),new ArrayList<>()));
+            local.setFaction(App.getRealmsNorthenFaction());
         } else if (enemy.getFaction() instanceof EmpireNilfgaardianFaction) {
-            local.setFaction(new EmpireNilfgaardianFaction(new ArrayList<>(),new ArrayList<>()));
+            local.setFaction(App.getEmpireNilfgaardianFaction());
         } else if (enemy.getFaction() instanceof ScoiataelFaction) {
-            local.setFaction(new SociataelFaction(new ArrayList<>(),new ArrayList<>()));
+            local.setFaction(App.getScoiataelFaction());
         } else if (enemy.getFaction() instanceof SkelligeFaction) {
-            local.setFaction(new SkelligeFaction(new ArrayList<>(),new ArrayList<>()));
+            local.setFaction(App.getSkelligeFaction());
         } else if (enemy.getFaction() instanceof MonstersFaction) {
-            local.setFaction(new MonstersFaction(new ArrayList<>(),new ArrayList<>()));
+            local.setFaction(App.getMonstersFaction());
         }
         System.out.println("local faction : "+local.getFaction().toJson());
         Platform.runLater(()->loginMenu.getMainMenu().getPreGameMenu().getGameMenu().updateEnemyFaction());
@@ -405,8 +422,9 @@ public class GameClient extends Application {
         String draws = extractField(userJson, "draws");
         String question = extractField(userJson, "text");
         String answer = extractField(userJson, "answer");
-        String faction = extractField(userJson,"factionChosen");
-        String factionName = extractField(faction,"name");
+        Matcher faction = extractFaction(userJson);
+        System.out.println("faction:"+faction);
+        String factionName = faction.group("name");
         Matcher leaderCard = extractFactionLeader(userJson);
         System.out.println("leader:"+leaderCard);
         String leaderName = leaderCard.group("name");
@@ -423,16 +441,17 @@ public class GameClient extends Application {
         System.out.println("close:" + closeUnitCards + "ranged:" + rangedUnitCards + "siege" + siegeUnitCards);
         User user = new User(username, password, nickname, email);
         if (factionName.equals("RealmsNorthen")){
-            user.setFaction(new RealmsNorthenFaction(new ArrayList<>(),new ArrayList<>()));
+            user.setFaction(App.getRealmsNorthenFaction());
         } else if (factionName.equals("EmpireNilfgaardian")) {
-            user.setFaction(new EmpireNilfgaardianFaction(new ArrayList<>(),new ArrayList<>()));
+            user.setFaction(App.getEmpireNilfgaardianFaction());
         } else if (factionName.equals("Sociatael")) {
-            user.setFaction(new SociataelFaction(new ArrayList<>(),new ArrayList<>()));
+            user.setFaction(App.getScoiataelFaction());
         } else if (factionName.equals("Skellige")) {
-            user.setFaction(new SkelligeFaction(new ArrayList<>(),new ArrayList<>()));
+            user.setFaction(App.getSkelligeFaction());
         } else if (factionName.equals("Monsters")) {
-            user.setFaction(new MonstersFaction(new ArrayList<>(),new ArrayList<>()));
+            user.setFaction(App.getMonstersFaction());
         }
+        System.out.println("faction name:"+factionName);
         user.setFactionLeaderCard(factionLeaderCard);
         user.setScore(Integer.parseInt(score));
         user.setNumOfWins(Integer.parseInt(wins));
@@ -461,6 +480,13 @@ public class GameClient extends Application {
         playBoard.setDiscardPileUnit(discardPileUnit);
         user.setPlayBoard(playBoard);
         return user;
+    }
+
+    private Matcher extractFaction(String userJson) {
+        Pattern pattern = Pattern.compile("\\(factionChosen<\\{faction\\(name<(?<name>\\w*)>\\)}>\\)");
+        Matcher matcher = pattern.matcher(userJson);
+        if (matcher.find()) return matcher;
+        else return null;
     }
 
     private Matcher extractFactionLeader(String userJson) {

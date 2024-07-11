@@ -218,6 +218,7 @@ public class GameMenu extends Application {
                 currentPlayBoard.getHandUnit().addCardToUnit(card);
                 number++;
             }
+            App.getGameClient().sendMessage("hand cards:" + Game.getCurrentGame().getCurrentUser().toJson());
 //            number = 0;
 //            for (Card card : nextPlayBoard.getDeckUnit().getCards()) {
 //                if (number == 10) break;
@@ -676,8 +677,8 @@ public class GameMenu extends Application {
     private void goNextTurn() {
         //TODO: if one of player pss round
         App.getGameClient().sendMessage("ready for game:" + Game.getCurrentGame().getCurrentUser().toJson());
-        App.getGameClient().sendMessage("enemy update:"+ Game.getCurrentGame().getNextUser().toJson());
-        App.getGameClient().sendMessage("spell update:(spellUnit<"+Game.getCurrentGame().getSpellUnit().arrayToJson()+">)");
+//        App.getGameClient().sendMessage("enemy update:"+ Game.getCurrentGame().getNextUser().toJson());
+//        App.getGameClient().sendMessage("spell update:(spellUnit<"+Game.getCurrentGame().getSpellUnit().arrayToJson()+">)");
         Game.getCurrentGame().setTurnNumber(Game.getCurrentGame().getTurnNumber() + 1);
 //        Alert alert = new Alert(Alert.AlertType.WARNING);
 //        alert.setContentText("please give the game to the next user{ Dont look at next hand :)}");
@@ -855,6 +856,6 @@ public class GameMenu extends Application {
         FactionLeaderCard enemyFactionLead = Game.getCurrentGame().getNextUser().getFactionLeaderCard();
         enemyFactionLead.setPrefHeight(myLeader.getPrefHeight());
         enemyFactionLead.setPrefWidth(myLeader.getPrefWidth());
-        enemyLeader.getChildren().add(enemyFactionLead);
+        if (!enemyLeader.getChildren().contains(enemyFactionLead))enemyLeader.getChildren().add(enemyFactionLead);
     }
 }
