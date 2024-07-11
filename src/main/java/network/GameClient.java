@@ -121,11 +121,17 @@ public class GameClient extends Application {
                     handleShowRanks();
                 } else if (message.startsWith("password:")) {
                     getPassword(message);
+                } else if (message.equals("cup")) {
+                    handleCup(message);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleCup(String message) {
+        Platform.runLater(()->loginMenu.getMainMenu().toEliminationCup(App.getStage()));
     }
 
     private void handleRankOfflineUser(String message) {

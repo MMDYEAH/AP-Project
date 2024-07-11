@@ -18,6 +18,8 @@ public class GameServer {
     private ArrayList<ClientHandler> randomGames = new ArrayList<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
+    private ArrayList<ClientHandler> cupClients = new ArrayList<>();
+
     private ArrayList<User> users = new ArrayList<>();
 
     public GameServer() {
@@ -70,5 +72,13 @@ public class GameServer {
 
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    public ArrayList<ClientHandler> getCupClients() {
+        return cupClients;
+    }
+
+    public void setCupClients(ArrayList<ClientHandler> cupClients) {
+        this.cupClients = cupClients;
     }
 }

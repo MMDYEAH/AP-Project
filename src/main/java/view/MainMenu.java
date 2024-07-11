@@ -132,7 +132,7 @@ public class MainMenu extends Application {
         friendRequest.setOnMouseExited(e -> animateButton(friendRequest, 1.0));
 
         eliminationCup.setOnMouseClicked(event -> {
-            toEliminationCup(stage);
+            App.getGameClient().sendMessage("cup");
         });
 
         logout.setOnMouseClicked(event -> {

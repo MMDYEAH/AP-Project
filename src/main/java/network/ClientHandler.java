@@ -92,10 +92,21 @@ public class ClientHandler implements Runnable {
                     sendPassword();
                 } else if (message.equals("logout")) {
                     handleLogout();
+                } else if (message.equals("cup")) {
+                    handleCup();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleCup() {
+        server.getCupClients().add(this);
+        if (server.getCupClients().size() == 4){
+            for (ClientHandler clientHandler : server.getCupClients()){
+                clientHandler.sendMessage("cup");
+            }
         }
     }
 
