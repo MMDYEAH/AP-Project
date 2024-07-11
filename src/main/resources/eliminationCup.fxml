@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.EliminationCup">
+   <children>
+      <Text fill="#00dcff" layoutX="702.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="elimination cup">
+         <font>
+            <Font size="56.0" />
+         </font>
+      </Text>
+      <Button fx:id="back" layoutX="642.0" layoutY="176.0" mnemonicParsing="false" prefHeight="127.0" prefWidth="316.0" text="back to main menu">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
