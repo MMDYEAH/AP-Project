@@ -52,6 +52,8 @@ public class MainMenu extends Application {
     Button pointChart;
     @FXML
     Button logout;
+    @FXML
+    Button tv;
     StackPane root;
 
     PreGameMenu preGameMenu;
@@ -108,6 +110,14 @@ public class MainMenu extends Application {
         logout = (Button) scene.lookup("#logout");
         randomGame = (Button) scene.lookup("#randomGame");
         eliminationCup = (Button) scene.lookup("#eliminationCup");
+        tv = (Button) scene.lookup("#tv");
+
+        tv.setOnMouseClicked(event -> {
+            toTv(stage);
+        });
+
+        tv.setOnMouseEntered(e -> animateButton(tv, 1.1));
+        tv.setOnMouseExited(e -> animateButton(tv, 1.0));
 
         eliminationCup.setOnMouseEntered(e -> animateButton(eliminationCup, 1.1));
         eliminationCup.setOnMouseExited(e -> animateButton(eliminationCup, 1.0));
@@ -207,6 +217,16 @@ public class MainMenu extends Application {
         EliminationCup eliminationCup1 = new EliminationCup();
         try {
             eliminationCup1.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setFullScreen(true);
+    }
+
+    public void toTv(Stage stage) {
+        TvMenu tvMenu = new TvMenu();
+        try {
+            tvMenu.start(App.getStage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
