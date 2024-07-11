@@ -167,6 +167,8 @@ public class PreGameMenuController {
                 this.getClass().getResource("/pics/skellige/Blueboy.jpg").toExternalForm()));
         skelligeUnitCards.add(new Solider("Holger Blackhand <siege>", 4, false,
                 this.getClass().getResource("/pics/skellige/Holger.jpg").toExternalForm()));
+        skelligeUnitCards.add(new Solider("Clan Tordarroch Armorsmith <close>", 4, false,
+                this.getClass().getResource("/pics/skellige/ClanTordarrochArmorsmith.jpg").toExternalForm()));
     }
 
     private void addSkelligeFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {
@@ -331,6 +333,10 @@ public class PreGameMenuController {
                 this.getClass().getResource("/pics/monsters/CelaenoHarpy.jpg").toExternalForm()));
         monstersUnitCards.add(new Solider("Gargoyle <ranged>", 2, false,
                 this.getClass().getResource("/pics/monsters/Gargoyle.jpg").toExternalForm()));
+        monstersUnitCards.add(new Muster("Crone Brewess <close>", 6, false,
+                this.getClass().getResource("/pics/monsters/CroneBrewess.jpg").toExternalForm()));
+        monstersUnitCards.add(new Solider("Botchling <close>", 4, false,
+                this.getClass().getResource("/pics/monsters/Botchling.jpg").toExternalForm()));
     }
 
     private void addMonstersFactionCards(ArrayList<FactionLeaderCard> factionLeaderCards) {

@@ -10,6 +10,7 @@ module GWENT {
     requires jjwt;
     requires spark.core;
     requires java.xml.bind;
+    requires javafx.swing;
 
     exports view;
     exports network;
