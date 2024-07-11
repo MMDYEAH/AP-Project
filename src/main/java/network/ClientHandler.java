@@ -3,7 +3,6 @@ package network;
 import controller.LoginMenuController;
 import enums.LoginMenuCommands;
 import enums.MainMenuCommands;
-import javafx.collections.ObservableList;
 import model.*;
 
 import java.io.*;
@@ -57,7 +56,9 @@ public class ClientHandler implements Runnable {
                     sendGameReady(message);
                 } else if (message.startsWith("spell update:")) {
                     sendGameReady(message);
-                } else if (message.startsWith("forgot:")) {
+                } else if (message.startsWith("hand cards:")) {
+                    sendGameReady(message);
+                }  else if (message.startsWith("forgot:")) {
                     handleForgot(message);
                 } else if (message.startsWith("friend request:")) {
                     handleFriendRequest(message);

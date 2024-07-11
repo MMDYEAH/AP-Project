@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane fx:id="pane" prefHeight="810" prefWidth="1440" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GameMenu">
+<Pane fx:id="pane" prefHeight="810" prefWidth="1440" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GameMenu">
     <ImageView fx:id="img" fitHeight="810" fitWidth="1440" preserveRatio="true">
         <image>
             <Image url="@pics/board.jpg" />
@@ -108,4 +108,9 @@
             <Image url="@pics/bad.png" />
         </image>
     </ImageView>
+   <Button fx:id="buttonOfCheatMenu" layoutX="1261.0" layoutY="301.0" mnemonicParsing="false" text="Cheat menu" textFill="#008912">
+      <font>
+         <Font name="B Baran Outline" size="12.0" />
+      </font>
+   </Button>
 </Pane>

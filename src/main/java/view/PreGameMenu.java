@@ -149,14 +149,6 @@ public class PreGameMenu extends Application {
         scrollPaneOfCardCollection = (ScrollPane) scene.lookup("#scrollPaneOfCardCollection");
         tilePaneOfCardCollection = (TilePane) scrollPaneOfCardCollection.getContent().lookup("#tilePaneOfCardCollection");
         totalCardsInDeck = (Text) scene.lookup("#totalCardsInDeck");
-        totalCardsInDeck.setOnMouseClicked(mouseEvent -> {
-            try {
-                goToGame();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
         numberOfUnitCards = (Text) scene.lookup("#numberOfUnitCards");
         slashAnd22 = (Text) scene.lookup("#slashAnd22");
         strengthOfCards = (Text) scene.lookup("#strengthOfCards");
