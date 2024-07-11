@@ -34,6 +34,8 @@ import java.util.*;
 
 
 public class MainMenu extends Application {
+    public Button eliminationCup;
+
     public Button friendRequest;
     public Button randomGame;
     //    @FXML
@@ -105,6 +107,10 @@ public class MainMenu extends Application {
         friendRequest = (Button) scene.lookup("#friendRequest");
         logout = (Button) scene.lookup("#logout");
         randomGame = (Button) scene.lookup("#randomGame");
+        eliminationCup = (Button) scene.lookup("#eliminationCup");
+
+        eliminationCup.setOnMouseEntered(e -> animateButton(eliminationCup, 1.1));
+        eliminationCup.setOnMouseExited(e -> animateButton(eliminationCup, 1.0));
 
         randomGame.setOnMouseEntered(e -> animateButton(randomGame, 1.1));
         randomGame.setOnMouseExited(e -> animateButton(randomGame, 1.0));
@@ -123,6 +129,10 @@ public class MainMenu extends Application {
 
         friendRequest.setOnMouseEntered(e -> animateButton(friendRequest, 1.1));
         friendRequest.setOnMouseExited(e -> animateButton(friendRequest, 1.0));
+
+        eliminationCup.setOnMouseClicked(event -> {
+            toEliminationCup(stage);
+        });
 
         logout.setOnMouseClicked(event -> {
             logout(stage);
@@ -193,6 +203,15 @@ public class MainMenu extends Application {
         }
         stage.setFullScreen(true);
     }
+    public void toEliminationCup(Stage stage) {
+        EliminationCup eliminationCup1 = new EliminationCup();
+        try {
+            eliminationCup1.start(App.getStage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setFullScreen(true);
+    }
 
     public void logout(Stage stage) {
         User.setLoggedInUser(null);
@@ -237,24 +256,39 @@ public class MainMenu extends Application {
             if (chosenUsername.getText().equals("write enemy username"))
                 chosenUsername.setText("");
         });
+        Button pub = new Button("public");
+        pub.setOnMouseEntered(e -> animateButton(pub, 1.1));
+        pub.setOnMouseExited(e -> animateButton(pub, 1.0));
+        Button priv = new Button("private");
+        priv.setOnMouseEntered(e -> animateButton(priv, 1.1));
+        priv.setOnMouseExited(e -> animateButton(priv, 1.0));
         Button backToMainMenu = new Button("back");
         backToMainMenu.setOnMouseEntered(e -> animateButton(backToMainMenu, 1.1));
         backToMainMenu.setOnMouseExited(e -> animateButton(backToMainMenu, 1.0));
         Button button = new Button("let's go");
         button.setOnMouseEntered(e -> animateButton(button, 1.1));
         button.setOnMouseExited(e -> animateButton(button, 1.0));
-        VBox vBox = new VBox(chosenUsername, button, backToMainMenu);
-        vBox.setSpacing(15);
-        vBox.setMaxWidth(500);
+        VBox vBox = new VBox(15);
+        vBox.getChildren().addAll(pub, priv);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
-        initialize();
-        backToMainMenu.setOnMouseClicked(event -> {
-            root.getChildren().removeAll(vBox, imageView);
-        });
-        button.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().removeAll(vBox, imageView);
-            App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
+        vBox.setAlignment(Pos.CENTER);
+        pub.setOnMouseClicked(event -> {
+
+            // TODO: 7/11/2024 set game public
+
+            vBox.getChildren().removeAll(pub,priv);
+            vBox.getChildren().addAll(chosenUsername, button, backToMainMenu);
+            vBox.setSpacing(15);
+            vBox.setMaxWidth(500);
+            vBox.setAlignment(Pos.CENTER);
+            initialize();
+            backToMainMenu.setOnMouseClicked(event1 -> {
+                root.getChildren().removeAll(vBox, imageView);
+            });
+            button.setOnMouseClicked(mouseEvent -> {
+                root.getChildren().removeAll(vBox, imageView);
+                App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
 //            PreGameMenu preGameMenu = new PreGameMenu();
 //            try {
 //                preGameMenu.start(App.getStage());
@@ -262,7 +296,34 @@ public class MainMenu extends Application {
 //                throw new RuntimeException(e);
 //            }
 //            stage.setFullScreen(true);
+            });
         });
+        priv.setOnMouseClicked(event -> {
+
+            // TODO: 7/11/2024 set game private
+
+            vBox.getChildren().removeAll(pub,priv);
+            vBox.getChildren().addAll(chosenUsername, button, backToMainMenu);
+            vBox.setSpacing(15);
+            vBox.setMaxWidth(500);
+            vBox.setAlignment(Pos.CENTER);
+            initialize();
+            backToMainMenu.setOnMouseClicked(event1 -> {
+                root.getChildren().removeAll(vBox, imageView);
+            });
+            button.setOnMouseClicked(mouseEvent -> {
+                root.getChildren().removeAll(vBox, imageView);
+                App.getGameClient().sendMessage("{request game(username<" + chosenUsername.getText() + ">)}");
+//            PreGameMenu preGameMenu = new PreGameMenu();
+//            try {
+//                preGameMenu.start(App.getStage());
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//            stage.setFullScreen(true);
+            });
+        });
+
     }
 
     private void initialize() {
