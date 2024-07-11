@@ -90,6 +90,8 @@ public class ClientHandler implements Runnable {
                     handleSendingUsers();
                 } else if (message.equals("get password")) {
                     sendPassword();
+                } else if (message.equals("logout")) {
+                    handleLogout();
                 }
             }
         } catch (IOException e) {
@@ -97,12 +99,24 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void handleLogout() {
+        System.out.println("logout");
+        this.user.setOnline(false);
+    }
+
     private void handleRanking() {
         server.getUsers().sort(Comparator.comparing(User::getScore).reversed());
         System.out.println("size: " + server.getUsers().size());
         for (User rankingUser : server.getUsers()) {
             System.out.println("rank user:" + rankingUser.simpleToJson());
-            sendMessage("rank user:" + rankingUser.simpleToJson());
+            if (rankingUser.isOnline()){
+                System.out.println("rank online");
+                sendMessage("state:online,rank user:" + rankingUser.simpleToJson());
+            }
+            else{
+                System.out.println("rank offline");
+                sendMessage("state:offline,rank user:" + rankingUser.simpleToJson());
+            }
         }
         sendMessage("send rank finish");
     }
@@ -284,6 +298,9 @@ public class ClientHandler implements Runnable {
         String username = matcher.group("username");
         String password = matcher.group("password");
         Result result = controller.login(username, password);
+        if (result.isSuccessful()) {
+            this.user.setOnline(true);
+        }
         sendMessage(result.toString());
     }
 

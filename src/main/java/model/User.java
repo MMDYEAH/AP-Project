@@ -11,6 +11,7 @@ public class User {
     private String username, password, nickname, email;
     private Question question;
     private boolean isUserRequestForgotPassword, isUserRegisterSuccesfully;
+    private boolean isOnline = false;
     private int score, numOfWins, numOfLosts, numOfDraws;
     private Faction faction;
     private FactionLeaderCard factionLeaderCard;
@@ -218,5 +219,13 @@ public class User {
 
     public void setFriendsRequest(ArrayList<String> friendsRequest) {
         this.friendsRequest = friendsRequest;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

@@ -29,7 +29,7 @@ public class CheatMenu extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginMenu.class.getResource("/CheatMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(CheatMenu.class.getResource("/CheatMenu.fxml"));
         Pane pane = fxmlLoader.load();
         Scene scene = new Scene(pane);
         stage.setScene(scene);

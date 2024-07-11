@@ -43,6 +43,7 @@
             <artifactId>javafx-media</artifactId>
             <version>21.0.3</version>
         </dependency>
+        <!-- JavaFX FXML -->
         <!-- Additional Dependencies -->
         <dependency>
             <groupId>org.netbeans.api</groupId>

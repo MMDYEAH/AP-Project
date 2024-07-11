@@ -95,10 +95,13 @@ public class GameClient extends Application {
                     handleGettingUser(message);
                 } else if (message.startsWith("forgotQuestion:")) {
                     handleForgot(message);
-                } else if (message.startsWith("rank user:")) {
+                } else if (message.startsWith("state:online,rank user:")) {
                     System.out.println("rank user");
-                    handleRankUser(message);
-                } else if (message.startsWith("chat:")) {
+                    handleRankOnlineUser(message);
+                } else if (message.startsWith("state:offline,rank user:")) {
+                    System.out.println("rank user");
+                    handleRankOfflineUser(message);
+                }  else if (message.startsWith("chat:")) {
                     handleChat(message);
                 } else if (message.equals("bad img")) {
                     Platform.runLater(() -> loginMenu.getMainMenu().getPreGameMenu().getGameMenu().makeEmojiOfBadImg());
@@ -123,6 +126,31 @@ public class GameClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleRankOfflineUser(String message) {
+        System.out.println("offline ranking");
+        String json = message.replaceAll("state:offline,rank user:", "");
+        String username = extractField(json, "name");
+        String nickName = extractField(json, "nickname");
+        String score = extractField(json, "score");
+        User user = new User(username, "", nickName, "");
+        user.setOnline(false);
+        user.setScore(Integer.parseInt(score));
+        System.out.println("user : " + user);
+        App.getRankedUsers().add(user);
+    }
+    private void handleRankOnlineUser(String message) {
+        System.out.println("online ranking");
+        String json = message.replaceAll("state:online,rank user:", "");
+        String username = extractField(json, "name");
+        String nickName = extractField(json, "nickname");
+        String score = extractField(json, "score");
+        User user = new User(username, "", nickName, "");
+        user.setOnline(true);
+        user.setScore(Integer.parseInt(score));
+        System.out.println("user : " + user);
+        App.getRankedUsers().add(user);
     }
 
     private void updateHand(String message) {
@@ -194,16 +222,7 @@ public class GameClient extends Application {
         });
     }
 
-    private void handleRankUser(String message) {
-        String json = message.replaceAll("rank user:", "");
-        String username = extractField(json, "name");
-        String nickName = extractField(json, "nickname");
-        String score = extractField(json, "score");
-        User user = new User(username, "", nickName, "");
-        user.setScore(Integer.parseInt(score));
-        System.out.println("user : " + user);
-        App.getRankedUsers().add(user);
-    }
+
 
     private void getPassword(String message) {
         String password = message.replaceAll("password:", "");
