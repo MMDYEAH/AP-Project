@@ -14,6 +14,7 @@ module GWENT {
 
     exports view;
     exports network;
+    exports model;
     opens view to javafx.fxml, com.google.gson;
     opens model to com.google.gson;
     opens network to com.google.gson;
